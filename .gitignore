@@ -1,4 +1,8 @@
+war/WEB-INF/project.properties
+
+.settings/*
 *.class
+sample_*.json
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
