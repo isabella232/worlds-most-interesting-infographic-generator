@@ -1,0 +1,6 @@
+# Project properties
+clientId=[INSERT_CLIENT_ID]
+clientSecret=[INSERT_CLIENT_SECRET]
+redirectUri=[INSERT_REDIRECT_URI]
+authEndpoint=[INSERT_AUTH_ENDPOINT]
+tokenEndpoint=[INSERT_TOKEN_ENDPOINT]

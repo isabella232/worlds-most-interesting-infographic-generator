@@ -1,6 +1,7 @@
 war/WEB-INF/project.properties
+war/WEB-INF/classes
 
-.settings/*
+.settings
 *.class
 sample_*.json
 
