@@ -39,7 +39,7 @@
 	  - Servlet mappings.
 	  -
 	  - We only have 3 endpoints other than the landing page.  One is for our entry
-	  - point, which redirects one or two based on the user's reaction.  The simple
+	  - point, which redirects to one or the other based on the user's reaction.  The simple
 	  - workflow looks like...
 	  -
 	  -										callback
