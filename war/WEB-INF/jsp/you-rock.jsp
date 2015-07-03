@@ -35,7 +35,7 @@
 				<li>Link: <%= user.getLink() %></li>
 				<li>Gender: <%= user.getGender() %></li>
 				<li>Posts: total=<%= posts.size() %></li>
-				<li><%
+				<li>Breakdown of posts by type:<br /><br /><%
 					// post type stats
 					Map<Post.Type, Integer> postTypes = new HashMap<Post.Type, Integer>();
 					for (int i = 0; i < posts.size(); i++) {
@@ -47,14 +47,16 @@
 						postTypes.put(post.getType(), postTypes.get(post.getType()) + 1);
 					}
 					for (int i = 0; i < Post.Type.values().length; i++) {
-						out.println(Post.Type.values()[i] + ": " + postTypes.get(Post.Type.values()[i]) + "<br>");
+						if (postTypes.get(Post.Type.values()[i]) != null) {
+							out.println(Post.Type.values()[i] + ": " + postTypes.get(Post.Type.values()[i]) + "<br>");
+						}
 					}
 					
 					// message contents stats
 					Map<String, Integer> wordMap = (Map<String, Integer>)request.getSession().getAttribute("wordMap");
 					for (int i = 0; i < wordMap.keySet().size(); i++) {
 						String[] usedWords = wordMap.keySet().toArray(new String[0]);
-						if (wordMap.get(usedWords[i]) > 4) {
+						if (usedWords[i].length() > 3 && wordMap.get(usedWords[i]) > 4) {
 							out.println(usedWords[i] + ": " + wordMap.get(usedWords[i]) + "<br>");
 						}
 					}
