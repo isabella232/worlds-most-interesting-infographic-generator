@@ -13,15 +13,17 @@ public final class Post implements Serializable {
 	private String id;
 	private Type type;
 	private String message;
+	private String statusType;
 	
 	public static enum Type {
 		LINK, STATUS, PHOTO, VIDEO, OFFER
 	}
 	
-	public Post(String id, Type type, String message) {
+	public Post(String id, Type type, String message, String statusType) {
 		this.id = id;
 		this.type = type;
-		this.message = message == null ? "" : message;
+		this.message = (message == null ? "" : message);
+		this.statusType = (statusType == null ? "" : statusType);
 	}
 
 	public static long getSerialversionuid() {
@@ -38,5 +40,9 @@ public final class Post implements Serializable {
 
 	public String getMessage() {
 		return message;
+	}
+	
+	public String getStatusType() {
+		return statusType;
 	}
 }

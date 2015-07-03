@@ -35,22 +35,54 @@
 				<li>Link: <%= user.getLink() %></li>
 				<li>Gender: <%= user.getGender() %></li>
 				<li>Posts: total=<%= posts.size() %></li>
-				<li>Breakdown of posts by type:<br /><br /><%
+				<li>Breakdown of posts by type:
+					<br /><br />
+					<%
 					// post type stats
 					Map<Post.Type, Integer> postTypes = new HashMap<Post.Type, Integer>();
+					Map<String, Integer> statusTypes = new HashMap<String, Integer>();
 					for (int i = 0; i < posts.size(); i++) {
 						Post post = posts.get(i);
 						if (!postTypes.containsKey(post.getType())) {
 							postTypes.put(post.getType(), 0);
 						}
 						
+						//System.out.println("Type: '" + post.getStatusType() + "'");
+						if (post.getStatusType().equals("")) {
+							System.out.println(post.getId());
+						}
+						
 						postTypes.put(post.getType(), postTypes.get(post.getType()) + 1);
+						
+						
+						
+						
+						if (!statusTypes.containsKey(post.getStatusType())) {
+							statusTypes.put(post.getStatusType(), 0);
+						}
+						
+						statusTypes.put(post.getStatusType(), statusTypes.get(post.getStatusType()) + 1);
 					}
 					for (int i = 0; i < Post.Type.values().length; i++) {
 						if (postTypes.get(Post.Type.values()[i]) != null) {
 							out.println(Post.Type.values()[i] + ": " + postTypes.get(Post.Type.values()[i]) + "<br>");
 						}
 					}
+					
+					out.println("</li><br /><li>Top status types: <br /><br />");
+					
+					String[] statusTypesArray = statusTypes.keySet().toArray(new String[0]);
+					for (String stype : statusTypesArray) {
+						//System.out.println("XX : '" + stype + "'");
+					}
+					
+					for (int i = 0; i < statusTypesArray.length; i++) {
+						if (statusTypes.get(statusTypesArray[i]) != null) {
+							out.println(statusTypesArray[i] + ": " + statusTypes.get(statusTypesArray[i]) + "<br>");
+						}
+					}
+					
+					out.println("</li><br /><li>Top used words: <br /><br />");
 					
 					// message contents stats
 					Map<String, Integer> wordMap = (Map<String, Integer>)request.getSession().getAttribute("wordMap");

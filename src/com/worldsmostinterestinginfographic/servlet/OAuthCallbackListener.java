@@ -164,7 +164,7 @@ log.info(allPostsJson);
 	}
 	
 	private Post parseJsonPost(JSONObject jsonPost) {
-		System.out.println(jsonPost);
+//		System.out.println(jsonPost);
 		if (jsonPost == null) {
 			return null;
 		}
@@ -174,8 +174,25 @@ log.info(allPostsJson);
 			String id = jsonPost.getString("id");
 			Post.Type type = Post.Type.valueOf(jsonPost.getString("type").toUpperCase());
 			String message = jsonPost.has("message") ? jsonPost.getString("message") : "";
+			String statusType = jsonPost.has("status_type") ? jsonPost.getString("status_type") : null;
 			
-			post = new Post(id, type, message);
+			
+			// playing around with getting FROM
+			boolean hasFrom = jsonPost.has("from");
+			if (hasFrom) {
+//				log.info("Has from");
+				String fromString = jsonPost.getString("from");
+//				JSONArray fromArray = jsonPost.getJSONArray("from");
+//				log.info("XXX: " + fromString);
+				JSONObject fromObject = jsonPost.getJSONObject("from");
+//				log.info("YYY: " + fromObject.getString("name"));
+			} else {
+				log.info("No from");
+			}
+//			JSONArray fromArray = jsonPost.has("from") ? jsonPost.getJSONArray("from") : null;
+//			log.info(fromArray.toString());
+			
+			post = new Post(id, type, message, statusType);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
