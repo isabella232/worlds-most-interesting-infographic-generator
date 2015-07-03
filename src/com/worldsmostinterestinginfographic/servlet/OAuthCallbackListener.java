@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,6 +26,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
+import org.mortbay.log.Log;
 
 import com.google.appengine.labs.repackaged.org.json.JSONArray;
 import com.google.appengine.labs.repackaged.org.json.JSONException;
@@ -36,6 +38,8 @@ import com.worldsmostinterestinginfographic.model.object.User;
 public class OAuthCallbackListener extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
+	private static final Logger log = Logger.getLogger(OAuthCallbackListener.class.getName());
+	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
@@ -88,13 +92,13 @@ public class OAuthCallbackListener extends HttpServlet {
 				}
 				
 				// User access token to request posts
-				requestUrl = "https://graph.facebook.com/v2.2/me/feed?access_token=" + accessToken;
+				requestUrl = "https://graph.facebook.com/v2.2/me/feed?limit=100&access_token=" + accessToken;
 				httpClient = HttpClients.createDefault();
 				HttpGet get = new HttpGet(requestUrl);
 				httpResponse = httpClient.execute(get);
 				bufferedReader = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent()));
 				String allPostsJson = bufferedReader.readLine();
-				
+log.info(allPostsJson);
 				// Convert profile data to User object
 				List<Post> posts = new ArrayList<Post>();
 				try {
@@ -102,11 +106,9 @@ public class OAuthCallbackListener extends HttpServlet {
 					JSONArray allPostsArray = new JSONArray(allPostsObject.getString("data"));
 					
 					for (int i = 0; i < allPostsArray.length(); i++) {
-						
+//System.out.println("Adding post " + i);
 						JSONObject postObject = (JSONObject)allPostsArray.get(i);
-						Post post = new Post(postObject.getString("id"),
-								Post.Type.valueOf(postObject.getString("type").toUpperCase()),
-								postObject.has("message") ? postObject.getString("message") : "");
+						Post post = parseJsonPost(postObject);
 						posts.add(post);
 					}
 				} catch (JSONException e) {
@@ -124,6 +126,8 @@ public class OAuthCallbackListener extends HttpServlet {
 					// String[] messageWordMap = post.getMessage().split(" ");
 					String regex = "\\b[A-Za-z]+\\b";
 
+//System.out.println("MESSAGE: " + post.getMessage());
+					
 					Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
 					Matcher matcher = pattern.matcher(post.getMessage());
 					List<String> messageWordList = new ArrayList<String>();
@@ -157,5 +161,25 @@ public class OAuthCallbackListener extends HttpServlet {
 			response.sendRedirect("/uh-oh");
 		}
 
+	}
+	
+	private Post parseJsonPost(JSONObject jsonPost) {
+		System.out.println(jsonPost);
+		if (jsonPost == null) {
+			return null;
+		}
+		
+		Post post = null;
+		try {
+			String id = jsonPost.getString("id");
+			Post.Type type = Post.Type.valueOf(jsonPost.getString("type").toUpperCase());
+			String message = jsonPost.has("message") ? jsonPost.getString("message") : "";
+			
+			post = new Post(id, type, message);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		
+		return post;
 	}
 }
