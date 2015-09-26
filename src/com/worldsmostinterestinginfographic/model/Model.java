@@ -7,14 +7,14 @@ import java.util.Properties;
 
 public enum Model {
 	INSTANCE;
-	
+
 	public static final String CLIENT_ID;
 	public static final String CLIENT_SECRET;
 	public static final String REDIRECT_URI;
 	public static final String AUTH_ENDPOINT;
 	public static final String TOKEN_ENDPOINT;
 	public static final String FACEBOOK_REQUESTED_PROFILE_FIELDS;
-	
+
 	static {
 		// Read important properties from file
 		Properties properties = new Properties();
@@ -25,7 +25,7 @@ public enum Model {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		CLIENT_ID = properties.getProperty("clientId");
 		CLIENT_SECRET = properties.getProperty("clientSecret");
 		REDIRECT_URI = properties.getProperty("redirectUri");
