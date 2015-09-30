@@ -115,25 +115,25 @@ public class OAuthCallbackListener extends HttpServlet {
 		return "[{" +
 				"	\"friends\": [" +
 				"		{" +
-				"			\"imgSrc\": \"images/friend-1.jpg\"," +
+				"			\"imgSrc\": \"http://graph.facebook.com/" + topFriends.get(0).getUser().getId() + "/picture\"," +
 				"			\"likes\": " + topFriends.get(0).getCount() + "," +
 				"			\"name\": \"" + topFriends.get(0).getUser().getName() + "\"," +
 				"			\"color\": \"#3b5998\"" +
 				"		}," +
 				"		{" +
-				"			\"imgSrc\": \"images/friend-2.jpg\"," +
+				"			\"imgSrc\": \"http://graph.facebook.com/" + topFriends.get(1).getUser().getId() + "/picture\"," +
 				"			\"likes\": " + topFriends.get(1).getCount() + "," +
 				"			\"name\": \"" + topFriends.get(1).getUser().getName() + "\"," +
 				"			\"color\": \"#5bc0bd\"" +
 				"		}," +
 				"		{" +
-				"			\"imgSrc\": \"images/friend-3.jpg\"," +
+				"			\"imgSrc\": \"http://graph.facebook.com/" + topFriends.get(2).getUser().getId() + "/picture\"," +
 				"			\"likes\": " + topFriends.get(2).getCount() + "," +
 				"			\"name\": \"" + topFriends.get(2).getUser().getName() + "\"," +
 				"			\"color\": \"#f08a4b\"" +
 				"		}," +
 				"		{" +
-				"			\"imgSrc\": \"images/friend-4.jpg\"," +
+				"			\"imgSrc\": \"http://graph.facebook.com/" + topFriends.get(3).getUser().getId() + "/picture\"," +
 				"			\"likes\": " + topFriends.get(3).getCount() + "," +
 				"			\"name\": \"" + topFriends.get(3).getUser().getName() + "\"," +
 				"			\"color\": \"#1c2541\"" +
@@ -181,7 +181,7 @@ public class OAuthCallbackListener extends HttpServlet {
 		CloseableHttpClient httpClient = HttpClients.createDefault();
 		try {
 			// User access token to request posts
-			String requestUrl = "https://graph.facebook.com/v2.2/me/feed?limit=100&access_token=" + accessToken;
+			String requestUrl = "https://graph.facebook.com/v2.2/me/feed?limit=500&access_token=" + accessToken;
 			httpClient = HttpClients.createDefault();
 			HttpGet get = new HttpGet(requestUrl);
 			HttpResponse httpResponse = httpClient.execute(get);
