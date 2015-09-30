@@ -19,6 +19,8 @@
 	<link href='https://fonts.googleapis.com/css?family=Roboto:500,400,300,300italic%7CLato:400,300italic,300' rel='stylesheet' type='text/css'>
 	<script>
 		var topFriendsData = '<%= (String)request.getSession().getAttribute("topFriendsData") %>';
+		var postTypesData = '<%= (String)request.getSession().getAttribute("postTypesData") %>';
+		var mostFrequentPostTypeData = '<%= (String)request.getSession().getAttribute("mostFrequentPostTypeData") %>';
 	</script>
 </head>
 <body class="infographic">
@@ -72,7 +74,7 @@
 							<li><span class="sign">A</span> - <span class="description">Status messages</span></li>
 							<li><span class="sign">A</span> - <span class="description">Status messages</span></li>
 						</ul>
-						<p><span class="number green">55%</span> of your post types are <span class="green">images</span></p>
+						<p><span id="most-frequent-post-percentage" class="number"></span> of your posts are <span id="most-frequent-post-type"></span></p>
 					</div>
 					<div id="donut-chart-post-types" data-json="inc/post-types.json">
 						<!-- Here insert chart -->

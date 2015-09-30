@@ -379,8 +379,21 @@ function initPostTypesChart() {
 		.attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ') rotate(' + angleMainCircle + ' 0 0)');
 
 	d3.json(dataUrl, function (error, json) {
+		
+		
+		// Populate most frequent post percentage fields
+		var mostFrequentPostTypeObject = JSON.parse(mostFrequentPostTypeData);
+		
+		$('#most-frequent-post-percentage').html(mostFrequentPostTypeObject.percentage + '%');
+		$('#most-frequent-post-type').html(mostFrequentPostTypeObject.type);
+		
+		$('#most-frequent-post-percentage').addClass(mostFrequentPostTypeObject.color);
+		$('#most-frequent-post-type').addClass(mostFrequentPostTypeObject.color);
+		
+		
 		if (error) return console.warn(error);
-		dataJSON = json[0];
+//		dataJSON = json[0];
+		dataJSON = JSON.parse(postTypesData);
 
 		// set chart legend
 		var listItems = d3.selectAll('#post-types-list');
@@ -396,12 +409,12 @@ function initPostTypesChart() {
 			})
 			.text('');
 
-		items
-			.append('span')
-			.attr('class', 'sing')
-			.text(function(d) {
-				if(d) {return d.type + ' - ';}
-			});
+//		items
+//			.append('span')
+//			.attr('class', 'sing')
+//			.text(function(d) {
+//				if(d) {return d.type + ' - ';}
+//			});
 
 		items
 			.append('span')
@@ -546,7 +559,6 @@ function initFriendsChart() {
 		var friendsAmount = d3.select('#friends-amount');
 		if(friendsAmount.length) {
 			friendsAmount.text(dataJSON.friends.length);
-//			alert(dataJSON.friends.length);
 		}
 
 		// set friends likes

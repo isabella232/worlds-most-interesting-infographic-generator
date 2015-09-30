@@ -15,7 +15,6 @@ public class StatisticsCollector {
 		
 		Map<User, Integer> likesByFriendsMap = new HashMap<User, Integer>();
 		for (Post post : posts) {
-			
 			for (User liker : post.getLikes()) {
 				
 				// Ignore own likes
@@ -33,5 +32,20 @@ public class StatisticsCollector {
 		}
 		
 		return new TopFriendsResult(likesByFriendsMap);
+	}
+	
+	public static Map<Post.Type, Integer> collectPostTypes(List<Post> posts) {
+		Map<Post.Type, Integer> postTypesCount = new HashMap<Post.Type, Integer>();
+		
+		for (Post post : posts) {
+			if (postTypesCount.containsKey(post.getType())) {
+				postTypesCount.put(post.getType(), postTypesCount.get(post.getType()) + 1);
+				continue;
+			}
+			
+			postTypesCount.put(post.getType(), 1);
+		}
+		
+		return postTypesCount;
 	}
 }

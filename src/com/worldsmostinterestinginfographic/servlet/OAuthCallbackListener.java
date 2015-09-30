@@ -66,6 +66,7 @@ public class OAuthCallbackListener extends HttpServlet {
 			// Generate output data
 			String topFourFriendsJson = buildTopFourFriendsJson(topFriendsResult);
 			String postTypesJson = buildPostTypesJson(postTypesCount);
+			String mostFrequentPostTypeJson = buildMostFrequentPostTypeJson(postTypesCount);
 			
 			// Send to success page with received profile data
 			request.getSession().setAttribute("user", user);
@@ -73,6 +74,8 @@ public class OAuthCallbackListener extends HttpServlet {
 			
 			// Include chart data
 			request.getSession().setAttribute("topFriendsData", topFourFriendsJson);
+			request.getSession().setAttribute("postTypesData", postTypesJson);
+			request.getSession().setAttribute("mostFrequentPostTypeData", mostFrequentPostTypeJson);
 			
 			// do word count here because it fails in jsp for some reason - didn't investigate too long
 			Map<String, Integer> wordMap = new HashMap<String, Integer>();
@@ -146,34 +149,61 @@ public class OAuthCallbackListener extends HttpServlet {
 	}
 	
 	private String buildPostTypesJson(Map<Post.Type, Integer> postTypesCount) {
-		return "[{" +
+		return "{" +
 				"	\"types\": [" +
 				"		{" +
-				"			\"type\": \"A\"," +
-				"			\"value\": 40," +
-				"			\"description\": \"Status messages\"," +
+				"			\"type\": \"" + postTypesCount.get(Post.Type.STATUS) + "\"," +
+				"			\"value\": " + postTypesCount.get(Post.Type.STATUS) + "," + 
+				"			\"description\": \"Status Update\"," +
 				"			\"color\": \"#3b5998\"" +
 				"		}," +
 				"		{" +
-				"			\"type\": \"B\"," +
-				"			\"value\": 45," +
+				"			\"type\": \"" + postTypesCount.get(Post.Type.PHOTO) + "\"," +
+				"			\"value\": " + postTypesCount.get(Post.Type.PHOTO) + "," + 
 				"			\"description\": \"Image Post\"," +
 				"			\"color\": \"#5bc0bd\"" +
 				"		}," +
 				"		{" +
-				"			\"type\": \"C\"," +
-				"			\"value\": 10," +
-				"			\"description\": \"Shared link\"," +
+				"			\"type\": \"" + postTypesCount.get(Post.Type.LINK) + "\"," +
+				"			\"value\": " + postTypesCount.get(Post.Type.LINK) + "," + 
+				"			\"description\": \"Shared Link\"," +
 				"			\"color\": \"#2ebaeb\"" +
 				"		}," +
 				"		{" +
-				"			\"type\": \"D\"," +
-				"			\"value\": 17," +
+				"			\"type\": \"" + postTypesCount.get(Post.Type.VIDEO) + "\"," +
+				"			\"value\": " + postTypesCount.get(Post.Type.VIDEO) + "," + 
 				"			\"description\": \"Video Post\"," +
 				"			\"color\": \"#f08a4b\"" +
 				"		}" +
 				"	]" +
-				"}]";
+				"}";
+	}
+	
+	private String buildMostFrequentPostTypeJson(Map<Post.Type, Integer> postTypesCount) {
+
+		Post.Type mostFrequentPostType = null;
+		int numPosts = 0;
+		for (Map.Entry<Post.Type, Integer> entry : postTypesCount.entrySet()) {
+			if (mostFrequentPostType == null ||postTypesCount.get(entry.getKey()) > postTypesCount.get(mostFrequentPostType)) {
+				mostFrequentPostType = entry.getKey();
+			}
+			
+			numPosts += entry.getValue();
+			
+//		    System.out.println(entry.getKey() + "/" + entry.getValue());
+		}
+
+		return "{" +
+				"	\"type\": \"" + (mostFrequentPostType.equals(Post.Type.STATUS) ? "status updates" : 
+					mostFrequentPostType.equals(Post.Type.PHOTO) ? "photos" : 
+						mostFrequentPostType.equals(Post.Type.LINK) ? "shared links" : "videos") + "\"," +
+				"	\"percentage\": " + (mostFrequentPostType.equals(Post.Type.STATUS) ? postTypesCount.get(Post.Type.STATUS) * 100 / numPosts : 
+					mostFrequentPostType.equals(Post.Type.PHOTO) ? postTypesCount.get(Post.Type.PHOTO) * 100 / numPosts : 
+						mostFrequentPostType.equals(Post.Type.LINK) ? postTypesCount.get(Post.Type.LINK) * 100 / numPosts : postTypesCount.get(Post.Type.VIDEO) * 100 / numPosts) + "," +
+				"	\"color\": \"" + (mostFrequentPostType.equals(Post.Type.STATUS) ? "blue" : 
+					mostFrequentPostType.equals(Post.Type.PHOTO) ? "green" : 
+						mostFrequentPostType.equals(Post.Type.LINK) ? "blue-light" : "orange") + "\"" +
+				"}";
 	}
 	
 	private String requestAccessToken(String authorizationCode, HttpServletRequest request) throws IOException {
@@ -215,7 +245,7 @@ public class OAuthCallbackListener extends HttpServlet {
 		CloseableHttpClient httpClient = HttpClients.createDefault();
 		try {
 			// User access token to request posts
-			String requestUrl = "https://graph.facebook.com/v2.2/me/feed?limit=500&access_token=" + accessToken;
+			String requestUrl = "https://graph.facebook.com/v2.2/me/feed?limit=250&access_token=" + accessToken;
 			httpClient = HttpClients.createDefault();
 			HttpGet get = new HttpGet(requestUrl);
 			HttpResponse httpResponse = httpClient.execute(get);
@@ -239,8 +269,6 @@ public class OAuthCallbackListener extends HttpServlet {
 					userObject.getString("name"),
 					userObject.getString("link"),
 					userObject.getString("gender"));
-			
-			System.out.println("XX: " + user.getId());
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}

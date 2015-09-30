@@ -14,9 +14,7 @@ public class TopFriendsResult {
 	public TopFriendsResult(Map<User, Integer> likesByFriends) {
 		topFriends = new ArrayList<UserLikeCountPair>();
 		for (Map.Entry<User, Integer> entry : likesByFriends.entrySet()) {
-			
 			topFriends.add(new UserLikeCountPair(entry.getKey(), entry.getValue()));
-			
 		}
 		
 		Collections.sort(topFriends);
