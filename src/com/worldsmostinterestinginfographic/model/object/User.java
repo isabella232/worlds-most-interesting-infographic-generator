@@ -43,7 +43,6 @@ public final class User implements Serializable {
 	
 	@Override
 	public int hashCode() {
-		System.out.println((int)id);
 		return (int)id;
 	}
 
