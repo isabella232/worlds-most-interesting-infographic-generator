@@ -18,7 +18,7 @@
 	<link media="all" rel="stylesheet" href="css/main.css">
 	<link href='https://fonts.googleapis.com/css?family=Roboto:500,400,300,300italic%7CLato:400,300italic,300' rel='stylesheet' type='text/css'>
 	<script>
-		var friendsLikesData = '<%= (String)request.getSession().getAttribute("friendsLikesData") %>';
+		var topFriendsData = '<%= (String)request.getSession().getAttribute("topFriendsData") %>';
 	</script>
 </head>
 <body class="infographic">
@@ -47,7 +47,7 @@
 			<article class="intro">
 				<div class="container">
 					<h1>Hello, <%= user.getName() %>!</h1>
-					<img src="images/image-1.jpg" alt="image description">
+					<img src="https://graph.facebook.com/<%= user.getId() %>/picture?width=268&height=268" alt="image description">
 					<p><span>26 years old</span>Web designer &amp; Developer</p>
 				</div>
 			</article>

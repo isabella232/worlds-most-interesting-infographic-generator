@@ -59,16 +59,20 @@ public class OAuthCallbackListener extends HttpServlet {
 			
 			List<Post> posts = convertPostsJsonToObject(postsJson);
 			
+			// Collect statistics
 			TopFriendsResult topFriendsResult = StatisticsCollector.collectTopFriends(posts, user);
+			Map<Post.Type, Integer> postTypesCount = StatisticsCollector.collectPostTypes(posts);
 			
+			// Generate output data
 			String topFourFriendsJson = buildTopFourFriendsJson(topFriendsResult);
+			String postTypesJson = buildPostTypesJson(postTypesCount);
 			
 			// Send to success page with received profile data
 			request.getSession().setAttribute("user", user);
 			request.getSession().setAttribute("posts", posts);
 			
 			// Include chart data
-			request.getSession().setAttribute("friendsLikesData", topFourFriendsJson);
+			request.getSession().setAttribute("topFriendsData", topFourFriendsJson);
 			
 			// do word count here because it fails in jsp for some reason - didn't investigate too long
 			Map<String, Integer> wordMap = new HashMap<String, Integer>();
@@ -111,32 +115,62 @@ public class OAuthCallbackListener extends HttpServlet {
 	
 	private String buildTopFourFriendsJson(TopFriendsResult topFriendsResult) {
 		List<UserLikeCountPair> topFriends = topFriendsResult.getTopFriends();
-		
-		return "[{" +
+		return "{" +
 				"	\"friends\": [" +
 				"		{" +
-				"			\"imgSrc\": \"http://graph.facebook.com/" + topFriends.get(0).getUser().getId() + "/picture\"," +
+				"			\"imgSrc\": \"https://graph.facebook.com/" + topFriends.get(0).getUser().getId() + "/picture?width=85&height=85\"," +
 				"			\"likes\": " + topFriends.get(0).getCount() + "," +
 				"			\"name\": \"" + topFriends.get(0).getUser().getName() + "\"," +
 				"			\"color\": \"#3b5998\"" +
 				"		}," +
 				"		{" +
-				"			\"imgSrc\": \"http://graph.facebook.com/" + topFriends.get(1).getUser().getId() + "/picture\"," +
+				"			\"imgSrc\": \"https://graph.facebook.com/" + topFriends.get(1).getUser().getId() + "/picture?width=85&height=85\"," +
 				"			\"likes\": " + topFriends.get(1).getCount() + "," +
 				"			\"name\": \"" + topFriends.get(1).getUser().getName() + "\"," +
 				"			\"color\": \"#5bc0bd\"" +
 				"		}," +
 				"		{" +
-				"			\"imgSrc\": \"http://graph.facebook.com/" + topFriends.get(2).getUser().getId() + "/picture\"," +
+				"			\"imgSrc\": \"https://graph.facebook.com/" + topFriends.get(2).getUser().getId() + "/picture?width=85&height=85\"," +
 				"			\"likes\": " + topFriends.get(2).getCount() + "," +
 				"			\"name\": \"" + topFriends.get(2).getUser().getName() + "\"," +
 				"			\"color\": \"#f08a4b\"" +
 				"		}," +
 				"		{" +
-				"			\"imgSrc\": \"http://graph.facebook.com/" + topFriends.get(3).getUser().getId() + "/picture\"," +
+				"			\"imgSrc\": \"https://graph.facebook.com/" + topFriends.get(3).getUser().getId() + "/picture?width=85&height=85\"," +
 				"			\"likes\": " + topFriends.get(3).getCount() + "," +
 				"			\"name\": \"" + topFriends.get(3).getUser().getName() + "\"," +
 				"			\"color\": \"#1c2541\"" +
+				"		}" +
+				"	]" +
+				"}";
+	}
+	
+	private String buildPostTypesJson(Map<Post.Type, Integer> postTypesCount) {
+		return "[{" +
+				"	\"types\": [" +
+				"		{" +
+				"			\"type\": \"A\"," +
+				"			\"value\": 40," +
+				"			\"description\": \"Status messages\"," +
+				"			\"color\": \"#3b5998\"" +
+				"		}," +
+				"		{" +
+				"			\"type\": \"B\"," +
+				"			\"value\": 45," +
+				"			\"description\": \"Image Post\"," +
+				"			\"color\": \"#5bc0bd\"" +
+				"		}," +
+				"		{" +
+				"			\"type\": \"C\"," +
+				"			\"value\": 10," +
+				"			\"description\": \"Shared link\"," +
+				"			\"color\": \"#2ebaeb\"" +
+				"		}," +
+				"		{" +
+				"			\"type\": \"D\"," +
+				"			\"value\": 17," +
+				"			\"description\": \"Video Post\"," +
+				"			\"color\": \"#f08a4b\"" +
 				"		}" +
 				"	]" +
 				"}]";
@@ -198,12 +232,15 @@ public class OAuthCallbackListener extends HttpServlet {
 		User user = null;
 		try {
 			JSONObject userObject = new JSONObject(userJson);
-			user = new User(userObject.getLong("id"),
+			System.out.println(userObject.getString("id"));
+			user = new User(Long.valueOf(userObject.getString("id")),
 					userObject.getString("first_name"), 
 					userObject.getString("last_name"), 
 					userObject.getString("name"),
 					userObject.getString("link"),
 					userObject.getString("gender"));
+			
+			System.out.println("XX: " + user.getId());
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -261,7 +298,7 @@ public class OAuthCallbackListener extends HttpServlet {
 				
 //				System.out.println("String: " + fromObject.getString("id") + "\tLong: " + fromObject.getLong("id"));
 				
-				from = new User(fromObject.getLong("id"), fromObject.getString("name"));
+				from = new User(Long.valueOf(fromObject.getString("id")), fromObject.getString("name"));
 //				log.info("YYY: " + fromObject.getString("name"));
 			} else {
 				log.info("No from");
@@ -280,7 +317,7 @@ public class OAuthCallbackListener extends HttpServlet {
 				JSONArray likesArray = jsonPost.getJSONObject("likes").getJSONArray("data");
 				for (int i = 0; i < likesArray.length(); i++) {
 					JSONObject likerObject = (JSONObject)likesArray.get(i);
-					User liker = new User(likerObject.getLong("id"), likerObject.getString("name"));
+					User liker = new User(Long.valueOf(likerObject.getString("id")), likerObject.getString("name"));
 					likes.add(liker);
 				}
 //				from = new User(fromObject.getLong("id"), fromObject.getString("name"));

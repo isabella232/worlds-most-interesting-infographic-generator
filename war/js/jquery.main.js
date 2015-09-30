@@ -540,7 +540,7 @@ function initFriendsChart() {
 	d3.json(dataUrl, function (error, json) {
 		if (error) return console.warn(error);
 //		dataJSON = json[0];
-		dataJSON = JSON.parse(friendsLikesData)[0];
+		dataJSON = JSON.parse(topFriendsData);
 
 		// set friends amount
 		var friendsAmount = d3.select('#friends-amount');
