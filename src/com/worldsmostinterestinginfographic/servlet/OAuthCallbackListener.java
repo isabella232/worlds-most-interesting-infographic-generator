@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedMap;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -61,23 +60,6 @@ public class OAuthCallbackListener extends HttpServlet {
 			List<Post> posts = convertPostsJsonToObject(postsJson);
 			
 			TopFriendsResult topFriendsResult = StatisticsCollector.collectTopFriends(posts, user);
-//			SortedMap<Integer, User> topFourFriends = topFourFriendsResult.getTopFourFriends();
-//
-//			System.out.println("1: " + topFourFriends.get(topFourFriends.lastKey()).getName() + " - " + topFourFriends.lastKey() + " likes");
-//			topFourFriends.remove(topFourFriends.lastKey());
-//
-//			System.out.println("2: " + topFourFriends.get(topFourFriends.lastKey()).getName() + " - " + topFourFriends.lastKey() + " likes");
-//			topFourFriends.remove(topFourFriends.lastKey());
-//			
-//			System.out.println("3: " + topFourFriends.get(topFourFriends.lastKey()).getName() + " - " + topFourFriends.lastKey() + " likes");
-//			topFourFriends.remove(topFourFriends.lastKey());
-//			
-//			System.out.println("4: " + topFourFriends.get(topFourFriends.lastKey()).getName() + " - " + topFourFriends.lastKey() + " likes");
-//			
-			System.out.println(topFriendsResult.getTopFriends().get(0).getUser().getName() + ": " + topFriendsResult.getTopFriends().get(0).getCount());
-			System.out.println(topFriendsResult.getTopFriends().get(1).getUser().getName() + ": " + topFriendsResult.getTopFriends().get(1).getCount());
-			System.out.println(topFriendsResult.getTopFriends().get(2).getUser().getName() + ": " + topFriendsResult.getTopFriends().get(2).getCount());
-			System.out.println(topFriendsResult.getTopFriends().get(3).getUser().getName() + ": " + topFriendsResult.getTopFriends().get(3).getCount());
 			
 			String topFourFriendsJson = buildTopFourFriendsJson(topFriendsResult);
 			

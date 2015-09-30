@@ -20,10 +20,6 @@ public class TopFriendsResult {
 		}
 		
 		Collections.sort(topFriends);
-		
-//		for (UserLikeCountPair userLikeCountPair : topFriends) {
-//			System.out.println(userLikeCountPair.getUser().getName() + ": " + userLikeCountPair.getCount());
-//		}
 	}
 
 	public List<UserLikeCountPair> getTopFriends() {
