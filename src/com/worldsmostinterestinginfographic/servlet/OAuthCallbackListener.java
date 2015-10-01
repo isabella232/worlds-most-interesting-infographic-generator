@@ -50,12 +50,15 @@ public class OAuthCallbackListener extends HttpServlet {
 		if (authorizationCode != null && authorizationCode.length() > 0) {
 
 			String accessToken = requestAccessToken(authorizationCode, request);
-			
+			log.info("Requesting profile data");
 			String userJson = requestProfileData(accessToken);
+			log.info("Profile data received.");
 			
 			User user = convertUserJsonToObject(userJson);
 			
+			log.info("Requesting feed data");
 			String postsJson = requestFeedData(accessToken);
+			log.info("Feed data received");
 			
 			List<Post> posts = convertPostsJsonToObject(postsJson);
 			
@@ -245,7 +248,7 @@ public class OAuthCallbackListener extends HttpServlet {
 		CloseableHttpClient httpClient = HttpClients.createDefault();
 		try {
 			// User access token to request posts
-			String requestUrl = "https://graph.facebook.com/v2.2/me/feed?limit=250&access_token=" + accessToken;
+			String requestUrl = "https://graph.facebook.com/v2.2/me/feed?limit=50&access_token=" + accessToken;
 			httpClient = HttpClients.createDefault();
 			HttpGet get = new HttpGet(requestUrl);
 			HttpResponse httpResponse = httpClient.execute(get);
