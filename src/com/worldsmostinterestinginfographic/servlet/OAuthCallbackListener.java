@@ -228,7 +228,7 @@ public class OAuthCallbackListener extends HttpServlet {
 		CloseableHttpClient httpClient = HttpClients.createDefault();
 		try {
 			// Exchange authorization code for access token
-			HttpPost httpPost = new HttpPost(Model.TOKEN_ENDPOINT + "?grant_type=authorization_code&code=" + authorizationCode + "&redirect_uri=" + URLEncoder.encode((request.getScheme() + "://" + request.getServerName() + Model.REDIRECT_URI), StandardCharsets.UTF_8.name()) + "&client_id=" + Model.CLIENT_ID + "&client_secret=" + Model.CLIENT_SECRET);
+			HttpPost httpPost = new HttpPost(Model.TOKEN_ENDPOINT + "?grant_type=authorization_code&code=" + authorizationCode + "&redirect_uri=" + URLEncoder.encode((request.getScheme() + "://" + request.getServerName() + Model.REDIRECTION_ENDPOINT), StandardCharsets.UTF_8.name()) + "&client_id=" + Model.CLIENT_ID + "&client_secret=" + Model.CLIENT_SECRET);
 			HttpResponse httpResponse = httpClient.execute(httpPost);
 			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent()));
 			String line = bufferedReader.readLine();

@@ -51,7 +51,7 @@
 				<article class="text-holder fade-block">
 					<h1>Hello!</h1>
 					<p>Log in with your Facebook account to see the world's <span class="mark">most interesting infographic</span></p>
-					<a href="<%= Model.AUTH_ENDPOINT %>?response_type=code&scope=user_posts&client_id=<%= Model.CLIENT_ID %>&redirect_uri=<%= URLEncoder.encode(request.getScheme() + "://" + request.getServerName() + Model.REDIRECT_URI, StandardCharsets.UTF_8.name()) %>" class="btn"><i class="icon-facebook"></i>Login <span class="thin">with</span> Facebook</a>
+					<a href="<%=Model.AUTHORIZATION_ENDPOINT%>?response_type=code&scope=user_posts&client_id=<%= Model.CLIENT_ID %>&redirect_uri=<%=URLEncoder.encode(request.getScheme() + "://" + request.getServerName() + Model.REDIRECTION_ENDPOINT, StandardCharsets.UTF_8.name())%>" class="btn"><i class="icon-facebook"></i>Login <span class="thin">with</span> Facebook</a>
 				</article>
 			</div>
 			<section class="presentation">
