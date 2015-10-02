@@ -99,7 +99,8 @@ public class OAuthCallbackListener extends HttpServlet {
 			
 		} else {
 			// An error happened during authorization code request. Report it.
-			request.getSession().setAttribute("errorMessage", "THIS IS SOME MESSAGE!");
+			request.getSession().setAttribute("error", request.getParameter("error"));
+			request.getSession().setAttribute("errorDescription", request.getParameter("error_descripotion"));
 			response.sendRedirect("/uh-oh");
 		}
 
