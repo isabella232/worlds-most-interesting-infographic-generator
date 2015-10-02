@@ -34,11 +34,13 @@ function initLineBar() {
 
 	d3.json(dataUrlPublic, function (error, json) {
 		if (error) return console.warn(error);
-		dataJSONPublic = json[0];
+//		dataJSONPublic = json[0];
+		dataJSONPublic = JSON.parse(postsByMonthOfYearData);
 
 		d3.json(dataUrlPrivate, function (errorState, jsonPublic) {
 			if (error) return console.warn(error);
-			dataJSONPrivate = jsonPublic[0];
+//			dataJSONPrivate = jsonPublic[0];
+			dataJSONPrivate = JSON.parse(postsByMonthOfYearData);
 
 			// add main svg
 			var svg = holder.append('svg')
@@ -93,10 +95,10 @@ function initLineBar() {
 
 			// set domain scales
 			var maxXPrivate = d3.max(dataJSONPrivate.private, function (d) {return d.percent;});
-			var maxXPubluc = d3.max(dataJSONPublic.public, function (d) {return d.percent;});
+			var maxXPubluc = d3.max(dataJSONPublic.private, function (d) {return d.percent;});
 
 			var maxYPrivate = d3.max(dataJSONPrivate.private, function (d) {return d.value;});
-			var maxYPubluc = d3.max(dataJSONPublic.public, function (d) {return d.value;});
+			var maxYPubluc = d3.max(dataJSONPublic.private, function (d) {return d.value;});
 
 			x.domain([0, d3.max([maxXPrivate, maxXPubluc])]);
 			y.domain([0, 1.15 * d3.max([maxYPrivate, maxYPubluc])]);
@@ -123,7 +125,8 @@ function initLineBar() {
 					if (i === 0) {
 						return '';
 					} else {
-						return d + '%';
+						var months = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+						return months[i];
 					}
 				});
 
@@ -158,7 +161,7 @@ function initLineBar() {
 				.attr("stroke-width", lineWidth);
 
 			mainGroup.append("path")
-				.datum(dataJSONPublic.public)
+				.datum(dataJSONPublic.private)
 				.attr("class", "line-public")
 				.attr("d", line)
 				.attr("fill", 'none')
@@ -208,7 +211,8 @@ function initBarChart() {
 
 	d3.json(dataUrl, function (error, json) {
 		if (error) return console.warn(error);
-		dataJSON = json[0];
+//		dataJSON = json[0];
+		dataJSON = JSON.parse(postsByDaysOfWeekData);
 
 		// add main svg
 		var svg = holder.append('svg')

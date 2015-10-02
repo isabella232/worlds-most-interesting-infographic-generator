@@ -1,15 +1,18 @@
 package com.worldsmostinterestinginfographic.servlet;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -39,9 +42,6 @@ import com.worldsmostinterestinginfographic.model.Model;
 import com.worldsmostinterestinginfographic.model.object.Post;
 import com.worldsmostinterestinginfographic.model.object.User;
 import com.worldsmostinterestinginfographic.util.Minify;
-import com.worldsmostinterestinginfographic.util.Minify.UnterminatedCommentException;
-import com.worldsmostinterestinginfographic.util.Minify.UnterminatedRegExpLiteralException;
-import com.worldsmostinterestinginfographic.util.Minify.UnterminatedStringLiteralException;
 
 public class OAuthCallbackListener extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -71,11 +71,15 @@ public class OAuthCallbackListener extends HttpServlet {
 			// Collect statistics
 			TopFriendsResult topFriendsResult = StatisticsCollector.collectTopFriends(posts, user);
 			Map<Post.Type, Integer> postTypesCount = StatisticsCollector.collectPostTypes(posts);
+			int[] postsByDayOfWeek = StatisticsCollector.collectPostFrequencyByDayOfWeek(posts);
+			int[] postsByMonthOfYear = StatisticsCollector.collectPostFrequencyByMonthOfYear(posts);
 			
 			// Generate output data
 			String topFourFriendsJson = buildTopFourFriendsJson(topFriendsResult);
 			String postTypesJson = buildPostTypesJson(postTypesCount);
 			String mostFrequentPostTypeJson = buildMostFrequentPostTypeJson(postTypesCount);
+			String postsByDayOfWeekJson = buildPostsByDayOfWeekJson(postsByDayOfWeek);
+			String postsByMonthOfYearJson = buildPostsByMonthOfYearJson(postsByMonthOfYear);
 			
 			// Send to success page with received profile data
 			request.getSession().setAttribute("user", user);
@@ -85,6 +89,8 @@ public class OAuthCallbackListener extends HttpServlet {
 			request.getSession().setAttribute("topFriendsData", topFourFriendsJson);
 			request.getSession().setAttribute("postTypesData", postTypesJson);
 			request.getSession().setAttribute("mostFrequentPostTypeData", mostFrequentPostTypeJson);
+			request.getSession().setAttribute("postsByDayOfWeekData", postsByDayOfWeekJson);
+			request.getSession().setAttribute("postsByMonthOfYearData", postsByMonthOfYearJson);
 			
 			// do word count here because it fails in jsp for some reason - didn't investigate too long
 			Map<String, Integer> wordMap = new HashMap<String, Integer>();
@@ -224,6 +230,108 @@ public class OAuthCallbackListener extends HttpServlet {
 		return result;
 	}
 	
+	private String buildPostsByDayOfWeekJson(int[] postsByDayOfWeek) {
+		String json = "{" +
+				"	\"frequency\": [" +
+				"		{" +
+				"			\"lowest\": " + postsByDayOfWeek[1] + "," +
+				"			\"highest\": " + postsByDayOfWeek[1] + "," +
+				"			\"month\": \"Mon\"" +
+				"		}," +
+				"		{" +
+				"			\"lowest\": " + postsByDayOfWeek[2] + "," +
+				"			\"highest\": " + postsByDayOfWeek[2] + "," +
+				"			\"month\": \"Tue\"" +
+				"		}," +
+				"		{" +
+				"			\"lowest\": " + postsByDayOfWeek[3] + "," +
+				"			\"highest\": " + postsByDayOfWeek[3] + "," +
+				"			\"month\": \"Wed\"" +
+				"		}," +
+				"		{" +
+				"			\"lowest\": " + postsByDayOfWeek[4] + "," +
+				"			\"highest\": " + postsByDayOfWeek[4] + "," +
+				"			\"month\": \"Thu\"" +
+				"		}," +
+				"		{" +
+				"			\"lowest\": " + postsByDayOfWeek[5] + "," +
+				"			\"highest\": " + postsByDayOfWeek[5] + "," +
+				"			\"month\": \"Fri\"" +
+				"		}," +
+				"		{" +
+				"			\"lowest\": " + postsByDayOfWeek[6] + "," +
+				"			\"highest\": " + postsByDayOfWeek[6] + "," +
+				"			\"month\": \"Sat\"" +
+				"		}," +
+				"		{" +
+				"			\"lowest\": " + postsByDayOfWeek[0] + "," +
+				"			\"highest\": " + postsByDayOfWeek[0] + "," +
+				"			\"month\": \"Sun\"" +
+				"		}" +
+				"	]" +
+				"}";
+		
+		return new Minify().minify(json);
+	}
+	
+	private String buildPostsByMonthOfYearJson(int[] postsByMonthOfYear) {
+		String json = "{" +
+				"	\"private\": [" +
+				"		{" +
+				"			\"value\": " + postsByMonthOfYear[0] + "," +
+				"			\"percent\": 2" +
+				"		}," +
+				"		{" +
+				"			\"value\": " + postsByMonthOfYear[1] + "," +
+				"			\"percent\": 11" +
+				"		}," +
+				"		{" +
+				"			\"value\": " + postsByMonthOfYear[2] + "," +
+				"			\"percent\": 20" +
+				"		}," +
+				"		{" +
+				"			\"value\": " + postsByMonthOfYear[3] + "," +
+				"			\"percent\": 30" +
+				"		}," +
+				"		{" +
+				"			\"value\": " + postsByMonthOfYear[4] + "," +
+				"			\"percent\": 51" +
+				"		}," +
+				"		{" +
+				"			\"value\": " + postsByMonthOfYear[5] + "," +
+				"			\"percent\": 57" +
+				"		}," +
+				"		{" +
+				"			\"value\": " + postsByMonthOfYear[6] + "," +
+				"			\"percent\": 70" +
+				"		}," +
+				"		{" +
+				"			\"value\": " + postsByMonthOfYear[7] + "," +
+				"			\"percent\": 75" +
+				"		}," +
+				"		{" +
+				"			\"value\": " + postsByMonthOfYear[8] + "," +
+				"			\"percent\": 88" +
+				"		}," +
+				"		{" +
+				"			\"value\": " + postsByMonthOfYear[9] + "," +
+				"			\"percent\": 100" +
+				"		}," +
+				"		{" +
+				"			\"value\": " + postsByMonthOfYear[10] + "," +
+				"			\"percent\": 110" +
+				"		}," +
+				"		{" +
+				"			\"value\": " + postsByMonthOfYear[11] + "," +
+				"			\"percent\": 120" +
+				"		}" +
+				"	]," +
+				"	\"color\": \"#3a5897\"" +
+				"}";
+		
+		return new Minify().minify(json);
+	}
+	
 	private String requestAccessToken(String authorizationCode, HttpServletRequest request) throws IOException {
 		CloseableHttpClient httpClient = HttpClients.createDefault();
 		try {
@@ -328,6 +436,31 @@ public class OAuthCallbackListener extends HttpServlet {
 //			User from = new User(jsonPost.getJSONObject("from"))
 			String message = jsonPost.has("message") ? jsonPost.getString("message") : "";
 			String statusType = jsonPost.has("status_type") ? jsonPost.getString("status_type") : null;
+			String createdDateString = jsonPost.has("created_time") ? jsonPost.getString("created_time") : null;
+			
+			
+			
+			// get the date using Java Date
+			/*
+			SimpleDateFormat incomingFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+			Date createdDate = null;
+			try {
+				createdDate = incomingFormat.parse(createdDateString);
+				System.out.println(createdDate);
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}*/
+			
+			
+			// get the date using Java Calendar
+			Calendar createdDate = Calendar.getInstance();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+			try {
+				createdDate.setTime(sdf.parse(createdDateString));// all done
+//				System.out.println(new Date(createdDate.getTimeInMillis()));
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
 			
 //			log.info(jsonPost.getJSONObject("from").toString());
 			
@@ -373,7 +506,7 @@ public class OAuthCallbackListener extends HttpServlet {
 			}
 			
 			
-			post = new Post(id, type, from, message, statusType, likes);
+			post = new Post(id, type, from, message, statusType, likes, createdDate);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}

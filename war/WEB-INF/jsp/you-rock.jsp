@@ -21,6 +21,8 @@
 		var topFriendsData = '<%= (String)request.getSession().getAttribute("topFriendsData") %>';
 		var postTypesData = '<%= (String)request.getSession().getAttribute("postTypesData") %>';
 		var mostFrequentPostTypeData = '<%= (String)request.getSession().getAttribute("mostFrequentPostTypeData") %>';
+		var postsByDaysOfWeekData = '<%= (String)request.getSession().getAttribute("postsByDayOfWeekData") %>';
+		var postsByMonthOfYearData = '<%= (String)request.getSession().getAttribute("postsByMonthOfYearData") %>';
 		
 		// Facebook decided to append "#_=_" to callback URLs for some unknown reason.  Let's clean it up.
 		//
@@ -112,6 +114,7 @@
 						<p><span id="lowest-value" class="number blue">0.25</span>lowest average <span class="mark">posts/week</span></p>
 					</div>
 				</section>
+				<!--
 				<section class="block-popular">
 					<h2 class="fade-block">Your most popular posts</h2>
 					<div class="box fade-block">
@@ -148,6 +151,7 @@
 						</div>
 					</div>
 				</section>
+				-->
 				<section class="block-privacy fade-block">
 					<div class="text-holder">
 						<h2 class="blue-light">Your post privacy</h2>

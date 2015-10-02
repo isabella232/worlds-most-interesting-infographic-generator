@@ -1,6 +1,7 @@
 package com.worldsmostinterestinginfographic.model.object;
 
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -17,18 +18,20 @@ public final class Post implements Serializable {
 	private String message;
 	private String statusType;
 	private List<User> likes;
+	private Calendar createdDate;
 
 	public static enum Type {
 		LINK, STATUS, PHOTO, VIDEO, OFFER
 	}
 
-	public Post(String id, Type type, User from, String message, String statusType, List<User> likes) {
+	public Post(String id, Type type, User from, String message, String statusType, List<User> likes, Calendar createdDate) {
 		this.id = id;
 		this.type = type;
 		this.from = from;
 		this.message = (message == null ? "" : message);
 		this.statusType = (statusType == null ? "" : statusType);
 		this.likes = likes;
+		this.createdDate = createdDate;
 	}
 
 	public String getId() {
@@ -53,5 +56,9 @@ public final class Post implements Serializable {
 
 	public List<User> getLikes() {
 		return likes;
+	}
+
+	public Calendar getCreatedDate() {
+		return createdDate;
 	}
 }
