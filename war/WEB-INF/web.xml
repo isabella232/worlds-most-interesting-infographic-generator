@@ -34,6 +34,10 @@
 		<servlet-name>UhOhServlet</servlet-name>
 		<jsp-file>/WEB-INF/jsp/uh-oh.jsp</jsp-file>
 	</servlet>
+	<servlet>
+		<servlet-name>PrivacyPolicyServlet</servlet-name>
+		<jsp-file>/WEB-INF/jsp/privacy-policy.jsp</jsp-file>
+	</servlet>
 	
 	<!--
 	  - Servlet mappings.
@@ -60,6 +64,10 @@
 	<servlet-mapping>
 		<servlet-name>UhOhServlet</servlet-name>
 		<url-pattern>/uh-oh</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>PrivacyPolicyServlet</servlet-name>
+		<url-pattern>/privacy-policy</url-pattern>
 	</servlet-mapping>
 	
 </web-app>
