@@ -6,6 +6,8 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="The World's Most Interesting Infographic Generator" />
+	<meta name="keywords" content="OAuth, OAuth2, WMIIG, worlds most interesting infographic generator, Facebook, token, client id, client secret" />
 	<title>The World's Most Interesting Infographic Generator</title>
 	<link media="all" rel="stylesheet" href="css/main.css">
 	<link rel="icon" type="image/png" href="images/favicon.png" />
