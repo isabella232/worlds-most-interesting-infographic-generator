@@ -1,7 +1,9 @@
 package com.worldsmostinterestinginfographic.servlet;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -36,6 +38,10 @@ import com.worldsmostinterestinginfographic.collect.result.UserLikeCountPair;
 import com.worldsmostinterestinginfographic.model.Model;
 import com.worldsmostinterestinginfographic.model.object.Post;
 import com.worldsmostinterestinginfographic.model.object.User;
+import com.worldsmostinterestinginfographic.util.Minify;
+import com.worldsmostinterestinginfographic.util.Minify.UnterminatedCommentException;
+import com.worldsmostinterestinginfographic.util.Minify.UnterminatedRegExpLiteralException;
+import com.worldsmostinterestinginfographic.util.Minify.UnterminatedStringLiteralException;
 
 public class OAuthCallbackListener extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -121,7 +127,7 @@ public class OAuthCallbackListener extends HttpServlet {
 	
 	private String buildTopFourFriendsJson(TopFriendsResult topFriendsResult) {
 		List<UserLikeCountPair> topFriends = topFriendsResult.getTopFriends();
-		return "{" +
+		String json = "{" +
 				"	\"friends\": [" +
 				"		{" +
 				"			\"imgSrc\": \"https://graph.facebook.com/" + topFriends.get(0).getUser().getId() + "/picture?width=85&height=85\"," +
@@ -149,10 +155,12 @@ public class OAuthCallbackListener extends HttpServlet {
 				"		}" +
 				"	]" +
 				"}";
+		
+		return new Minify().minify(json);
 	}
 	
 	private String buildPostTypesJson(Map<Post.Type, Integer> postTypesCount) {
-		return "{" +
+		String json = "{" +
 				"	\"types\": [" +
 				"		{" +
 				"			\"type\": \"" + postTypesCount.get(Post.Type.STATUS) + "\"," +
@@ -180,6 +188,8 @@ public class OAuthCallbackListener extends HttpServlet {
 				"		}" +
 				"	]" +
 				"}";
+		
+		return new Minify().minify(json);
 	}
 	
 	private String buildMostFrequentPostTypeJson(Map<Post.Type, Integer> postTypesCount) {
@@ -196,7 +206,7 @@ public class OAuthCallbackListener extends HttpServlet {
 //		    System.out.println(entry.getKey() + "/" + entry.getValue());
 		}
 
-		return "{" +
+		String postTypesCountJson = "{" +
 				"	\"type\": \"" + (mostFrequentPostType.equals(Post.Type.STATUS) ? "status updates" : 
 					mostFrequentPostType.equals(Post.Type.PHOTO) ? "photos" : 
 						mostFrequentPostType.equals(Post.Type.LINK) ? "shared links" : "videos") + "\"," +
@@ -207,6 +217,11 @@ public class OAuthCallbackListener extends HttpServlet {
 					mostFrequentPostType.equals(Post.Type.PHOTO) ? "green" : 
 						mostFrequentPostType.equals(Post.Type.LINK) ? "blue-light" : "orange") + "\"" +
 				"}";
+		
+		String result = new Minify().minify(postTypesCountJson);
+//		System.out.println("AA: " + result);
+		
+		return result;
 	}
 	
 	private String requestAccessToken(String authorizationCode, HttpServletRequest request) throws IOException {
