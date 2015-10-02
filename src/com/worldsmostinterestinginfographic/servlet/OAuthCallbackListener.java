@@ -248,7 +248,7 @@ public class OAuthCallbackListener extends HttpServlet {
 		CloseableHttpClient httpClient = HttpClients.createDefault();
 		try {
 			// User access token to request posts
-			String requestUrl = "https://graph.facebook.com/v2.2/me/feed?limit=50&access_token=" + accessToken;
+			String requestUrl = "https://graph.facebook.com/v2.2/me/feed?limit=" + Model.MAX_NUMBER_OF_FACEBOOK_POSTS_TO_REQUEST + "&access_token=" + accessToken;
 			httpClient = HttpClients.createDefault();
 			HttpGet get = new HttpGet(requestUrl);
 			HttpResponse httpResponse = httpClient.execute(get);
