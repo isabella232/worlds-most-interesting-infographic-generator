@@ -7,6 +7,9 @@ jQuery(function(){
 	initLineBar();
 	initParallaxBg();
 	initFadeBlock();
+	
+	$('#top-words').html(topWordsHtml);
+	$('#top-word').html("&quot;" + topWord + "&quot;");
 });
 
 // post privacy line chart

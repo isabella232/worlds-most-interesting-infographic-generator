@@ -9,14 +9,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -37,7 +33,9 @@ import com.google.appengine.labs.repackaged.org.json.JSONException;
 import com.google.appengine.labs.repackaged.org.json.JSONObject;
 import com.worldsmostinterestinginfographic.collect.StatisticsCollector;
 import com.worldsmostinterestinginfographic.collect.result.TopFriendsResult;
+import com.worldsmostinterestinginfographic.collect.result.TopWordsResult;
 import com.worldsmostinterestinginfographic.collect.result.UserLikeCountPair;
+import com.worldsmostinterestinginfographic.collect.result.WordCountPair;
 import com.worldsmostinterestinginfographic.model.Model;
 import com.worldsmostinterestinginfographic.model.object.Post;
 import com.worldsmostinterestinginfographic.model.object.User;
@@ -73,6 +71,7 @@ public class OAuthCallbackListener extends HttpServlet {
 			Map<Post.Type, Integer> postTypesCount = StatisticsCollector.collectPostTypes(posts);
 			int[] postsByDayOfWeek = StatisticsCollector.collectPostFrequencyByDayOfWeek(posts);
 			int[] postsByMonthOfYear = StatisticsCollector.collectPostFrequencyByMonthOfYear(posts);
+			TopWordsResult topWordsResult = StatisticsCollector.collectWordFrequency(posts, user);
 			
 			// Generate output data
 			String topFourFriendsJson = buildTopFourFriendsJson(topFriendsResult);
@@ -80,47 +79,22 @@ public class OAuthCallbackListener extends HttpServlet {
 			String mostFrequentPostTypeJson = buildMostFrequentPostTypeJson(postTypesCount);
 			String postsByDayOfWeekJson = buildPostsByDayOfWeekJson(postsByDayOfWeek);
 			String postsByMonthOfYearJson = buildPostsByMonthOfYearJson(postsByMonthOfYear);
+			String topWordsHtml = buildTopWordsHtml(topWordsResult);
 			
 			// Send to success page with received profile data
 			request.getSession().setAttribute("user", user);
 			request.getSession().setAttribute("posts", posts);
 			
 			// Include chart data
-			request.getSession().setAttribute("topFriendsData", topFourFriendsJson);
-			request.getSession().setAttribute("postTypesData", postTypesJson);
-			request.getSession().setAttribute("mostFrequentPostTypeData", mostFrequentPostTypeJson);
-			request.getSession().setAttribute("postsByDayOfWeekData", postsByDayOfWeekJson);
-			request.getSession().setAttribute("postsByMonthOfYearData", postsByMonthOfYearJson);
+			request.getSession().setAttribute("topFriendsJson", topFourFriendsJson);
+			request.getSession().setAttribute("postTypesJson", postTypesJson);
+			request.getSession().setAttribute("mostFrequentPostTypeJson", mostFrequentPostTypeJson);
+			request.getSession().setAttribute("postsByDayOfWeekJson", postsByDayOfWeekJson);
+			request.getSession().setAttribute("postsByMonthOfYearJson", postsByMonthOfYearJson);
+			request.getSession().setAttribute("topWordsHtml", topWordsHtml);
+			request.getSession().setAttribute("topWord", topWordsResult.getTopWords(1).get(0).getWord());
 			
-			// do word count here because it fails in jsp for some reason - didn't investigate too long
-			Map<String, Integer> wordMap = new HashMap<String, Integer>();
-			for (int i = 0; i < posts.size(); i++) {
-				Post post = posts.get(i);
-				// String[] messageWordMap = post.getMessage().split(" ");
-				String regex = "\\b[A-Za-z]+\\b";
-
-//System.out.println("MESSAGE: " + post.getMessage());
-				
-				Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
-				Matcher matcher = pattern.matcher(post.getMessage());
-				List<String> messageWordList = new ArrayList<String>();
-				while (matcher.find()) {
-					messageWordList.add(matcher.group());
-				}
-
-				String[] messageWordMap = messageWordList.toArray(new String[0]);
-
-				for (int j = 0; j < messageWordMap.length; j++) {
-					if (!wordMap.containsKey(messageWordMap[j])) {
-						wordMap.put(messageWordMap[j], 0);
-					}
-
-					wordMap.put(messageWordMap[j], wordMap.get(messageWordMap[j]) + 1);
-				}
-			}
-			// end
-			
-			request.getSession().setAttribute("wordMap", wordMap);
+//			request.getSession().setAttribute("wordMap", wordMap);
 			response.sendRedirect("/you-rock");
 			
 		} else {
@@ -330,6 +304,59 @@ public class OAuthCallbackListener extends HttpServlet {
 				"}";
 		
 		return new Minify().minify(json);
+	}
+	
+	private String buildTopWordsHtml(TopWordsResult result) {
+		List<WordCountPair> topWords = result.getTopWords(15);
+		
+//		System.out.println(topWords.size());
+		
+		
+		List<String> wordsHtml = new ArrayList<String>(topWords.size());
+		int emphasis = 5;
+		int previousCount = topWords.get(0).getCount();
+		for (int i = 0; i < topWords.size(); i++) {
+//			System.out.println(wordCountPair.getWord() + ": " + wordCountPair.getCount());
+			
+			if (emphasis > 0 && topWords.get(i).getCount() < previousCount) {
+				emphasis--;
+			}
+			
+			wordsHtml.add("<li class=\"" + giveMeVees(emphasis) + (emphasis > 0 ? "-" : "") + "popular\"><a href=\"#\">" + topWords.get(i).getWord() + "</a></li>");
+		}
+		
+		Collections.shuffle(wordsHtml);
+		
+		String html = "";
+		for (String wordHtml : wordsHtml) {
+			html += wordHtml;
+		}
+		
+//		String html = "<li class=\"vv-popular\"><a href=\"#\">Excited</a></li>" +
+//				"<li class=\"vvv-popular\"><a href=\"#\">Bucharest</a></li>" +
+//				"<li class=\"popular\"><a href=\"#\">Honesty</a></li>" +
+//				"<li class=\"vvvvv-popular\"><a href=\"#\">Design</a></li>" +
+//				"<li class=\"v-popular\"><a href=\"#\">FIFA</a></li>" +
+//				"<li class=\"vvvvvv-popular\"><a href=\"#\">Damn</a></li>" +
+//				"<li class=\"v-popular\"><a href=\"#\">Deftones</a></li>" +
+//				"<li class=\"vv-popular\"><a href=\"#\">Girlfriend</a></li>" +
+//				"<li class=\"v-popular\"><a href=\"#\">Creative</a></li>" +
+//				"<li class=\"popular\"><a href=\"#\">Games</a></li>" +
+//				"<li class=\"vvvv-popular\"><a href=\"#\">F*ck</a></li>" +
+//				"<li class=\"vvvv-popular\"><a href=\"#\">Tennis</a></li>" +
+//				"<li class=\"vvv-popular\"><a href=\"#\">Tech</a></li>";
+
+		return html;
+	}
+	
+	private String giveMeVees(int numVees) {
+		String vees = "";
+		
+		for (int i = 0; i < numVees; i++) {
+			vees += "v";
+		}
+		
+		return vees;
 	}
 	
 	private String requestAccessToken(String authorizationCode, HttpServletRequest request) throws IOException {

@@ -1,11 +1,16 @@
 package com.worldsmostinterestinginfographic.collect;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.worldsmostinterestinginfographic.collect.result.TopFriendsResult;
+import com.worldsmostinterestinginfographic.collect.result.TopWordsResult;
+import com.worldsmostinterestinginfographic.collect.result.WordCountPair;
 import com.worldsmostinterestinginfographic.model.object.Post;
 import com.worldsmostinterestinginfographic.model.object.User;
 
@@ -95,5 +100,48 @@ public class StatisticsCollector {
 //		}
 		
 		return postsByMonthOfYear;
+	}
+	
+	public static TopWordsResult collectWordFrequency(List<Post> posts, User user) {
+		// do word count here because it fails in jsp for some reason - didn't
+		// investigate too long
+		Map<String, Integer> wordMap = new HashMap<String, Integer>();
+		for (int i = 0; i < posts.size(); i++) {
+			
+			Post post = posts.get(i);
+			
+			// String[] messageWordMap = post.getMessage().split(" ");
+			String regex = "\\b[A-Za-z]+\\b";
+
+			// System.out.println("MESSAGE: " + post.getMessage());
+
+			Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+			Matcher matcher = pattern.matcher(post.getMessage());
+			List<String> messageWordList = new ArrayList<String>();
+			while (matcher.find()) {
+				messageWordList.add(matcher.group());
+			}
+
+			String[] messageWordMap = messageWordList.toArray(new String[0]);
+
+			for (int j = 0; j < messageWordMap.length; j++) {
+				
+				// only accept words of 4 characters or more
+				if (messageWordMap[j].length() < 4) {
+					continue;
+				}
+				
+				if (!wordMap.containsKey(messageWordMap[j])) {
+					wordMap.put(messageWordMap[j], 0);
+				}
+
+				wordMap.put(messageWordMap[j],
+						wordMap.get(messageWordMap[j]) + 1);
+			}
+		}
+		// end
+
+		TopWordsResult result = new TopWordsResult(wordMap);
+		return result;
 	}
 }

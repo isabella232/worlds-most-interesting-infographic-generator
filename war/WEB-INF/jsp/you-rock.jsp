@@ -7,7 +7,6 @@
 <%@page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <%
 	User user = (User)request.getSession().getAttribute("user");
-	List<Post> posts = (List<Post>)request.getSession().getAttribute("posts");
 %>
 <!DOCTYPE html>
 <html>
@@ -18,33 +17,13 @@
 	<link media="all" rel="stylesheet" href="css/main.css">
 	<link href='https://fonts.googleapis.com/css?family=Roboto:500,400,300,300italic%7CLato:400,300italic,300' rel='stylesheet' type='text/css'>
 	<script>
-		var topFriendsData = '<%= (String)request.getSession().getAttribute("topFriendsData") %>';
-		var postTypesData = '<%= (String)request.getSession().getAttribute("postTypesData") %>';
-		var mostFrequentPostTypeData = '<%= (String)request.getSession().getAttribute("mostFrequentPostTypeData") %>';
-		var postsByDaysOfWeekData = '<%= (String)request.getSession().getAttribute("postsByDayOfWeekData") %>';
-		var postsByMonthOfYearData = '<%= (String)request.getSession().getAttribute("postsByMonthOfYearData") %>';
-		
-		// Facebook decided to append "#_=_" to callback URLs for some unknown reason.  Let's clean it up.
-		//
-		// Announcement: 	https://developers.facebook.com/blog/post/552/
-		// Solution: 		http://stackoverflow.com/questions/7131909/facebook-callback-appends-to-return-url
-		/*
-		if (window.location.hash && window.location.hash == '#_=_') {
-			if (window.history && history.pushState) {
-				window.history.pushState("", document.title, window.location.pathname);
-			} else {
-				// Prevent scrolling by storing the page's current scroll offset
-				var scroll = {
-					top : document.body.scrollTop,
-					left : document.body.scrollLeft
-				};
-				window.location.hash = '';
-				// Restore the scroll offset, should be flicker free
-				document.body.scrollTop = scroll.top;
-				document.body.scrollLeft = scroll.left;
-			}
-		}
-		*/
+		var topFriendsData = '<%= (String)request.getSession().getAttribute("topFriendsJson") %>';
+		var postTypesData = '<%= (String)request.getSession().getAttribute("postTypesJson") %>';
+		var mostFrequentPostTypeData = '<%= (String)request.getSession().getAttribute("mostFrequentPostTypeJson") %>';
+		var postsByDaysOfWeekData = '<%= (String)request.getSession().getAttribute("postsByDayOfWeekJson") %>';
+		var postsByMonthOfYearData = '<%= (String)request.getSession().getAttribute("postsByMonthOfYearJson") %>';
+		var topWordsHtml = '<%= (String)request.getSession().getAttribute("topWordsHtml") %>';
+		var topWord = '<%= (String)request.getSession().getAttribute("topWord") %>';
 	</script>
 </head>
 <body class="infographic">
@@ -164,11 +143,12 @@
 				</section>
 				<section class="block-words fade-block">
 					<div class="text-holder">
-						<h2 class="black">Your most used words</h2>
-						<p><span class="large">&quot;Damn&quot;</span>is your most used word</p>
+						<h2 class="black">Most used words on your feed</h2>
+						<p><span id="top-word" class="large">&quot;Damn&quot;</span>is the most used word on your feed</p>
 					</div>
 					<div class="htagcloud">
-						<ul class="popularity">
+						<ul id="top-words" class="popularity">
+						<!--
 							<li class="vv-popular"><a href="#">Excited</a></li>
 							<li class="vvv-popular"><a href="#">Bucharest</a></li>
 							<li class="popular"><a href="#">Honesty</a></li>
@@ -182,6 +162,7 @@
 							<li class="vvvv-popular"><a href="#">F*ck</a></li>
 							<li class="vvvv-popular"><a href="#">Tennis</a></li>
 							<li class="vvv-popular"><a href="#">Tech</a></li>
+						-->
 						</ul>
 					</div>
 				</section>
