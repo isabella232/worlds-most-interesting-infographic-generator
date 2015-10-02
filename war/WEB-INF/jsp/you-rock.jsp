@@ -26,6 +26,7 @@
 		//
 		// Announcement: 	https://developers.facebook.com/blog/post/552/
 		// Solution: 		http://stackoverflow.com/questions/7131909/facebook-callback-appends-to-return-url
+		/*
 		if (window.location.hash && window.location.hash == '#_=_') {
 			if (window.history && history.pushState) {
 				window.history.pushState("", document.title, window.location.pathname);
@@ -41,6 +42,7 @@
 				document.body.scrollLeft = scroll.left;
 			}
 		}
+		*/
 	</script>
 </head>
 <body class="infographic">
