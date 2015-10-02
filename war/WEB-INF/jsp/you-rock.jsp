@@ -40,12 +40,6 @@
 						<img src="images/logo-alt.png" alt="WMIIG">
 					</a>
 				</div>
-				<div class="github">
-					<a href="#">
-						<i class="icon-github"></i>
-						See <span class="thin">me on</span> Github
-					</a>
-				</div>
 			</div>
 		</header>
 		<main id="main" role="main">
@@ -53,7 +47,7 @@
 				<div class="container">
 					<h1>Hello, <%= user.getName() %>!</h1>
 					<img src="https://graph.facebook.com/<%= user.getId() %>/picture?width=268&height=268" alt="image description">
-					<p><span>26 years old</span>Web designer &amp; Developer</p>
+					<!--<p><span>26 years old</span>Web designer &amp; Developer</p>-->
 				</div>
 			</article>
 			<div class="container">
@@ -93,44 +87,6 @@
 						<p><span id="lowest-value" class="number blue">0.25</span>lowest average <span class="mark">posts/week</span></p>
 					</div>
 				</section>
-				<!--
-				<section class="block-popular">
-					<h2 class="fade-block">Your most popular posts</h2>
-					<div class="box fade-block">
-						<div class="box-holder">
-							<img src="images/image-4.jpg" alt="image description">
-							<div class="text-holder">
-								<p>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable.</p>
-							</div>
-							<ul class="link-holder">
-								<li><a href="#"><i class="icon-thumbs-o-up"></i>185 likes</a></li>
-								<li><a class="orange" href="#"><i class="icon-comment-o"></i>85 comments</a></li>
-							</ul>
-						</div>
-					</div>
-					<div class="box fade-block">
-						<div class="box-holder full">
-							<img src="images/image-5.jpg" alt="image description">
-							<ul class="link-holder">
-								<li><a href="#"><i class="icon-thumbs-o-up"></i>185 likes</a></li>
-								<li><a class="orange" href="#"><i class="icon-comment-o"></i>85 comments</a></li>
-							</ul>
-						</div>
-					</div>
-					<div class="box fade-block">
-						<div class="box-holder">
-							<img src="images/image-4.jpg" alt="image description">
-							<div class="text-holder">
-								<p>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable.</p>
-							</div>
-							<ul class="link-holder">
-								<li><a href="#"><i class="icon-thumbs-o-up"></i>185 likes</a></li>
-								<li><a class="orange" href="#"><i class="icon-comment-o"></i>85 comments</a></li>
-							</ul>
-						</div>
-					</div>
-				</section>
-				-->
 				<section class="block-privacy fade-block">
 					<div class="text-holder">
 						<h2 class="blue-light">Your post privacy</h2>
@@ -148,21 +104,7 @@
 					</div>
 					<div class="htagcloud">
 						<ul id="top-words" class="popularity">
-						<!--
-							<li class="vv-popular"><a href="#">Excited</a></li>
-							<li class="vvv-popular"><a href="#">Bucharest</a></li>
-							<li class="popular"><a href="#">Honesty</a></li>
-							<li class="vvvvv-popular"><a href="#">Design</a></li>
-							<li class="v-popular"><a href="#">FIFA</a></li>
-							<li class="vvvvvv-popular"><a href="#">Damn</a></li>
-							<li class="v-popular"><a href="#">Deftones</a></li>
-							<li class="vv-popular"><a href="#">Girlfriend</a></li>
-							<li class="v-popular"><a href="#">Creative</a></li>
-							<li class="popular"><a href="#">Games</a></li>
-							<li class="vvvv-popular"><a href="#">F*ck</a></li>
-							<li class="vvvv-popular"><a href="#">Tennis</a></li>
-							<li class="vvv-popular"><a href="#">Tech</a></li>
-						-->
+						<!-- Insert word cloud here -->
 						</ul>
 					</div>
 				</section>
