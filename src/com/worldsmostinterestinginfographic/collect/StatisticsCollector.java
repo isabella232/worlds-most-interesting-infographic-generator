@@ -10,7 +10,6 @@ import java.util.regex.Pattern;
 
 import com.worldsmostinterestinginfographic.collect.result.TopFriendsResult;
 import com.worldsmostinterestinginfographic.collect.result.TopWordsResult;
-import com.worldsmostinterestinginfographic.collect.result.WordCountPair;
 import com.worldsmostinterestinginfographic.model.object.Post;
 import com.worldsmostinterestinginfographic.model.object.User;
 
@@ -36,6 +35,10 @@ public class StatisticsCollector {
 				likesByFriendsMap.put(liker, 1);
 			}
 		}
+		
+//		for (Map.Entry<User, Integer> entry : likesByFriendsMap.entrySet()) {
+//			System.out.println(entry.getKey().getName() + ": " + entry.getValue());
+//		}
 		
 		return new TopFriendsResult(likesByFriendsMap);
 	}
@@ -68,7 +71,9 @@ public class StatisticsCollector {
 	public static int[] collectPostFrequencyByDayOfWeek(List<Post> posts) {
 		int[] postsByDayOfWeek = new int[7];
 		for (Post post : posts) {
-			postsByDayOfWeek[post.getCreatedDate().get(Calendar.DAY_OF_WEEK) - 1] += 1;
+			if (post.getCreatedDate() != null) {
+				postsByDayOfWeek[post.getCreatedDate().get(Calendar.DAY_OF_WEEK) - 1] += 1;
+			}
 		}
 		
 //		for (int i = 0; i < postsByDayOfWeek.length; i++) {
@@ -92,7 +97,9 @@ public class StatisticsCollector {
 	public static int[] collectPostFrequencyByMonthOfYear(List<Post> posts) {
 		int[] postsByMonthOfYear = new int[12];
 		for (Post post : posts) {
-			postsByMonthOfYear[post.getCreatedDate().get(Calendar.MONTH)] += 1;
+			if (post.getCreatedDate() != null) {
+				postsByMonthOfYear[post.getCreatedDate().get(Calendar.MONTH)] += 1;
+			}
 		}
 		
 //		for (int i = 0; i < postsByDayOfWeek.length; i++) {

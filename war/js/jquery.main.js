@@ -1,19 +1,32 @@
+
+/*(function(){
+		$.get( "/test", function( data ) {
+			  $( ".result" ).html( data );
+			  alert( "Load was performed." );
+			});
+		})();*/
+//alert("start");
+//var statistics;
+
 // page init
 jQuery(function(){
 	initSameHeight();
 	initFriendsChart();
-	initPostTypesChart();
-	initBarChart();
-	initLineBar();
+//	initPostTypesChart();
+//	initBarChart();
+//	initLineBar();
 	initParallaxBg();
 	initFadeBlock();
 	
-	$('#top-words').html(topWordsHtml);
-	$('#top-word').html("&quot;" + topWord + "&quot;");
+//	$('#top-words').html(topWordsHtml);
+//	$('#top-word').html("&quot;" + topWord + "&quot;");
+	
+	
+	
 });
 
 // post privacy line chart
-function initLineBar() {
+function initLineBar(theGoodStuff) {
 	var holder = d3.select('#post-privacy-line-chart');
 	if (!holder.node()) return;
 
@@ -35,15 +48,17 @@ function initLineBar() {
 	var dataUrlPrivate = holder.attr('data-private');
 	var dataJSONPrivate;
 
-	d3.json(dataUrlPublic, function (error, json) {
-		if (error) return console.warn(error);
+//	d3.json(dataUrlPublic, function (error, json) {
+//		if (error) return console.warn(error);
 //		dataJSONPublic = json[0];
-		dataJSONPublic = JSON.parse(postsByMonthOfYearData);
+//		dataJSONPublic = JSON.parse(postsByMonthOfYearData);
+	dataJSONPublic = theGoodStuff;
 
-		d3.json(dataUrlPrivate, function (errorState, jsonPublic) {
-			if (error) return console.warn(error);
+//		d3.json(dataUrlPrivate, function (errorState, jsonPublic) {
+//			if (error) return console.warn(error);
 //			dataJSONPrivate = jsonPublic[0];
-			dataJSONPrivate = JSON.parse(postsByMonthOfYearData);
+//			dataJSONPrivate = JSON.parse(postsByMonthOfYearData);
+	dataJSONPrivate = theGoodStuff;
 
 			// add main svg
 			var svg = holder.append('svg')
@@ -188,12 +203,12 @@ function initLineBar() {
 				.attr('height', function() {
 					return svg.node().getBoundingClientRect().width / ratio;
 				});
-		});
-	});
+//		});
+//	});
 }
 
 // post frequency bar chart
-function initBarChart() {
+function initBarChart(theGoodStuff) {
 	var holder = d3.select('#post-frequency-bar-chart');
 	if (!holder.node()) return;
 
@@ -212,10 +227,11 @@ function initBarChart() {
 	var color = d3.scale.ordinal()
 		.range([colorHighest, colorLowest]);
 
-	d3.json(dataUrl, function (error, json) {
-		if (error) return console.warn(error);
+//	d3.json(dataUrl, function (error, json) {
+//		if (error) return console.warn(error);
 //		dataJSON = json[0];
-		dataJSON = JSON.parse(postsByDaysOfWeekData);
+//		dataJSON = JSON.parse(postsByDaysOfWeekData);
+	dataJSON = theGoodStuff;
 
 		// add main svg
 		var svg = holder.append('svg')
@@ -341,12 +357,12 @@ function initBarChart() {
 			.attr('height', function() {
 				return svg.node().getBoundingClientRect().width / ratio;
 			});
-	});
+//	});
 
 }
 
 // donut chart post types
-function initPostTypesChart() {
+function initPostTypesChart(theGoodStuff) {
 	var holder = d3.select('#donut-chart-post-types');
 	if (!holder.node()) return;
 
@@ -385,22 +401,26 @@ function initPostTypesChart() {
 		.attr('class', 'chart')
 		.attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ') rotate(' + angleMainCircle + ' 0 0)');
 
-	d3.json(dataUrl, function (error, json) {
+//	alert("now in second chart.  statistics=" + statistics);
+//	alert(statistics[1])
+	
+//	d3.json(dataUrl, function (error, json) {
 		
 		
 		// Populate most frequent post percentage fields
-		var mostFrequentPostTypeObject = JSON.parse(mostFrequentPostTypeData);
+//		var mostFrequentPostTypeObject = JSON.parse(mostFrequentPostTypeData);
 		
-		$('#most-frequent-post-percentage').html(mostFrequentPostTypeObject.percentage + '%');
-		$('#most-frequent-post-type').html(mostFrequentPostTypeObject.type);
+//		$('#most-frequent-post-percentage').html(mostFrequentPostTypeObject.percentage + '%');
+//		$('#most-frequent-post-type').html(mostFrequentPostTypeObject.type);
+//		
+//		$('#most-frequent-post-percentage').addClass(mostFrequentPostTypeObject.color);
+//		$('#most-frequent-post-type').addClass(mostFrequentPostTypeObject.color);
 		
-		$('#most-frequent-post-percentage').addClass(mostFrequentPostTypeObject.color);
-		$('#most-frequent-post-type').addClass(mostFrequentPostTypeObject.color);
 		
-		
-		if (error) return console.warn(error);
+//		if (error) return console.warn(error);
+	dataJSON = theGoodStuff;
 //		dataJSON = json[0];
-		dataJSON = JSON.parse(postTypesData);
+//		dataJSON = JSON.parse(postTypesData);
 
 		// set chart legend
 		var listItems = d3.selectAll('#post-types-list');
@@ -534,7 +554,7 @@ function initPostTypesChart() {
 			.attr('height', function() {
 				return svg.node().getBoundingClientRect().width / ratio;
 			});
-	});
+//	});
 }
 
 // bar chart post likes
@@ -559,8 +579,20 @@ function initFriendsChart() {
 
 	d3.json(dataUrl, function (error, json) {
 		if (error) return console.warn(error);
-//		dataJSON = json[0];
-		dataJSON = JSON.parse(topFriendsData);
+//		alert("just got data.  statistics=" + statistics);
+		
+		
+		dataJSON = json[0];
+		initPostTypesChart(json[1]);
+		initBarChart(json[2]);
+		initLineBar(json[3]);
+		
+		
+		
+		
+//		alert("just set statistics.  statistics=" + statistics);
+//		dataJSON = json;
+//		dataJSON = JSON.parse(topFriendsData);
 
 		// set friends amount
 		var friendsAmount = d3.select('#friends-amount');

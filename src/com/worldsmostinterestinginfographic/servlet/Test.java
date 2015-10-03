@@ -3,8 +3,7 @@ package com.worldsmostinterestinginfographic.servlet;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
+import java.io.PrintWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -21,13 +20,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicNameValuePair;
 
 import com.google.appengine.labs.repackaged.org.json.JSONArray;
 import com.google.appengine.labs.repackaged.org.json.JSONException;
@@ -43,137 +38,137 @@ import com.worldsmostinterestinginfographic.model.object.User;
 import com.worldsmostinterestinginfographic.util.LoggingUtil;
 import com.worldsmostinterestinginfographic.util.Minify;
 
-public class OAuthCallbackListener extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+public class Test extends HttpServlet {
 
-	private static final Logger log = Logger.getLogger(OAuthCallbackListener.class.getName());
+	private static final Logger log = Logger.getLogger(Test.class.getName());
 	
 	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-		// Our clock
-		long tick = Long.MIN_VALUE;
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		
-		// Check for the presence of an authorization code
-		String authorizationCode = request.getParameter("code");
-		if (authorizationCode != null && authorizationCode.length() > 0) {
-
-			log.info("Starting session.  Requesting access token with authorization code " + LoggingUtil.anonymize(authorizationCode));
-			tick = System.currentTimeMillis();
+		long tick = System.currentTimeMillis();
+		
+		User user = (User)request.getSession().getAttribute("user");
+		String accessToken = Objects.toString(Model.cache.get(user.getId() + ".token"));
+		
+		String postsJson = requestFeedData(accessToken);
+		List<Post> posts = convertPostsJsonToObject(postsJson);
+		
+		log.info("Received " + posts.size() + " stories for user " + LoggingUtil.anonymize(Objects.toString(user.getId())) 
+				+ ". Collecting statistics... (" + (System.currentTimeMillis() - tick) + "ms)");
+		tick = System.currentTimeMillis();
+		
+		// Collect statistics
+		TopFriendsResult topFriendsResult = StatisticsCollector.collectTopFriends(posts, user);
+		Map<Post.Type, Integer> postTypesCount = StatisticsCollector.collectPostTypes(posts);
+		int[] postsByDayOfWeek = StatisticsCollector.collectPostFrequencyByDayOfWeek(posts);
+		int[] postsByMonthOfYear = StatisticsCollector.collectPostFrequencyByMonthOfYear(posts);
+		TopWordsResult topWordsResult = StatisticsCollector.collectWordFrequency(posts, user);
+		
+		String topFourFriendsJson = buildTopFourFriendsJson(topFriendsResult);
+		String postTypesJson = buildPostTypesJson(postTypesCount);
+		String mostFrequentPostTypeJson = buildMostFrequentPostTypeJson(postTypesCount);
+		String postsByDayOfWeekJson = buildPostsByDayOfWeekJson(postsByDayOfWeek);
+		String postsByMonthOfYearJson = buildPostsByMonthOfYearJson(postsByMonthOfYear);
+		String topWordsHtml = buildTopWordsHtml(topWordsResult);
+		
+//		log.info("Statistics have been collected for " + LoggingUtil.anonymize(Objects.toString(user.getId())) + ". (" + (System.currentTimeMillis() - tick) + "ms)");
+//		tick = System.currentTimeMillis();
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+//		User user2 = (User)Model.cache.get(user.getId() + ".profile");
+		
+		
+		
+		PrintWriter out = response.getWriter();
+//		System.out.println(postTypesJson);
+		String result = "";
+		try {
+			JSONObject obj0 = new JSONObject(topFourFriendsJson);
+			JSONObject obj1 = new JSONObject(postTypesJson);
+//			JSONObject obj2 = new JSONObject(mostFrequentPostTypeJson);
+			JSONObject obj2 = new JSONObject(postsByDayOfWeekJson);
+			JSONObject obj3 = new JSONObject(postsByMonthOfYearJson);
 			
-			String accessToken = requestAccessToken(authorizationCode, request);
 			
-			log.info("Access token " + LoggingUtil.anonymize(accessToken) + " received.  Requesting profile data. (" + (System.currentTimeMillis() - tick) + "ms)");
-			tick = System.currentTimeMillis();
-			
-			String userJson = requestProfileData(accessToken);
-			User user = convertUserJsonToObject(userJson);
-			
-			log.info("Hello, " + LoggingUtil.anonymize(Objects.toString(user.getId())) + "!  Requesting " + Model.MAX_NUMBER_OF_FACEBOOK_POSTS_TO_REQUEST
-					+ " stories for you. (" + (System.currentTimeMillis() - tick) + "ms)");
-			tick = System.currentTimeMillis();
-			
-			// Send to success page with received profile data
-			request.getSession().setAttribute("user", user);
-			Model.cache.put(user.getId() + ".profile", user);
-			Model.cache.put(user.getId() + ".token", accessToken);
-			
-			response.sendRedirect("/you-rock");
-			
-			
-			/*
-			System.out.println("Beginning of last stuff");
-			String postsJson = requestFeedData(accessToken);
-			List<Post> posts = convertPostsJsonToObject(postsJson);
-			
-			log.info("Received " + posts.size() + " stories for user " + LoggingUtil.anonymize(Objects.toString(user.getId())) 
-					+ ". Collecting statistics... (" + (System.currentTimeMillis() - tick) + "ms)");
-			tick = System.currentTimeMillis();
-			
-			// Collect statistics
-			TopFriendsResult topFriendsResult = StatisticsCollector.collectTopFriends(posts, user);
-			Map<Post.Type, Integer> postTypesCount = StatisticsCollector.collectPostTypes(posts);
-			int[] postsByDayOfWeek = StatisticsCollector.collectPostFrequencyByDayOfWeek(posts);
-			int[] postsByMonthOfYear = StatisticsCollector.collectPostFrequencyByMonthOfYear(posts);
-			TopWordsResult topWordsResult = StatisticsCollector.collectWordFrequency(posts, user);
-			
-			log.info("Statistics have been collected for " + LoggingUtil.anonymize(Objects.toString(user.getId())) + ". (" + (System.currentTimeMillis() - tick) + "ms)");
-			tick = System.currentTimeMillis();
-			
-			// Generate output data
-			String topFourFriendsJson = buildTopFourFriendsJson(topFriendsResult);
-			String postTypesJson = buildPostTypesJson(postTypesCount);
-			String mostFrequentPostTypeJson = buildMostFrequentPostTypeJson(postTypesCount);
-			String postsByDayOfWeekJson = buildPostsByDayOfWeekJson(postsByDayOfWeek);
-			String postsByMonthOfYearJson = buildPostsByMonthOfYearJson(postsByMonthOfYear);
-			String topWordsHtml = buildTopWordsHtml(topWordsResult);
-			
-			// Send to success page with received profile data
-			request.getSession().setAttribute("user", user);
-			request.getSession().setAttribute("posts", posts);
-			
-			// Include chart data
-			request.getSession().setAttribute("topFriendsJson", topFourFriendsJson);
-			request.getSession().setAttribute("postTypesJson", postTypesJson);
-			request.getSession().setAttribute("mostFrequentPostTypeJson", mostFrequentPostTypeJson);
-			request.getSession().setAttribute("postsByDayOfWeekJson", postsByDayOfWeekJson);
-			request.getSession().setAttribute("postsByMonthOfYearJson", postsByMonthOfYearJson);
-			request.getSession().setAttribute("topWordsHtml", topWordsHtml);
-			request.getSession().setAttribute("topWord", topWordsResult.getTopWords(1).get(0).getWord());
-			
-			System.out.println("End of last stuff");
-//			response.sendRedirect("/you-rock");
-			//*/
-		} else if (request.getParameter("error") != null) {
-			
-			String error = request.getParameter("error");
-			String errorDescription = request.getParameter("error_description");
-			
-			// An error happened during authorization code request
-			log.severe("Error encountered during authorization code request: " + error + " - " + errorDescription);
-
-			request.getSession().setAttribute("error", error);
-			request.getSession().setAttribute("errorDescription", errorDescription);
-			response.sendRedirect("/uh-oh");
-		} else {
-			log.warning("An unknown error encountered at redirection endpoint");
-			response.sendRedirect("/uh-oh");
+			JSONArray arr = new JSONArray();
+			arr.put(obj0);
+			arr.put(obj1);
+//			arr.put(obj2);
+			arr.put(obj2);
+			arr.put(obj3);
+			result = arr.toString();
+		} catch (JSONException e) {
+			e.printStackTrace();
 		}
-
+		System.out.println(result);
+		out.println(result);
+//		System.out.println("Here.");
 	}
 	
-	private String buildTopFourFriendsJson(TopFriendsResult topFriendsResult) {
-		List<UserLikeCountPair> topFriends = topFriendsResult.getTopFriends();
-		String json = "{" +
-				"	\"friends\": [" +
-				"		{" +
-				"			\"imgSrc\": \"https://graph.facebook.com/" + topFriends.get(0).getUser().getId() + "/picture?width=85&height=85\"," +
-				"			\"likes\": " + topFriends.get(0).getCount() + "," +
-				"			\"name\": \"" + topFriends.get(0).getUser().getName() + "\"," +
-				"			\"color\": \"#3b5998\"" +
-				"		}," +
-				"		{" +
-				"			\"imgSrc\": \"https://graph.facebook.com/" + topFriends.get(1).getUser().getId() + "/picture?width=85&height=85\"," +
-				"			\"likes\": " + topFriends.get(1).getCount() + "," +
-				"			\"name\": \"" + topFriends.get(1).getUser().getName() + "\"," +
-				"			\"color\": \"#5bc0bd\"" +
-				"		}," +
-				"		{" +
-				"			\"imgSrc\": \"https://graph.facebook.com/" + topFriends.get(2).getUser().getId() + "/picture?width=85&height=85\"," +
-				"			\"likes\": " + topFriends.get(2).getCount() + "," +
-				"			\"name\": \"" + topFriends.get(2).getUser().getName() + "\"," +
-				"			\"color\": \"#f08a4b\"" +
-				"		}," +
-				"		{" +
-				"			\"imgSrc\": \"https://graph.facebook.com/" + topFriends.get(3).getUser().getId() + "/picture?width=85&height=85\"," +
-				"			\"likes\": " + topFriends.get(3).getCount() + "," +
-				"			\"name\": \"" + topFriends.get(3).getUser().getName() + "\"," +
-				"			\"color\": \"#1c2541\"" +
-				"		}" +
-				"	]" +
-				"}";
+	private String buildTopWordsHtml(TopWordsResult result) {
+		List<WordCountPair> topWords = result.getTopWords(15);
 		
-		return new Minify().minify(json);
+//		System.out.println(topWords.size());
+		
+		
+		List<String> wordsHtml = new ArrayList<String>(topWords.size());
+		int emphasis = 5;
+		int previousCount = topWords.get(0).getCount();
+		for (int i = 0; i < topWords.size(); i++) {
+//			System.out.println(wordCountPair.getWord() + ": " + wordCountPair.getCount());
+			
+			if (emphasis > 0 && topWords.get(i).getCount() < previousCount) {
+				emphasis--;
+			}
+			
+			wordsHtml.add("<li class=\"" + giveMeVees(emphasis) + (emphasis > 0 ? "-" : "") + "popular\"><a href=\"#\">" + topWords.get(i).getWord() + "</a></li>");
+		}
+		
+		Collections.shuffle(wordsHtml);
+		
+		String html = "";
+		for (String wordHtml : wordsHtml) {
+			html += wordHtml;
+		}
+		
+//		String html = "<li class=\"vv-popular\"><a href=\"#\">Excited</a></li>" +
+//				"<li class=\"vvv-popular\"><a href=\"#\">Bucharest</a></li>" +
+//				"<li class=\"popular\"><a href=\"#\">Honesty</a></li>" +
+//				"<li class=\"vvvvv-popular\"><a href=\"#\">Design</a></li>" +
+//				"<li class=\"v-popular\"><a href=\"#\">FIFA</a></li>" +
+//				"<li class=\"vvvvvv-popular\"><a href=\"#\">Damn</a></li>" +
+//				"<li class=\"v-popular\"><a href=\"#\">Deftones</a></li>" +
+//				"<li class=\"vv-popular\"><a href=\"#\">Girlfriend</a></li>" +
+//				"<li class=\"v-popular\"><a href=\"#\">Creative</a></li>" +
+//				"<li class=\"popular\"><a href=\"#\">Games</a></li>" +
+//				"<li class=\"vvvv-popular\"><a href=\"#\">F*ck</a></li>" +
+//				"<li class=\"vvvv-popular\"><a href=\"#\">Tennis</a></li>" +
+//				"<li class=\"vvv-popular\"><a href=\"#\">Tech</a></li>";
+
+		return html;
+	}
+	
+	private String giveMeVees(int numVees) {
+		String vees = "";
+		
+		for (int i = 0; i < numVees; i++) {
+			vees += "v";
+		}
+		
+		return vees;
 	}
 	
 	private String buildPostTypesJson(Map<Post.Type, Integer> postTypesCount) {
@@ -343,92 +338,38 @@ public class OAuthCallbackListener extends HttpServlet {
 		return new Minify().minify(json);
 	}
 	
-	private String buildTopWordsHtml(TopWordsResult result) {
-		List<WordCountPair> topWords = result.getTopWords(15);
+	private String buildTopFourFriendsJson(TopFriendsResult topFriendsResult) {
+		List<UserLikeCountPair> topFriends = topFriendsResult.getTopFriends();
+		String json = "{" +
+				"	\"friends\": [" +
+				"		{" +
+				"			\"imgSrc\": \"https://graph.facebook.com/" + topFriends.get(0).getUser().getId() + "/picture?width=85&height=85\"," +
+				"			\"likes\": " + topFriends.get(0).getCount() + "," +
+				"			\"name\": \"" + topFriends.get(0).getUser().getName() + "\"," +
+				"			\"color\": \"#3b5998\"" +
+				"		}," +
+				"		{" +
+				"			\"imgSrc\": \"https://graph.facebook.com/" + topFriends.get(1).getUser().getId() + "/picture?width=85&height=85\"," +
+				"			\"likes\": " + topFriends.get(1).getCount() + "," +
+				"			\"name\": \"" + topFriends.get(1).getUser().getName() + "\"," +
+				"			\"color\": \"#5bc0bd\"" +
+				"		}," +
+				"		{" +
+				"			\"imgSrc\": \"https://graph.facebook.com/" + topFriends.get(2).getUser().getId() + "/picture?width=85&height=85\"," +
+				"			\"likes\": " + topFriends.get(2).getCount() + "," +
+				"			\"name\": \"" + topFriends.get(2).getUser().getName() + "\"," +
+				"			\"color\": \"#f08a4b\"" +
+				"		}," +
+				"		{" +
+				"			\"imgSrc\": \"https://graph.facebook.com/" + topFriends.get(3).getUser().getId() + "/picture?width=85&height=85\"," +
+				"			\"likes\": " + topFriends.get(3).getCount() + "," +
+				"			\"name\": \"" + topFriends.get(3).getUser().getName() + "\"," +
+				"			\"color\": \"#1c2541\"" +
+				"		}" +
+				"	]" +
+				"}";
 		
-//		System.out.println(topWords.size());
-		
-		
-		List<String> wordsHtml = new ArrayList<String>(topWords.size());
-		int emphasis = 5;
-		int previousCount = topWords.get(0).getCount();
-		for (int i = 0; i < topWords.size(); i++) {
-//			System.out.println(wordCountPair.getWord() + ": " + wordCountPair.getCount());
-			
-			if (emphasis > 0 && topWords.get(i).getCount() < previousCount) {
-				emphasis--;
-			}
-			
-			wordsHtml.add("<li class=\"" + giveMeVees(emphasis) + (emphasis > 0 ? "-" : "") + "popular\"><a href=\"#\">" + topWords.get(i).getWord() + "</a></li>");
-		}
-		
-		Collections.shuffle(wordsHtml);
-		
-		String html = "";
-		for (String wordHtml : wordsHtml) {
-			html += wordHtml;
-		}
-		
-//		String html = "<li class=\"vv-popular\"><a href=\"#\">Excited</a></li>" +
-//				"<li class=\"vvv-popular\"><a href=\"#\">Bucharest</a></li>" +
-//				"<li class=\"popular\"><a href=\"#\">Honesty</a></li>" +
-//				"<li class=\"vvvvv-popular\"><a href=\"#\">Design</a></li>" +
-//				"<li class=\"v-popular\"><a href=\"#\">FIFA</a></li>" +
-//				"<li class=\"vvvvvv-popular\"><a href=\"#\">Damn</a></li>" +
-//				"<li class=\"v-popular\"><a href=\"#\">Deftones</a></li>" +
-//				"<li class=\"vv-popular\"><a href=\"#\">Girlfriend</a></li>" +
-//				"<li class=\"v-popular\"><a href=\"#\">Creative</a></li>" +
-//				"<li class=\"popular\"><a href=\"#\">Games</a></li>" +
-//				"<li class=\"vvvv-popular\"><a href=\"#\">F*ck</a></li>" +
-//				"<li class=\"vvvv-popular\"><a href=\"#\">Tennis</a></li>" +
-//				"<li class=\"vvv-popular\"><a href=\"#\">Tech</a></li>";
-
-		return html;
-	}
-	
-	private String giveMeVees(int numVees) {
-		String vees = "";
-		
-		for (int i = 0; i < numVees; i++) {
-			vees += "v";
-		}
-		
-		return vees;
-	}
-	
-	private String requestAccessToken(String authorizationCode, HttpServletRequest request) throws IOException {
-		CloseableHttpClient httpClient = HttpClients.createDefault();
-		try {
-			// Exchange authorization code for access token
-			HttpPost httpPost = new HttpPost(Model.TOKEN_ENDPOINT + "?grant_type=authorization_code&code=" + authorizationCode + "&redirect_uri=" + URLEncoder.encode((request.getScheme() + "://" + request.getServerName() + Model.REDIRECTION_ENDPOINT), StandardCharsets.UTF_8.name()) + "&client_id=" + Model.CLIENT_ID + "&client_secret=" + Model.CLIENT_SECRET);
-			HttpResponse httpResponse = httpClient.execute(httpPost);
-			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent()));
-			String line = bufferedReader.readLine();
-			String accessToken = line.split("&")[0].split("=")[1];
-			return accessToken;
-		} finally {
-			httpClient.close();
-		}
-	}
-	
-	private String requestProfileData(String accessToken) throws IOException {
-		CloseableHttpClient httpClient = HttpClients.createDefault();
-		try {
-			// Use access token to request profile data
-			String requestUrl = "https://graph.facebook.com/v2.2/me?fields=" + Model.FACEBOOK_REQUESTED_PROFILE_FIELDS;
-			httpClient = HttpClients.createDefault();
-			HttpPost httpPost = new HttpPost(requestUrl);
-			httpPost.addHeader("Authorization", "Bearer " + accessToken);
-			List<NameValuePair> urlParameters = new ArrayList<NameValuePair>();
-			urlParameters.add(new BasicNameValuePair("method", "get"));
-			httpPost.setEntity(new UrlEncodedFormEntity(urlParameters));
-			HttpResponse httpResponse = httpClient.execute(httpPost);
-			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent()));
-			String userJson = bufferedReader.readLine();
-			return userJson;
-		} finally {
-			httpClient.close();
-		}
+		return new Minify().minify(json);
 	}
 	
 	private String requestFeedData(String accessToken) throws IOException {
@@ -446,23 +387,6 @@ public class OAuthCallbackListener extends HttpServlet {
 		} finally {
 			httpClient.close();
 		}
-	}
-	
-	private User convertUserJsonToObject(String userJson) {
-		User user = null;
-		try {
-			JSONObject userObject = new JSONObject(userJson);
-			user = new User(Long.valueOf(userObject.getString("id")),
-					userObject.getString("first_name"), 
-					userObject.getString("last_name"), 
-					userObject.getString("name"),
-					userObject.getString("link"),
-					userObject.getString("gender"));
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		
-		return user;
 	}
 	
 	private List<Post> convertPostsJsonToObject(String postsJson) {
@@ -514,15 +438,21 @@ public class OAuthCallbackListener extends HttpServlet {
 				e.printStackTrace();
 			}*/
 			
-			
-			// get the date using Java Calendar
-			Calendar createdDate = Calendar.getInstance();
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
-			try {
-				createdDate.setTime(sdf.parse(createdDateString));// all done
-//				System.out.println(new Date(createdDate.getTimeInMillis()));
-			} catch (ParseException e) {
-				e.printStackTrace();
+			Calendar createdDate = null;
+			if (createdDateString != null) {
+				createdDate = Calendar.getInstance();
+				// get the date using Java Calendar
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+				try {
+//					if (createdDateString == null) {
+//						System.out.println("asdf");
+//					}
+//					System.out.println(createdDateString);
+					createdDate.setTime(sdf.parse(createdDateString));// all done
+//					System.out.println(new Date(createdDate.getTimeInMillis()));
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
 			}
 			
 //			log.info(jsonPost.getJSONObject("from").toString());

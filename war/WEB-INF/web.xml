@@ -38,6 +38,10 @@
 		<servlet-name>PrivacyPolicyServlet</servlet-name>
 		<jsp-file>/WEB-INF/jsp/privacy-policy.jsp</jsp-file>
 	</servlet>
+	<servlet>
+		<servlet-name>TestServlet</servlet-name>
+		<servlet-class>com.worldsmostinterestinginfographic.servlet.Test</servlet-class>
+	</servlet>
 	
 	<!--
 	  - Servlet mappings.
@@ -68,6 +72,10 @@
 	<servlet-mapping>
 		<servlet-name>PrivacyPolicyServlet</servlet-name>
 		<url-pattern>/privacy-policy</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>TestServlet</servlet-name>
+		<url-pattern>/test</url-pattern>
 	</servlet-mapping>
 	
 </web-app>

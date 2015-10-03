@@ -17,13 +17,13 @@
 	<link media="all" rel="stylesheet" href="css/main.css">
 	<link href='https://fonts.googleapis.com/css?family=Roboto:500,400,300,300italic%7CLato:400,300italic,300' rel='stylesheet' type='text/css'>
 	<script>
-		var topFriendsData = '<%= (String)request.getSession().getAttribute("topFriendsJson") %>';
-		var postTypesData = '<%= (String)request.getSession().getAttribute("postTypesJson") %>';
-		var mostFrequentPostTypeData = '<%= (String)request.getSession().getAttribute("mostFrequentPostTypeJson") %>';
-		var postsByDaysOfWeekData = '<%= (String)request.getSession().getAttribute("postsByDayOfWeekJson") %>';
-		var postsByMonthOfYearData = '<%= (String)request.getSession().getAttribute("postsByMonthOfYearJson") %>';
-		var topWordsHtml = '<%= (String)request.getSession().getAttribute("topWordsHtml") %>';
-		var topWord = '<%= (String)request.getSession().getAttribute("topWord") %>';
+		//var topFriendsData = '<%= (String)request.getSession().getAttribute("topFriendsJson") %>';
+		//var postTypesData = '<%= (String)request.getSession().getAttribute("postTypesJson") %>';
+		//var mostFrequentPostTypeData = '<%= (String)request.getSession().getAttribute("mostFrequentPostTypeJson") %>';
+		//var postsByDaysOfWeekData = '<%= (String)request.getSession().getAttribute("postsByDayOfWeekJson") %>';
+		//var postsByMonthOfYearData = '<%= (String)request.getSession().getAttribute("postsByMonthOfYearJson") %>';
+		//var topWordsHtml = '<%= (String)request.getSession().getAttribute("topWordsHtml") %>';
+		//var topWord = '<%= (String)request.getSession().getAttribute("topWord") %>';
 	</script>
 </head>
 <body class="infographic">
@@ -57,7 +57,7 @@
 						<div class="total">
 							<p><span class="number blue" id="friends-likes">703</span>Total likes received from <span class="blue">&quot;Top <span id="friends-amount">4</span> friends&quot;</span></p>
 						</div>
-						<div id="friend-chart" data-json="inc/friends-likes.json">
+						<div id="friend-chart" data-json="/test"> <!-- Originally was "inc/friends-likes.json" -->
 							<!-- Here insert chart -->
 						</div>
 					</div>
