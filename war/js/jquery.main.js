@@ -621,7 +621,6 @@ function initFriendsChart() {
 		
 		
 		if (json.length > 0) {
-			console.log(JSON.stringify(json));
 			dataJSON = json[0];
 			initPostTypesChart(json[1]);
 			initBarChart(json[2]);
