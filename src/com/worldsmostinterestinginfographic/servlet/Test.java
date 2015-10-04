@@ -45,7 +45,7 @@ public class Test extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		
+		PrintWriter out = response.getWriter();
 		long tick = System.currentTimeMillis();
 		
 		User user = (User)request.getSession().getAttribute("user");
@@ -53,6 +53,10 @@ public class Test extends HttpServlet {
 		
 		String postsJson = requestFeedData(accessToken);
 		List<Post> posts = convertPostsJsonToObject(postsJson);
+		if (posts.size() <= 0) {
+			out.println("[]");
+			return;
+		}
 		
 		log.info("Received " + posts.size() + " stories for user " + LoggingUtil.anonymize(Objects.toString(user.getId())) 
 				+ ". Collecting statistics... (" + (System.currentTimeMillis() - tick) + "ms)");
@@ -92,7 +96,7 @@ public class Test extends HttpServlet {
 		
 		
 		
-		PrintWriter out = response.getWriter();
+		
 //		System.out.println(postTypesJson);
 		String result = "";
 		try {

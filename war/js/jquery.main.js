@@ -21,6 +21,7 @@ jQuery(function(){
 	
 	/* do spinner on load stuff */
 	$('#content').hide();
+	$('#error').hide();
 	$('#spinner').spin({color: '#676767', top: '150px'});
 
 // STUFF TO DO WHEN DONE LOADING
@@ -626,15 +627,23 @@ function initFriendsChart() {
 //		alert("just got data.  statistics=" + statistics);
 		
 		
-		dataJSON = json[0];
-		initPostTypesChart(json[1]);
-		initBarChart(json[2]);
-		initLineBar(json[3]);
+		if (json.length > 0) {
+			console.log(JSON.stringify(json));
+			dataJSON = json[0];
+			initPostTypesChart(json[1]);
+			initBarChart(json[2]);
+			initLineBar(json[3]);
+			
+			$('#content').show();
+			$('#waitscreen').hide();
+			$(this).spin(false);
+		} else {
+			$('#error').show();
+			$('#waitscreen').hide();
+			$(this).spin(false);
+			return;
+		}
 		
-		
-		$('#content').show();
-		$('#waitscreen').hide();
-		$(this).spin(false);
 		
 		
 		

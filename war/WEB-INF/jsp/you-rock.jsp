@@ -50,9 +50,13 @@
 					<!--<p><span>26 years old</span>Web designer &amp; Developer</p>-->
 				</div>
 			</article>
-			<div id="waitscreen" style="position: relative;">
+			<div id="waitscreen" class="waitorerror">
 				<h2 align="center" class="blue">Fetching world's most interesting data...</h2>
 				<div id="spinner"></div>
+			</div>
+			<div id="error" class="waitorerror">
+				<h2 align="center" class="blue">An error has occurred</h2>
+				<p>Sorry, but we need access to your feed data to generate the world's most interesting infographic.  If you decide to allow us to see your feed data, go <a href="https://www.facebook.com/settings?tab=applications">here</a>, find &quot;Most Interesting Infographic&quot;, delete it, and try logging into our site again.</p>
 			</div>
 			<div id="content" class="container">
 				<section class="block-friends fade-block">
