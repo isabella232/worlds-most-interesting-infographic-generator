@@ -50,7 +50,11 @@
 					<!--<p><span>26 years old</span>Web designer &amp; Developer</p>-->
 				</div>
 			</article>
-			<div class="container">
+			<div id="waitscreen" style="position: relative;">
+				<h2 align="center" class="blue">Fetching world's most interesting data...</h2>
+				<div id="spinner"></div>
+			</div>
+			<div id="content" class="container">
 				<section class="block-friends fade-block">
 					<h2 class="blue">Top friends who like your posts</h2>
 					<div class="holder">
@@ -88,15 +92,18 @@
 					</div>
 				</section>
 				<section class="block-privacy fade-block">
+					<!--
 					<div class="text-holder">
 						<h2 class="blue-light">Your post privacy</h2>
 						<p><span class="number blue-light">3.1</span>highest average <span class="mark">public posts/week</span></p>
 						<p><span class="number blue">2.75</span>highest average <br><span class="mark">private posts/week</span></p>
 					</div>
+					-->
 					<div id="post-privacy-line-chart" data-public="inc/post-public.json"  data-private="inc/post-private.json">
 						<!-- Here insert chart -->
 					</div>
 				</section>
+				<!--
 				<section class="block-words fade-block">
 					<div class="text-holder">
 						<h2 class="black">Most used words on your feed</h2>
@@ -104,10 +111,11 @@
 					</div>
 					<div class="htagcloud">
 						<ul id="top-words" class="popularity">
-						<!-- Insert word cloud here -->
+						<!- - Insert word cloud here - ->
 						</ul>
 					</div>
 				</section>
+				-->
 			</div>
 		</main>
 		<footer id="footer">
@@ -143,6 +151,8 @@
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 	<script type="text/javascript">window.jQuery || document.write('<script src="js/jquery-1.11.2.min.js"><\/script>')</script>
 	<script type="text/javascript" src="js/d3.min.js"></script>
+	<script type="text/javascript" src="js/spin-2.3.2.min.js"></script>
 	<script type="text/javascript" src="js/jquery.main.js"></script>
+	<script type="text/javascript" src="js/jquery.spin.js"></script>
 </body>
 </html>

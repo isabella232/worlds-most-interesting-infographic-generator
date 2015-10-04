@@ -18,6 +18,20 @@ jQuery(function(){
 	initParallaxBg();
 	initFadeBlock();
 	
+	
+	/* do spinner on load stuff */
+	$('#content').hide();
+	$('#spinner').spin({color: '#676767', top: '150px'});
+
+// STUFF TO DO WHEN DONE LOADING
+//	$('#content').show();
+//	$('#waitscreen').hide();
+//	$(this).spin(false);
+	
+	
+	
+	
+	
 //	$('#top-words').html(topWordsHtml);
 //	$('#top-word').html("&quot;" + topWord + "&quot;");
 	
@@ -587,6 +601,10 @@ function initFriendsChart() {
 		initBarChart(json[2]);
 		initLineBar(json[3]);
 		
+		
+		$('#content').show();
+		$('#waitscreen').hide();
+		$(this).spin(false);
 		
 		
 		
