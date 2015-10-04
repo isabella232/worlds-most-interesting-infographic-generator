@@ -113,7 +113,7 @@ public class Test extends HttpServlet {
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		System.out.println(result);
+//		System.out.println(result);
 		out.println(result);
 //		System.out.println("Here.");
 	}

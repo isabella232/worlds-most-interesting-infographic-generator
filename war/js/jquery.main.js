@@ -205,6 +205,7 @@ function initLineBar(theGoodStuff) {
 			// resize handler
 			var chartHolder = svg.select('.line-chart');
 			var ratio = chartHolder.node().getBoundingClientRect().width / chartHolder.node().getBoundingClientRect().height;
+			/*
 			d3.select(window)
 				.on('resize.line-chart', function() {
 					svg
@@ -217,6 +218,15 @@ function initLineBar(theGoodStuff) {
 				.attr('height', function() {
 					return svg.node().getBoundingClientRect().width / ratio;
 				});
+			*/
+			d3.select(window)
+			.on('resize.line-chart', function() {
+				svg
+					.attr('height', 600);
+			});
+
+			svg
+				.attr('height', 600);
 //		});
 //	});
 }
@@ -359,6 +369,7 @@ function initBarChart(theGoodStuff) {
 		// resize handler
 		var chartHolder = svg.select('.bar-chart');
 		var ratio = chartHolder.node().getBoundingClientRect().width / chartHolder.node().getBoundingClientRect().height;
+		/*
 		d3.select(window)
 			.on('resize.bar-chart', function() {
 				svg
@@ -371,6 +382,15 @@ function initBarChart(theGoodStuff) {
 			.attr('height', function() {
 				return svg.node().getBoundingClientRect().width / ratio;
 			});
+		*/
+		d3.select(window)
+		.on('resize.bar-chart', function() {
+			svg
+				.attr('height', 600);
+		});
+
+		svg
+			.attr('height', 600);
 //	});
 
 }
@@ -414,7 +434,7 @@ function initPostTypesChart(theGoodStuff) {
 		.append('g')
 		.attr('class', 'chart')
 		.attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ') rotate(' + angleMainCircle + ' 0 0)');
-
+	
 //	alert("now in second chart.  statistics=" + statistics);
 //	alert(statistics[1])
 	
@@ -556,6 +576,7 @@ function initPostTypesChart(theGoodStuff) {
 		// resize handler
 		var chartHolder = svg.select('.decor');
 		var ratio = chartHolder.node().getBoundingClientRect().width / chartHolder.node().getBoundingClientRect().height;
+		/*
 		d3.select(window)
 			.on('resize.donut', function() {
 				svg
@@ -568,6 +589,15 @@ function initPostTypesChart(theGoodStuff) {
 			.attr('height', function() {
 				return svg.node().getBoundingClientRect().width / ratio;
 			});
+		*/
+		d3.select(window)
+		.on('resize.donut', function() {
+			svg
+				.attr('height', 600);
+		});
+
+		svg
+			.attr('height', 600);
 //	});
 }
 
