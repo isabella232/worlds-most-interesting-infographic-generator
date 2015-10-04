@@ -1,3 +1,51 @@
+/*
+ * Minify.java 2015-10-04
+ * 
+ * Copyright (c) 2015 Charles Bihis (www.whoischarles.com)
+ * 
+ * This work is an adaptation of JSMin.java published by John Reilly
+ * which is a translation from C to Java of jsmin.c published by
+ * Douglas Crockford.  Permission is hereby granted to use this Java
+ * version under the same conditions as the original jsmin.c on
+ * which all of these derivatives are based.
+ * 
+ * 
+ * 
+ * JSMin.java 2006-02-13
+ * 
+ * Copyright (c) 2006 John Reilly (www.inconspicuous.org)
+ * 
+ * This work is a translation from C to Java of jsmin.c published by
+ * Douglas Crockford.  Permission is hereby granted to use the Java 
+ * version under the same conditions as the jsmin.c on which it is
+ * based.  
+ * 
+ * 
+ * 
+ * jsmin.c 2003-04-21
+ * 
+ * Copyright (c) 2002 Douglas Crockford (www.crockford.com)
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * The Software shall be used for Good, not Evil.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 package com.worldsmostinterestinginfographic.util;
 
 import java.io.ByteArrayInputStream;
@@ -13,6 +61,9 @@ import java.nio.charset.StandardCharsets;
  * from JSMin.java written by John Reilly (www.inconspicuous.org) which is
  * itself a translation of jsmin.c written by Douglas Crockford
  * (www.crockford.com).
+ * 
+ * @see http://www.unl.edu/ucomm/templatedependents/JSMin.java
+ * @see http://www.crockford.com/javascript/jsmin.c
  */
 public class Minify {
 
@@ -212,10 +263,12 @@ public class Minify {
 	}
 
 	/**
-	 * action -- do something! What you do is determined by the argument: 1
-	 * Output A. Copy B to A. Get the next B. 2 Copy B to A. Get the next B.
-	 * (Delete A). 3 Get the next B. (Delete B). action treats a string as a
-	 * single character. Wow! action recognizes a regular expression if it is
+	 * action -- do something! What you do is determined by the argument:
+	 * 1 Output A. Copy B to A. Get the next B.
+	 * 2 Copy B to A. Get the next B. (Delete A).
+	 * 3 Get the next B. (Delete B).
+	 * action treats a string as a single character.
+	 * Wow! action recognizes a regular expression if it is
 	 * preceded by ( or , or =.
 	 */
 
@@ -270,6 +323,8 @@ public class Minify {
 	}
 
 	public static class UnterminatedCommentException extends Exception {
+		private static final long serialVersionUID = 1L;
+
 		public UnterminatedCommentException(int line, int column) {
 			super("Unterminated comment at line " + line + " and column "
 					+ column);
@@ -277,6 +332,8 @@ public class Minify {
 	}
 
 	public static class UnterminatedStringLiteralException extends Exception {
+		private static final long serialVersionUID = 1L;
+
 		public UnterminatedStringLiteralException(int line, int column) {
 			super("Unterminated string literal at line " + line
 					+ " and column " + column);
@@ -284,6 +341,8 @@ public class Minify {
 	}
 
 	public static class UnterminatedRegExpLiteralException extends Exception {
+		private static final long serialVersionUID = 1L;
+
 		public UnterminatedRegExpLiteralException(int line, int column) {
 			super("Unterminated regular expression at line " + line
 					+ " and column " + column);
