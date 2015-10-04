@@ -46,7 +46,7 @@ public enum Model {
 		TOKEN_ENDPOINT = properties.getProperty("tokenEndpoint");
 		
 		FACEBOOK_REQUESTED_PROFILE_FIELDS = "id,about,address,age_range,bio,birthday,context,currency,devices,education,email,favorite_athletes,favorite_teams,first_name,gender,hometown,inspirational_people,install_type,installed,interested_in,is_shared_login,is_verified,languages,last_name,link,location,locale,meeting_for,middle_name,name,name_format,payment_pricepoints,test_group,political,relationship_status,religion,security_settings,significant_other,sports,quotes,third_party_id,timezone,updated_time,shared_login_upgrade_required_by,verified,video_upload_limits,viewer_can_send_gift,website,work,cover";
-		MAX_NUMBER_OF_FACEBOOK_POSTS_TO_REQUEST = 250;
+		MAX_NUMBER_OF_FACEBOOK_POSTS_TO_REQUEST = 50;
 		
 		
 		// Initialize the cache
