@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -52,6 +53,7 @@ public class Test extends HttpServlet {
 		String accessToken = Objects.toString(Model.cache.get(user.getId() + ".token"));
 		
 		String postsJson = requestFeedData(accessToken);
+		
 		List<Post> posts = convertPostsJsonToObject(postsJson);
 		if (posts.size() <= 0) {
 			out.println("[]");
@@ -71,31 +73,15 @@ public class Test extends HttpServlet {
 		
 		String topFourFriendsJson = buildTopFourFriendsJson(topFriendsResult);
 		String postTypesJson = buildPostTypesJson(postTypesCount);
-		String mostFrequentPostTypeJson = buildMostFrequentPostTypeJson(postTypesCount);
 		String postsByDayOfWeekJson = buildPostsByDayOfWeekJson(postsByDayOfWeek);
 		String postsByMonthOfYearJson = buildPostsByMonthOfYearJson(postsByMonthOfYear);
-		String topWordsHtml = buildTopWordsHtml(topWordsResult);
+		
+		String mostFrequentPostTypeJson = buildMostFrequentPostTypeJson(postTypesCount);
+		String topWordsJson = buildTopWordsJson(topWordsResult);
+//		String topWordsHtml = buildTopWordsHtml(topWordsResult);
 		
 //		log.info("Statistics have been collected for " + LoggingUtil.anonymize(Objects.toString(user.getId())) + ". (" + (System.currentTimeMillis() - tick) + "ms)");
 //		tick = System.currentTimeMillis();
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-//		User user2 = (User)Model.cache.get(user.getId() + ".profile");
-		
-		
-		
 		
 //		System.out.println(postTypesJson);
 		String result = "";
@@ -105,6 +91,10 @@ public class Test extends HttpServlet {
 //			JSONObject obj2 = new JSONObject(mostFrequentPostTypeJson);
 			JSONObject obj2 = new JSONObject(postsByDayOfWeekJson);
 			JSONObject obj3 = new JSONObject(postsByMonthOfYearJson);
+//			System.out.println(mostFrequentPostTypeJson);
+			JSONObject obj4 = new JSONObject(mostFrequentPostTypeJson);
+			JSONObject obj5 = new JSONObject(topWordsJson);
+
 			
 			
 			JSONArray arr = new JSONArray();
@@ -113,12 +103,28 @@ public class Test extends HttpServlet {
 //			arr.put(obj2);
 			arr.put(obj2);
 			arr.put(obj3);
+			arr.put(obj4);
+			arr.put(obj5);
 			result = arr.toString();
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 //		System.out.println(result);
+		
+		
+		// Francis' data
+//		try {
+//			result = new JSONArray("[{\"friends\":[{\"color\":\"#3b5998\",\"imgSrc\":\"https://graph.facebook.com/10155520384595322/picture?width=85&height=85\",\"name\":\"Emily To\",\"likes\":19},{\"color\":\"#5bc0bd\",\"imgSrc\":\"https://graph.facebook.com/896464570395145/picture?width=85&height=85\",\"name\":\"Kenny Wong\",\"likes\":11},{\"color\":\"#f08a4b\",\"imgSrc\":\"https://graph.facebook.com/10155500478635702/picture?width=85&height=85\",\"name\":\"Arrin Linch\",\"likes\":10},{\"color\":\"#1c2541\",\"imgSrc\":\"https://graph.facebook.com/10105035261926668/picture?width=85&height=85\",\"name\":\"Krystle Fu\",\"likes\":9}]},{\"types\":[{\"color\":\"#3b5998\",\"description\":\"Status Update\",\"value\":9,\"type\":\"9\"},{\"color\":\"#5bc0bd\",\"description\":\"Image Post\",\"value\":26,\"type\":\"26\"},{\"color\":\"#2ebaeb\",\"description\":\"Shared Link\",\"value\":10,\"type\":\"10\"},{\"color\":\"#f08a4b\",\"description\":\"Video Post\",\"value\":5,\"type\":\"5\"}]},{\"frequency\":[{\"highest\":2,\"month\":\"Mon\",\"lowest\":2},{\"highest\":9,\"month\":\"Tue\",\"lowest\":9},{\"highest\":6,\"month\":\"Wed\",\"lowest\":6},{\"highest\":10,\"month\":\"Thu\",\"lowest\":10},{\"highest\":8,\"month\":\"Fri\",\"lowest\":8},{\"highest\":4,\"month\":\"Sat\",\"lowest\":4},{\"highest\":11,\"month\":\"Sun\",\"lowest\":11}]},{\"color\":\"#3a5897\",\"private\":[{\"percent\":2,\"value\":0},{\"percent\":11,\"value\":0},{\"percent\":20,\"value\":0},{\"percent\":30,\"value\":0},{\"percent\":51,\"value\":11},{\"percent\":57,\"value\":7},{\"percent\":70,\"value\":9},{\"percent\":75,\"value\":11},{\"percent\":88,\"value\":12},{\"percent\":100,\"value\":0},{\"percent\":110,\"value\":0},{\"percent\":120,\"value\":0}]}]").toString();
+//		} catch (JSONException e) {
+//			e.printStackTrace();
+//		}
+		
+		
+//		System.out.println(result);
 		out.println(result);
+		
+		
+		
 //		System.out.println("Here.");
 	}
 	
@@ -163,6 +169,43 @@ public class Test extends HttpServlet {
 //				"<li class=\"vvv-popular\"><a href=\"#\">Tech</a></li>";
 
 		return html;
+	}
+	
+	private String buildTopWordsJson(TopWordsResult result) {
+		List<WordCountPair> topWords = result.getTopWords(15);
+		
+//		System.out.println(topWords.size());
+		
+		
+		List<String> wordsHtml = new ArrayList<String>(topWords.size());
+		int emphasis = 5;
+		int previousCount = topWords.get(0).getCount();
+		for (int i = 0; i < topWords.size(); i++) {
+//			System.out.println(wordCountPair.getWord() + ": " + wordCountPair.getCount());
+			
+			if (emphasis > 0 && topWords.get(i).getCount() < previousCount) {
+				emphasis--;
+			}
+			
+			wordsHtml.add("<li class=\\\"" + giveMeVees(emphasis) + (emphasis > 0 ? "-" : "") + "popular\\\"><a href=\\\"#\\\"/>" + topWords.get(i).getWord() + "</a></li>");
+		}
+		
+		Collections.shuffle(wordsHtml);
+		
+		String html = "";
+		for (String wordHtml : wordsHtml) {
+			html += wordHtml;
+		}
+		
+//		html = StringEscapeUtils.escapeHtml4(html);
+		String json = "{" + 
+				"	\"html\": \"" + html + "\"," + 
+				"	\"topword\": \"" + topWords.get(0).getWord() + "\"" +
+				"}";
+		
+//		json = StringEscapeUtils.escapeHtml4(json);
+//		System.out.println(json);
+		return json;
 	}
 	
 	private String giveMeVees(int numVees) {

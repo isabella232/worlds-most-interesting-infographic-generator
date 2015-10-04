@@ -96,18 +96,15 @@
 					</div>
 				</section>
 				<section class="block-privacy fade-block">
-					<!--
 					<div class="text-holder">
 						<h2 class="blue-light">Your post privacy</h2>
 						<p><span class="number blue-light">3.1</span>highest average <span class="mark">public posts/week</span></p>
 						<p><span class="number blue">2.75</span>highest average <br><span class="mark">private posts/week</span></p>
 					</div>
-					-->
 					<div id="post-privacy-line-chart" data-public="inc/post-public.json"  data-private="inc/post-private.json">
 						<!-- Here insert chart -->
 					</div>
 				</section>
-				<!--
 				<section class="block-words fade-block">
 					<div class="text-holder">
 						<h2 class="black">Most used words on your feed</h2>
@@ -115,11 +112,10 @@
 					</div>
 					<div class="htagcloud">
 						<ul id="top-words" class="popularity">
-						<!- - Insert word cloud here - ->
+						<!-- Insert word cloud here -->
 						</ul>
 					</div>
 				</section>
-				-->
 			</div>
 		</main>
 		<footer id="footer">

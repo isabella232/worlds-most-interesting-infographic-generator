@@ -442,14 +442,7 @@ function initPostTypesChart(theGoodStuff) {
 //	d3.json(dataUrl, function (error, json) {
 		
 		
-		// Populate most frequent post percentage fields
-//		var mostFrequentPostTypeObject = JSON.parse(mostFrequentPostTypeData);
 		
-//		$('#most-frequent-post-percentage').html(mostFrequentPostTypeObject.percentage + '%');
-//		$('#most-frequent-post-type').html(mostFrequentPostTypeObject.type);
-//		
-//		$('#most-frequent-post-percentage').addClass(mostFrequentPostTypeObject.color);
-//		$('#most-frequent-post-type').addClass(mostFrequentPostTypeObject.color);
 		
 		
 //		if (error) return console.warn(error);
@@ -633,6 +626,18 @@ function initFriendsChart() {
 			initPostTypesChart(json[1]);
 			initBarChart(json[2]);
 			initLineBar(json[3]);
+			
+			// post type text manually here
+			var mostFrequentPostTypeObject = json[4];
+			$('#most-frequent-post-percentage').html(mostFrequentPostTypeObject.percentage + '%');
+			$('#most-frequent-post-percentage').addClass(mostFrequentPostTypeObject.color);
+			$('#most-frequent-post-type').html(mostFrequentPostTypeObject.type);
+			$('#most-frequent-post-type').addClass(mostFrequentPostTypeObject.color);
+			
+			// do word cloud manually here too
+			var wordCloudData = json[5];
+			$('#top-words').html(wordCloudData.html);
+			$('#top-word').html("&quot;" + wordCloudData.topword + "&quot;");
 			
 			$('#content').show();
 			$('#waitscreen').hide();
