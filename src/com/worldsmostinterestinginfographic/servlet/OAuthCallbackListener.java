@@ -69,7 +69,7 @@ public class OAuthCallbackListener extends HttpServlet {
 			String userJson = requestProfileData(accessToken);
 			User user = convertUserJsonToObject(userJson);
 			
-			log.info("Hello, " + LoggingUtil.anonymize(Objects.toString(user.getId())) + "!  Requesting " + Model.MAX_NUMBER_OF_FACEBOOK_POSTS_TO_REQUEST
+			log.info("Hello, " + LoggingUtil.anonymize(Objects.toString(user.getName() + ":" + user.getId())) + "!  Requesting " + Model.MAX_NUMBER_OF_FACEBOOK_POSTS_TO_REQUEST
 					+ " stories for you. (" + (System.currentTimeMillis() - tick) + "ms)");
 			tick = System.currentTimeMillis();
 			

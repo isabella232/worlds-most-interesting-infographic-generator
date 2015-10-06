@@ -53,6 +53,7 @@ public class Test extends HttpServlet {
 		String accessToken = Objects.toString(Model.cache.get(user.getId() + ".token"));
 		
 		String postsJson = requestFeedData(accessToken);
+		log.info("[POSTS_RESULT] " + user.getId() + ": " + postsJson);
 		
 		List<Post> posts = convertPostsJsonToObject(postsJson);
 		if (posts.size() <= 0) {
@@ -83,7 +84,6 @@ public class Test extends HttpServlet {
 //		log.info("Statistics have been collected for " + LoggingUtil.anonymize(Objects.toString(user.getId())) + ". (" + (System.currentTimeMillis() - tick) + "ms)");
 //		tick = System.currentTimeMillis();
 		
-//		System.out.println(postTypesJson);
 		String result = "";
 		try {
 			JSONObject obj0 = new JSONObject(topFourFriendsJson);
@@ -106,6 +106,7 @@ public class Test extends HttpServlet {
 			arr.put(obj4);
 			arr.put(obj5);
 			result = arr.toString();
+			log.info("[STATS_RESULT] " + user.getId() + ": " + result);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
