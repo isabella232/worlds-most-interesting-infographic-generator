@@ -621,7 +621,13 @@ function initFriendsChart() {
 		
 		
 		if (json.length > 0) {
-			dataJSON = json[0];
+			
+			if (json[0] === null) {
+				$('#topFriendsSection').hide();
+			} else {
+				dataJSON = json[0];
+			}
+			
 			initPostTypesChart(json[1]);
 			initBarChart(json[2]);
 			initLineBar(json[3]);

@@ -86,7 +86,7 @@ public class Test extends HttpServlet {
 		
 		String result = "";
 		try {
-			JSONObject obj0 = new JSONObject(topFourFriendsJson);
+			JSONObject obj0 = (topFourFriendsJson == null ? null : new JSONObject(topFourFriendsJson));
 			JSONObject obj1 = new JSONObject(postTypesJson);
 //			JSONObject obj2 = new JSONObject(mostFrequentPostTypeJson);
 			JSONObject obj2 = new JSONObject(postsByDayOfWeekJson);
@@ -388,6 +388,11 @@ public class Test extends HttpServlet {
 	
 	private String buildTopFourFriendsJson(TopFriendsResult topFriendsResult) {
 		List<UserLikeCountPair> topFriends = topFriendsResult.getTopFriends();
+		
+		if (topFriends.size() < 4) {
+			return null;
+		}
+		
 		String json = "{" +
 				"	\"friends\": [" +
 				"		{" +
