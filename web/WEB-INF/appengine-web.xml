@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
+
+    <application>most-interesting-infographic</application>
+
+    <!--
+        Version history
+
+        [v1]
+        Initial proof-of-concept.  Able to fetch profile data and feed posts vis OAuth 2.0 and displays basic statistics.
+
+
+        [v2]
+        First pass at integrating website design.
+
+
+        [v3]
+        Much more mature version.  Fetched all data upon authorization before displaying charts.  Submitted to Facebook.
+        Error'd too many times because of long wait time while fetching feed data.
+
+
+        [v4]
+        Cleaned up architecture.  Now displays infographic page as soon as receiving profile data.  Then proceeds to
+        request chart data from server via AJAX call afterward, and asynchronously.  Much better performance.  Submitted
+        once again to Facebook.  Approved!  Also received finaly version of code.  Now ready to throw away existing
+        codebase and start building the real production version of this application.
+    -->
+    <version>5</version>
+
+    <threadsafe>true</threadsafe>
+</appengine-web-app>
+
