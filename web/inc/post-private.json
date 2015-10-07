@@ -1,0 +1,45 @@
+[{
+	"private": [
+		{
+			"value": 0.75,
+			"percent": 2
+		},
+		{
+			"value": 1.25,
+			"percent": 11
+		},
+		{
+			"value": 1.2,
+			"percent": 20
+		},
+		{
+			"value": 1.4,
+			"percent": 30
+		},
+		{
+			"value": 1.7,
+			"percent": 51
+		},
+		{
+			"value": 2.2,
+			"percent": 57
+		},
+		{
+			"value": 2.22,
+			"percent": 70
+		},
+		{
+			"value": 1.8,
+			"percent": 75
+		},
+		{
+			"value": 2.0,
+			"percent": 88
+		},
+		{
+			"value": 2.75,
+			"percent": 100
+		}
+	],
+	"color": "#3a5897"
+}]

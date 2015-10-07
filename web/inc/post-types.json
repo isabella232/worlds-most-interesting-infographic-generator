@@ -1,0 +1,28 @@
+[{
+	"types": [
+		{
+			"type": "A",
+			"value": 40,
+			"description": "Status messages",
+			"color": "#3b5998"
+		},
+		{
+			"type": "B",
+			"value": 81,
+			"description": "Image Post",
+			"color": "#5bc0bd"
+		},
+		{
+			"type": "C",
+			"value": 10,
+			"description": "Shared link",
+			"color": "#2ebaeb"
+		},
+		{
+			"type": "D",
+			"value": 17,
+			"description": "Video Post",
+			"color": "#f08a4b"
+		}
+	]
+}]

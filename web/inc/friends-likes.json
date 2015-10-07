@@ -1,0 +1,28 @@
+[{
+	"friends": [
+		{
+			"imgSrc": "images/friend-1.jpg",
+			"likes": 256,
+			"name": "Stephanie Mathews",
+			"color": "#3b5998"
+		},
+		{
+			"imgSrc": "images/friend-2.jpg",
+			"likes": 196,
+			"name": "John Smith",
+			"color": "#5bc0bd"
+		},
+		{
+			"imgSrc": "images/friend-3.jpg",
+			"likes": 140,
+			"name": "Lizzie Keane",
+			"color": "#f08a4b"
+		},
+		{
+			"imgSrc": "images/friend-4.jpg",
+			"likes": 123,
+			"name": "Jane Doe",
+			"color": "#1c2541"
+		}
+	]
+}]
