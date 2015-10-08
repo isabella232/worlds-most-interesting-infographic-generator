@@ -2,7 +2,7 @@
         <div class="container">
             <div class="col">
                 <div class="logo">
-                    <a href="#">
+                    <a href="/">
                         <img src="images/logo.png" alt="WMIIG">
                     </a>
                 </div>
