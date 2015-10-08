@@ -24,6 +24,10 @@
         request chart data from server via AJAX call afterward, and asynchronously.  Much better performance.  Submitted
         once again to Facebook.  Approved!  Also received finaly version of code.  Now ready to throw away existing
         codebase and start building the real production version of this application.
+
+
+        [v5]
+        Starting from scratch.  First attempt at real production site.
     -->
     <version>5</version>
 
