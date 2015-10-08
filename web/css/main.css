@@ -1,3 +1,11 @@
+/* My custom CSS */
+.waitorerror {
+	height: 250px;
+	padding: 45px 0px 0px 50px;
+	position: relative;
+}
+
+
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
 
 /**

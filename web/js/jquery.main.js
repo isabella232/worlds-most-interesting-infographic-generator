@@ -7,6 +7,11 @@ jQuery(function() {
 	initLineBar();
 	initSetBackground();
 	initFadeBlock();
+
+	$('#content').hide();
+	$('#error').hide();
+	$('#spinner').spin({color: '#676767', top: '150px'});
+
 });
 
 // post privacy line chart
