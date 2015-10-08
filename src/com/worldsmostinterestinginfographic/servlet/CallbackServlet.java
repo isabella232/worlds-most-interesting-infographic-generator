@@ -58,7 +58,7 @@ public class CallbackServlet extends HttpServlet {
       // Get profile data
       log.info("[" + request.getSession().getId() + "] Access token " + LoggingUtils.anonymize(accessToken)
                + " received.  Requesting profile data.");
-      
+
       String userJson = requestProfileData(accessToken);
       User user = convertUserJsonToObject(userJson);
 
@@ -78,10 +78,10 @@ public class CallbackServlet extends HttpServlet {
 
     } else if (request.getParameter("error") != null) {
 
+      // An error happened during authorization code request
       String error = request.getParameter("error");
       String errorDescription = request.getParameter("error_description");
 
-      // An error happened during authorization code request
       log.severe("Error encountered during authorization code request: " + error + " - " + errorDescription);
 
       request.getSession().setAttribute("error", error);
