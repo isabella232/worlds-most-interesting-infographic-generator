@@ -12,16 +12,16 @@
                 <div class="box">
                     <strong class="title">Contact Me</strong>
                     <ul class="contact">
-                        <li><a href="#"><i class="icon-globe"></i> whoischarles.com</a></li>
-                        <li><a href="mailto:&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;&#119;&#104;&#111;&#105;&#115;&#099;&#104;&#097;&#114;&#108;&#101;&#115;&#046;&#099;&#111;&#109;"><i class="icon-envelope-o"></i> &#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;&#119;&#104;&#111;&#105;&#115;&#099;&#104;&#097;&#114;&#108;&#101;&#115;&#046;&#099;&#111;&#109;</a></li>
+                        <li><a href="http://www.whoischarles.com"><i class="icon-globe"></i> whoischarles.com</a></li>
+                        <li><a href="mailto:charles@whoischarles.com"><i class="icon-envelope-o"></i> charles@whoischarles.com</a></li>
                     </ul>
                 </div>
                 <div class="box">
                     <strong class="title">Follow Me</strong>
                     <ul class="contact">
-                        <li><a href="#">Github</a></li>
-                        <li><a href="#">Twitter</a></li>
-                        <li><a href="#">Facebook</a></li>
+                        <li><a href="https://github.com/charlesbihis">Github</a></li>
+                        <li><a href="https://twitter.com/charlesbihis">Twitter</a></li>
+                        <li><a href="https://facebook.com/charlesbihis">Facebook</a></li>
                     </ul>
                 </div>
             </div>
