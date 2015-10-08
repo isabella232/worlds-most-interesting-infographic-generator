@@ -1,19 +1,29 @@
 package com.worldsmostinterestinginfographic.servlet;
 
+import com.google.appengine.labs.repackaged.org.json.JSONException;
+import com.google.appengine.labs.repackaged.org.json.JSONObject;
+
 import com.worldsmostinterestinginfographic.model.Model;
+import com.worldsmostinterestinginfographic.model.object.User;
 import com.worldsmostinterestinginfographic.util.LoggingUtils;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
@@ -33,6 +43,7 @@ public class CallbackServlet extends HttpServlet {
 
     if (!StringUtils.isEmpty(authorizationCode)) {
 
+      // Get access token
       log.info(
           "[" + request.getSession().getId() + "] Starting session.  Requesting access token with authorization code "
           + LoggingUtils.anonymize(authorizationCode));
@@ -40,7 +51,28 @@ public class CallbackServlet extends HttpServlet {
 
       if (StringUtils.isEmpty(accessToken)) {
         response.sendRedirect("/uh-oh");
+        return;
       }
+
+      // Get profile data
+      log.info("[" + request.getSession().getId() + "] Access token " + LoggingUtils.anonymize(accessToken)
+               + " received.  Requesting profile data.");
+      String userJson = requestProfileData(accessToken);
+      User user = convertUserJsonToObject(userJson);
+
+      if (user == null) {
+        response.sendRedirect("/uh-oh");
+        return;
+      }
+
+      // Here we go
+      log.info("[" + request.getSession().getId() + "] Hello, " + LoggingUtils.anonymize(Objects.toString(user.getId()))
+               + "!");
+
+      Model.cache.put(request.getSession().getId() + ".profile", user);
+      Model.cache.put(request.getSession().getId() + ".token", accessToken);
+
+      response.sendRedirect("/you-rock");
 
     } else if (request.getParameter("error") != null) {
 
@@ -77,7 +109,7 @@ public class CallbackServlet extends HttpServlet {
 
       // TODO: Put real error detection here.  Should look for actual error codes and descriptions from the response.
       if (StringUtils.isEmpty(accessToken)) {
-        log.severe("An error occurred during access token request");
+        log.severe("[" + request.getSession().getId() + "]An error occurred during access token request");
         return null;
       }
 
@@ -85,5 +117,37 @@ public class CallbackServlet extends HttpServlet {
     } finally {
       httpClient.close();
     }
+  }
+
+  private String requestProfileData(String accessToken) throws IOException {
+    CloseableHttpClient httpClient = HttpClients.createDefault();
+    try {
+      // Use access token to request profile data
+      String requestUrl = "https://graph.facebook.com/v2.2/me?fields=" + Model.FACEBOOK_REQUESTED_PROFILE_FIELDS;
+      httpClient = HttpClients.createDefault();
+      HttpPost httpPost = new HttpPost(requestUrl);
+      httpPost.addHeader("Authorization", "Bearer " + accessToken);
+      List<NameValuePair> urlParameters = new ArrayList<>();
+      urlParameters.add(new BasicNameValuePair("method", "get"));
+      httpPost.setEntity(new UrlEncodedFormEntity(urlParameters));
+      HttpResponse httpResponse = httpClient.execute(httpPost);
+      BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent()));
+      String userJson = bufferedReader.readLine();
+      return userJson;
+    } finally {
+      httpClient.close();
+    }
+  }
+
+  private User convertUserJsonToObject(String userJson) {
+    User user = null;
+    try {
+      JSONObject userObject = new JSONObject(userJson);
+      user = new User(Long.valueOf(userObject.getString("id")), userObject.getString("name"));
+    } catch (JSONException e) {
+      e.printStackTrace();
+    }
+
+    return user;
   }
 }

@@ -1,4 +1,9 @@
+<%@ page import="com.worldsmostinterestinginfographic.model.object.User" %>
+<%@ page import="com.worldsmostinterestinginfographic.model.Model" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%
+    User user = (User)Model.cache.get(request.getSession().getId() + ".profile");
+%>
 <!DOCTYPE html>
 <html>
 <%@include file="/WEB-INF/jsp/inc/html-head.jsp" %>
@@ -8,9 +13,9 @@
     <main id="main" role="main">
         <article class="intro">
             <div class="container">
-                <h1>Hello, Dragos Aldea!</h1>
-                <img src="images/image-1.jpg" alt="image description">
-                <p><span>26 years old</span>Web designer &amp; Developer</p>
+                <h1>Hello, <%= user.getName() %>!</h1>
+                <img src="https://graph.facebook.com/<%= user.getId() %>/picture?width=268&height=268" alt="image description" height="268px">
+                <!--<p><span>26 years old</span>Web designer &amp; Developer</p>-->
             </div>
         </article>
         <div class="container">
