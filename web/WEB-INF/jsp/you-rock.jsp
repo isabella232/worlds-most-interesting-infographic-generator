@@ -14,7 +14,7 @@
         <article class="intro">
             <div class="container">
                 <h1>Hello, <%= user.getName() %>!</h1>
-                <img src="https://graph.facebook.com/<%= user.getId() %>/picture?width=268&height=268" alt="image description" height="268px">
+                <img src="https://graph.facebook.com/<%= user.getId() %>/picture?width=268&height=268" alt="image description">
                 <!--<p><span>26 years old</span>Web designer &amp; Developer</p>-->
             </div>
         </article>

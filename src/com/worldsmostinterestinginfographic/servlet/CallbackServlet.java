@@ -47,6 +47,7 @@ public class CallbackServlet extends HttpServlet {
       log.info(
           "[" + request.getSession().getId() + "] Starting session.  Requesting access token with authorization code "
           + LoggingUtils.anonymize(authorizationCode));
+
       String accessToken = requestAccessToken(authorizationCode, request);
 
       if (StringUtils.isEmpty(accessToken)) {
@@ -57,6 +58,7 @@ public class CallbackServlet extends HttpServlet {
       // Get profile data
       log.info("[" + request.getSession().getId() + "] Access token " + LoggingUtils.anonymize(accessToken)
                + " received.  Requesting profile data.");
+      
       String userJson = requestProfileData(accessToken);
       User user = convertUserJsonToObject(userJson);
 
@@ -89,8 +91,6 @@ public class CallbackServlet extends HttpServlet {
       log.severe("An unknown error encountered at redirection endpoint");
       response.sendRedirect("/uh-oh");
     }
-
-    response.sendRedirect("/you-rock");
   }
 
   private String requestAccessToken(String authorizationCode, HttpServletRequest request) throws IOException {
