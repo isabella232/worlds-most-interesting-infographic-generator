@@ -1,36 +1,10 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WMIIG</title>
-    <link media="all" rel="stylesheet" href="css/main.css">
-    <link href='https://fonts.googleapis.com/css?family=Roboto:500,400,300,300italic,100%7CLato:400,300italic,300'
-          rel='stylesheet' type='text/css'>
-</head>
+<%@include file="/WEB-INF/jsp/inc/html-head.jsp" %>
 <body>
 <div id="wrapper">
-    <header id="header">
-        <div class="container">
-            <div class="logo">
-                <a href="#">
-                    <img src="images/logo.png" alt="WMIIG">
-                </a>
-            </div>
-            <div class="logo logo-alt">
-                <a href="#">
-                    <img src="images/logo-alt.png" alt="WMIIG">
-                </a>
-            </div>
-            <div class="github">
-                <a href="#">
-                    <i class="icon-github"></i>
-                    See <span class="thin">me on</span> Github
-                </a>
-            </div>
-        </div>
-    </header>
+<%@include file="/WEB-INF/jsp/inc/header.jsp" %>
     <main id="main" role="main">
         <div class="promo bg-holder">
             <div class="bg-frame"><img src="images/bg.jpg" width="1920" height="658" alt=""></div>
@@ -97,43 +71,8 @@
             </div>
         </section>
     </main>
-    <footer id="footer">
-        <div class="container">
-            <div class="col">
-                <div class="logo">
-                    <a href="#">
-                        <img src="images/logo.png" alt="WMIIG">
-                    </a>
-                </div>
-                <span class="copyright">Copyright 2015 <a class="copyright-link" href="#">WMIIG</a> | All rights reserved</span>
-            </div>
-            <div class="col">
-                <div class="box">
-                    <strong class="title">Contact Me</strong>
-                    <ul class="contact">
-                        <li><a href="#"><i class="icon-globe"></i> whoischarles.com</a></li>
-                        <li>
-                            <a href="mailto:&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;&#119;&#104;&#111;&#105;&#115;&#099;&#104;&#097;&#114;&#108;&#101;&#115;&#046;&#099;&#111;&#109;"><i
-                                    class="icon-envelope-o"></i> &#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;&#119;&#104;&#111;&#105;&#115;&#099;&#104;&#097;&#114;&#108;&#101;&#115;&#046;&#099;&#111;&#109;
-                            </a></li>
-                    </ul>
-                </div>
-                <div class="box">
-                    <strong class="title">Follow Me</strong>
-                    <ul class="contact">
-                        <li><a href="#">Github</a></li>
-                        <li><a href="#">Twitter</a></li>
-                        <li><a href="#">Facebook</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </footer>
+<%@include file="/WEB-INF/jsp/inc/footer.jsp" %>
 </div>
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-<script type="text/javascript">window.jQuery || document.write(
-        '<script src="js/jquery-1.11.2.min.js"><\/script>')</script>
-<script type="text/javascript" src="js/d3.min.js"></script>
-<script type="text/javascript" src="js/jquery.main.js"></script>
+<%@include file="/WEB-INF/jsp/inc/scripts.jsp" %>
 </body>
 </html>

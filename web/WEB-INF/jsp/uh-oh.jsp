@@ -1,20 +1,6 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: Charles
-  Date: 10/7/2015
-  Time: 11:07 PM
-  To change this template use File | Settings | File Templates.
---%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WMIIG</title>
-    <link media="all" rel="stylesheet" href="css/main.css">
-    <link href='https://fonts.googleapis.com/css?family=Roboto:500,400,300,300italic,100%7CLato:400,300italic,300' rel='stylesheet' type='text/css'>
-</head>
+<%@include file="/WEB-INF/jsp/inc/html-head.jsp" %>
 <body>
 <div id="wrapper">
     <header id="header">
@@ -50,9 +36,6 @@
         </section>
     </main>
 </div>
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-<script type="text/javascript">window.jQuery || document.write('<script src="js/jquery-1.11.2.min.js"><\/script>')</script>
-<script type="text/javascript" src="js/d3.min.js"></script>
-<script type="text/javascript" src="js/jquery.main.js"></script>
+<%@include file="/WEB-INF/jsp/inc/scripts.jsp" %>
 </body>
 </html>
