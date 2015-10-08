@@ -39,7 +39,8 @@
 
                 <p>Log in with your Facebook account to see the world’s <span
                         class="mark">most interesting infographic</span></p>
-                <a href="/callback" class="btn"><i class="icon-facebook"></i>Login <span class="thin">with</span> Facebook</a>
+                <a href="/callback" class="btn"><i class="icon-facebook"></i>Login <span class="thin">with</span>
+                    Facebook</a>
             </article>
         </div>
         <section class="presentation">

@@ -19,6 +19,10 @@
         <servlet-name>YouRockServlet</servlet-name>
         <jsp-file>/WEB-INF/jsp/you-rock.jsp</jsp-file>
     </servlet>
+    <servlet>
+        <servlet-name>UhOhServlet</servlet-name>
+        <jsp-file>/WEB-INF/jsp/uh-oh.jsp</jsp-file>
+    </servlet>
 
     <servlet-mapping>
         <servlet-name>CallbackServlet</servlet-name>
@@ -27,6 +31,10 @@
     <servlet-mapping>
         <servlet-name>YouRockServlet</servlet-name>
         <url-pattern>/you-rock</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UhOhServlet</servlet-name>
+        <url-pattern>/uh-oh</url-pattern>
     </servlet-mapping>
 
 </web-app>
