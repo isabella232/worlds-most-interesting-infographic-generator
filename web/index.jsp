@@ -1,3 +1,6 @@
+<%@ page import="com.worldsmostinterestinginfographic.model.Model" %>
+<%@ page import="java.net.URLEncoder" %>
+<%@ page import="java.nio.charset.StandardCharsets" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html>
@@ -13,8 +16,7 @@
 
                 <p>Log in with your Facebook account to see the world’s <span
                         class="mark">most interesting infographic</span></p>
-                <a href="/callback" class="btn"><i class="icon-facebook"></i>Login <span class="thin">with</span>
-                    Facebook</a>
+                <a href="<%=Model.AUTHORIZATION_ENDPOINT%>?response_type=code&scope=user_posts&client_id=<%= Model.CLIENT_ID %>&redirect_uri=<%=URLEncoder.encode(request.getScheme() + "://" + request.getServerName() + Model.REDIRECTION_ENDPOINT, StandardCharsets.UTF_8.name())%>" class="btn"><i class="icon-facebook"></i>Login <span class="thin">with</span> Facebook</a>
             </article>
         </div>
         <section class="presentation">
