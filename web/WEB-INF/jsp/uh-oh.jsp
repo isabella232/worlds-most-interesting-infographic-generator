@@ -3,26 +3,7 @@
 <%@include file="/WEB-INF/jsp/inc/html-head.jsp" %>
 <body>
 <div id="wrapper">
-    <header id="header">
-        <div class="container">
-            <div class="logo">
-                <a href="#">
-                    <img src="images/logo.png" alt="WMIIG">
-                </a>
-            </div>
-            <div class="logo logo-alt">
-                <a href="#">
-                    <img src="images/logo-alt.png" alt="WMIIG">
-                </a>
-            </div>
-            <div class="github">
-                <a href="#">
-                    <i class="icon-github"></i>
-                    See <span class="thin">me on</span> Github
-                </a>
-            </div>
-        </div>
-    </header>
+    <%@include file="/WEB-INF/jsp/inc/header.jsp" %>
     <main id="main" role="main">
         <section class="error" style="background-image:url(images/bg-error.jpg);">
             <span class="overlay"></span>
