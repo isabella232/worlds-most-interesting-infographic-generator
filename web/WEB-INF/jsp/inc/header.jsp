@@ -10,11 +10,5 @@
                     <img src="images/logo-alt.png" alt="WMIIG">
                 </a>
             </div>
-            <div class="github">
-                <a href="#">
-                    <i class="icon-github"></i>
-                    See <span class="thin">me on</span> Github
-                </a>
-            </div>
         </div>
     </header>
