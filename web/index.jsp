@@ -19,59 +19,6 @@
                 <a href="<%=Model.AUTHORIZATION_ENDPOINT%>?response_type=code&scope=user_posts&client_id=<%= Model.CLIENT_ID %>&redirect_uri=<%=URLEncoder.encode(request.getScheme() + "://" + request.getServerName() + Model.REDIRECTION_ENDPOINT, StandardCharsets.UTF_8.name())%>" class="btn"><i class="icon-facebook"></i>Login <span class="thin">with</span> Facebook</a>
             </article>
         </div>
-        <section class="presentation">
-            <div class="container fade-block">
-                <div class="img-holder">
-                    <img src="images/item-1.jpg" alt="image description">
-                </div>
-                <div class="text-holder">
-                    <h2>What is <span class="medium">this?</span></h2>
-
-                    <p>This entire website is a working example of an application built in a book called <a class="mark"
-                                                                                                            href="#">“Mastering
-                        OAuth 2”</a></p>
-
-                    <p>This book discusses building client applications that integrate with service providers like
-                        Facebook, Twitter, and Instagram, using the OAuth 2 protocol.</p>
-                </div>
-            </div>
-        </section>
-        <section class="block-do bg-holder">
-            <div class="bg-frame"><img src="images/bg-blue.jpg" width="1920" height="903" alt=""></div>
-            <div class="container fade-block">
-                <div class="text-holder">
-                    <h2>What does <span class="mark">it do?</span></h2>
-
-                    <p>Using OAuth 2, you can integrate with service providers, like Facebook, to say, make the most
-                        interesting infographics.</p>
-
-                    <p>This book does exactly this using 2 examples:</p>
-                </div>
-                <div class="col-holder">
-                    <div class="col">
-                        <div class="img-holder">
-                            <img src="images/example-1.png" alt="image description">
-                        </div>
-                        <strong class="title">client Side example</strong>
-                    </div>
-                    <div class="col">
-                        <div class="img-holder">
-                            <img src="images/example-2.png" alt="image description">
-                        </div>
-                        <strong class="title">Server side example</strong>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <section class="block-github">
-            <div class="container fade-block">
-                <h2>See for yourself</h2>
-
-                <p>It’s aaaallll open source. Embrace and extend!</p>
-                <a href="#" class="btn"><i class="icon-github"></i>See <span class="thin">me on</span> Github</a>
-                <span class="decor">Buy the book, grok the code, and build the next big application!</span>
-            </div>
-        </section>
     </main>
 <%@include file="/WEB-INF/jsp/inc/footer.jsp" %>
 </div>
