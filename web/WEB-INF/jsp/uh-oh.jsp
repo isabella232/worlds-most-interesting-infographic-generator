@@ -11,7 +11,15 @@
                 <div class="text-holder">
                     <h1>Something is definitely wrong!</h1>
                     <p>An error occurred and now you're here.<br> Don't worry.  Top men are on it.</p>
-                    <p><%= request.getSession().getAttribute("error") + ": " + request.getSession().getAttribute("errorDescription") %></p>
+                    <%
+                        if (request.getSession().getAttribute("error") != null) {
+                            out.println("<p>" + request.getSession().getAttribute("error") + "</p>");
+                        }
+
+                        if (request.getSession().getAttribute("errorDescription") != null) {
+                            out.println("<p>" + request.getSession().getAttribute("errorDescription") + "</p>");
+                        }
+                    %>
                     <a href="/" class="btn">Back <span class="thin">to</span> Homepage</a>
                 </div>
             </div>
