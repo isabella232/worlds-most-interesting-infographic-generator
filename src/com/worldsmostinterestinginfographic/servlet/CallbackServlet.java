@@ -82,10 +82,10 @@ public class CallbackServlet extends HttpServlet {
       String error = request.getParameter("error");
       String errorDescription = request.getParameter("error_description");
 
-      log.severe("Error encountered during authorization code request: " + error + " - " + errorDescription);
-
       request.getSession().setAttribute("error", error);
       request.getSession().setAttribute("errorDescription", errorDescription);
+
+      log.severe("Error encountered during authorization code request: " + error + " - " + errorDescription);
       response.sendRedirect("/uh-oh");
     } else {
       log.severe("An unknown error encountered at redirection endpoint");
