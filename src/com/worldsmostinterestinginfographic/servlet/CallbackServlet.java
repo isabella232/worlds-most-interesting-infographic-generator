@@ -87,6 +87,7 @@ public class CallbackServlet extends HttpServlet {
 
       log.severe("Error encountered during authorization code request: " + error + " - " + errorDescription);
       response.sendRedirect("/uh-oh");
+
     } else {
       log.severe("An unknown error encountered at redirection endpoint");
       response.sendRedirect("/uh-oh");
@@ -123,7 +124,7 @@ public class CallbackServlet extends HttpServlet {
     CloseableHttpClient httpClient = HttpClients.createDefault();
     try {
       // Use access token to request profile data
-      String requestUrl = "https://graph.facebook.com/v2.2/me?fields=" + Model.FACEBOOK_REQUESTED_PROFILE_FIELDS;
+      String requestUrl = "https://graph.facebook.com/v2.5/me?fields=" + Model.FACEBOOK_REQUESTED_PROFILE_FIELDS;   // TODO: Decide whether to abstract away API URL (to abstract away version)
       httpClient = HttpClients.createDefault();
       HttpPost httpPost = new HttpPost(requestUrl);
       httpPost.addHeader("Authorization", "Bearer " + accessToken);
@@ -139,6 +140,7 @@ public class CallbackServlet extends HttpServlet {
     }
   }
 
+  // TODO: May be able to remove those helper method.  Perhaps can put as constructor in User class.
   private User convertUserJsonToObject(String userJson) {
     User user = null;
     try {
