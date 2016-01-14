@@ -6,7 +6,7 @@
                         <img src="images/logo.png" alt="WMIIG">
                     </a>
                 </div>
-                <span class="copyright">Copyright 2015 <a class="copyright-link" href="#">WMIIG</a> | All rights reserved</span>
+                <span class="copyright">Copyright 2015-2016 <a class="copyright-link" href="/">WMIIG</a> | All rights reserved</span>
             </div>
             <div class="col">
                 <div class="box">
