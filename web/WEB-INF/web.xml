@@ -16,6 +16,10 @@
         <servlet-class>com.worldsmostinterestinginfographic.servlet.CallbackServlet</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>StatisticsServlet</servlet-name>
+        <servlet-class>com.worldsmostinterestinginfographic.servlet.StatisticsServlet</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>YouRockServlet</servlet-name>
         <jsp-file>/WEB-INF/jsp/you-rock.jsp</jsp-file>
     </servlet>
@@ -27,6 +31,10 @@
     <servlet-mapping>
         <servlet-name>CallbackServlet</servlet-name>
         <url-pattern>/callback</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>StatisticsServlet</servlet-name>
+        <url-pattern>/stats</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>YouRockServlet</servlet-name>
