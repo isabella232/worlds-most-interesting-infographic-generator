@@ -137,5 +137,11 @@
 <%@include file="/WEB-INF/jsp/inc/footer.jsp" %>
 </div>
 <%@include file="/WEB-INF/jsp/inc/scripts.jsp" %>
+<script>
+    $.getJSON( "/stats", function( data ) {
+        alert(data.data);
+        blah = data;
+    });
+</script>
 </body>
 </html>
