@@ -7,24 +7,30 @@ import java.security.NoSuchAlgorithmException;
 public enum LoggingUtils {
   INSTANCE;
 
+  /**
+   * Anonymize input data.
+   *
+   * @param statement The statement to anonymize
+   * @return An anonymized, but reproducible, version of the input data
+   */
   public static String anonymize(String statement) {
+
     byte[] bytesOfMessage = statement.getBytes(StandardCharsets.UTF_8);
 
-    MessageDigest md = null;
-
+    MessageDigest messageDigest = null;
     try {
-      md = MessageDigest.getInstance("MD5");
+      messageDigest = MessageDigest.getInstance("MD5");
     } catch (NoSuchAlgorithmException e) {
       e.printStackTrace();
     }
 
-    byte[] thedigest = md.digest(bytesOfMessage);
+    byte[] thedigest = messageDigest.digest(bytesOfMessage);
 
-    StringBuffer sb = new StringBuffer();
+    StringBuffer stringBuffer = new StringBuffer();
     for (int i = 0; i < thedigest.length; i++) {
-      sb.append(Integer.toString((thedigest[i] & 0xff) + 0x100, 16).substring(1));
+      stringBuffer.append(Integer.toString((thedigest[i] & 0xff) + 0x100, 16).substring(1));
     }
 
-    return "[" + sb.toString() + "]";
+    return "[" + stringBuffer.toString() + "]";
   }
 }
