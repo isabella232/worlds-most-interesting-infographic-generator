@@ -1,7 +1,7 @@
 // page init
 jQuery(function() {
 	initSameHeight();
-	initFriendsChart();
+	//initFriendsChart();
 	initPostTypesChart();
 	initBarChart();
 	initLineBar();
@@ -11,7 +11,6 @@ jQuery(function() {
 	$('#content').hide();
 	$('#error').hide();
 	$('#spinner').spin({color: '#676767', top: '150px'});
-
 });
 
 // post privacy line chart
@@ -552,7 +551,7 @@ function initPostTypesChart() {
 }
 
 // bar chart post likes
-function initFriendsChart() {
+function initFriendsChart(topFriends) {
 	var holder = d3.select('#friend-chart');
 	if (!holder.node()) return;
 
@@ -572,8 +571,19 @@ function initFriendsChart() {
 	var offserBetweenText = 5;
 
 	d3.json(dataUrl, function (error, json) {
-		if (error) return console.warn(error);
-		dataJSON = json[0];
+		//if (error) return console.warn(error);
+		//dataJSON = json[0];
+		dataJSON = topFriends;
+
+        $('#content').show();
+        $('#waitscreen').hide();
+        $(this).spin(false);
+
+        // show error
+        //$('#error').show();
+        //$('#waitscreen').hide();
+        //$(this).spin(false);
+        //return;
 
 		// set friends amount
 		var friendsAmount = d3.select('#friends-amount');

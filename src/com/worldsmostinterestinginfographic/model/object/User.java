@@ -19,4 +19,18 @@ public final class User implements Serializable {
   public String getName() {
     return name;
   }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (obj == null || !(obj instanceof User)) {
+      return false;
+    }
+
+    return id == ((User)obj).getId();
+  }
+
+  @Override
+  public int hashCode() {
+    return (int)id;
+  }
 }

@@ -139,8 +139,10 @@
 <%@include file="/WEB-INF/jsp/inc/scripts.jsp" %>
 <script>
     $.getJSON( "/stats", function( data ) {
-        alert(data.data);
+        alert(data.INFOGRAPHIC_TOP_FRIENDS);
         blah = data;
+
+        initFriendsChart(data.INFOGRAPHIC_TOP_FRIENDS);
     });
 </script>
 </body>

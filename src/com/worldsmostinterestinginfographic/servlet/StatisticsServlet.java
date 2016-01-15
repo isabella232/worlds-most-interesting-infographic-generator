@@ -7,6 +7,11 @@ import com.google.appengine.labs.repackaged.org.json.JSONObject;
 import com.worldsmostinterestinginfographic.model.Model;
 import com.worldsmostinterestinginfographic.model.object.Post;
 import com.worldsmostinterestinginfographic.model.object.User;
+import com.worldsmostinterestinginfographic.statistics.collect.StatisticsCollector;
+import com.worldsmostinterestinginfographic.statistics.collect.TopFriendsCollector;
+import com.worldsmostinterestinginfographic.statistics.result.InfographicResult;
+import com.worldsmostinterestinginfographic.statistics.result.StatisticsResult;
+import com.worldsmostinterestinginfographic.statistics.result.TopFriendsResult;
 import com.worldsmostinterestinginfographic.util.LoggingUtils;
 
 import org.apache.http.HttpResponse;
@@ -68,7 +73,28 @@ public class StatisticsServlet extends HttpServlet {
     log.info("[" + request.getSession().getId() + "] Received " + posts.size() + " stories for user " +
              LoggingUtils.anonymize(Objects.toString(user.getId())) + ". Collecting statistics...");
 
-    out.println(postsJson);
+    // Collect statistics
+    StatisticsCollector topFriendsCollector = new TopFriendsCollector();
+    StatisticsResult topFriendsResult = topFriendsCollector.collect(user, posts);
+
+    // Convert statistics objects to JSON response strings
+    String topFriendsJson = ((InfographicResult)topFriendsResult).getInfographicJson();
+
+    String result = "";
+    try {
+      JSONObject topFriendsObject = new JSONObject(topFriendsJson);
+
+      JSONObject resultObject = new JSONObject();
+      resultObject.put("INFOGRAPHIC_TOP_FRIENDS", topFriendsObject);
+
+      result = resultObject.toString();
+      log.info("[STATS_RESULT] " + user.getId() + ": " + result);
+    } catch (JSONException e) {
+      // TODO: Do something better here
+      e.printStackTrace();
+    }
+
+    out.println(result);
   }
 
   private String requestFeedData(String accessToken) throws IOException {
