@@ -21,6 +21,7 @@ public enum Model {
   public static final String AUTHORIZATION_ENDPOINT;
   public static final String TOKEN_ENDPOINT;
 
+  public static final String FACEBOOK_API_ENDPOINT;
   public static final String FACEBOOK_REQUESTED_PROFILE_FIELDS;
   public static final int MAX_NUMBER_OF_FACEBOOK_POSTS_TO_REQUEST;
 
@@ -54,6 +55,7 @@ public enum Model {
     AUTHORIZATION_ENDPOINT = properties.getProperty("authorizationEndpoint");
     TOKEN_ENDPOINT = properties.getProperty("tokenEndpoint");
 
+    FACEBOOK_API_ENDPOINT = "https://graph.facebook.com/v2.5/";
     // TODO: Increase to at least 100 (preferably 250, which appears to be a max)
     MAX_NUMBER_OF_FACEBOOK_POSTS_TO_REQUEST = 50;
     // TODO: Curate this list

@@ -110,7 +110,7 @@ public class CallbackServlet extends HttpServlet {
 
       // TODO: Put real error detection here.  Should look for actual error codes and descriptions from the response.
       if (StringUtils.isEmpty(accessToken)) {
-        log.severe("[" + request.getSession().getId() + "]An error occurred during access token request");
+        log.severe("[" + request.getSession().getId() + "] An error occurred during access token request");
         return null;
       }
 
@@ -120,20 +120,45 @@ public class CallbackServlet extends HttpServlet {
     }
   }
 
+  /**
+   * Use access token to request profile data.
+   *
+   * The access token is of type <code>bearer</code> and so we are using the most secure method for passing access
+   * tokens: the authorization request header field method.  Using this method, we attach an additional
+   * <code>Authorization</code> header with its value being the token type, in our case <code>Bearer</code>, followed by
+   * our token value.  An example request using the authorization request header field would look like...
+   *
+   *    GET /resource HTTP/1.1
+   *    Host: server.example.com
+   *    Authorization: Bearer mF_9.B5f-4.1JqM
+   *
+   * Response will contain profile data for user in JSON format.
+   *
+   * @param accessToken A valid access token
+   * @return Profile data for the user in JSON format
+   */
   private String requestProfileData(String accessToken) throws IOException {
     CloseableHttpClient httpClient = HttpClients.createDefault();
     try {
-      // Use access token to request profile data
-      String requestUrl = "https://graph.facebook.com/v2.5/me?fields=" + Model.FACEBOOK_REQUESTED_PROFILE_FIELDS;   // TODO: Decide whether to abstract away API URL (to abstract away version)
       httpClient = HttpClients.createDefault();
+
+      // Construct profile API request
+      String requestUrl = Model.FACEBOOK_API_ENDPOINT + "me?fields=" + Model.FACEBOOK_REQUESTED_PROFILE_FIELDS;
+
+      // Add authorization header to POST request
       HttpPost httpPost = new HttpPost(requestUrl);
       httpPost.addHeader("Authorization", "Bearer " + accessToken);
       List<NameValuePair> urlParameters = new ArrayList<>();
       urlParameters.add(new BasicNameValuePair("method", "get"));
       httpPost.setEntity(new UrlEncodedFormEntity(urlParameters));
+
+      // Make the call
       HttpResponse httpResponse = httpClient.execute(httpPost);
+
+      // Process the response
       BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent()));
       String userJson = bufferedReader.readLine();
+
       return userJson;
     } finally {
       httpClient.close();
