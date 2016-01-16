@@ -40,10 +40,6 @@ public class StatisticsServlet extends HttpServlet {
 
   private static final Logger log = Logger.getLogger(StatisticsServlet.class.getName());
 
-  protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-  }
-
   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
     PrintWriter out = response.getWriter();

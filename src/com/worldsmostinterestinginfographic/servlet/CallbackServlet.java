@@ -2,9 +2,14 @@ package com.worldsmostinterestinginfographic.servlet;
 
 import com.google.appengine.labs.repackaged.org.json.JSONException;
 import com.google.appengine.labs.repackaged.org.json.JSONObject;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import com.worldsmostinterestinginfographic.model.Model;
 import com.worldsmostinterestinginfographic.model.object.User;
+import com.worldsmostinterestinginfographic.service.FacebookService;
+import com.worldsmostinterestinginfographic.service.ServiceProvider;
+import com.worldsmostinterestinginfographic.util.FacebookGraphUtils;
 import com.worldsmostinterestinginfographic.util.LoggingUtils;
 
 import org.apache.commons.lang3.StringUtils;
@@ -31,12 +36,17 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+@Singleton
 public class CallbackServlet extends HttpServlet {
 
   private static final Logger log = Logger.getLogger(CallbackServlet.class.getName());
 
+  @Inject
+  private ServiceProvider facebookService;
+
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    String blah = facebookService.sayHello();
 
     // Check for the presence of an authorization code
     String authorizationCode = request.getParameter("code");
@@ -49,7 +59,6 @@ public class CallbackServlet extends HttpServlet {
           + LoggingUtils.anonymize(authorizationCode));
 
       String accessToken = requestAccessToken(authorizationCode, request);
-
       if (StringUtils.isEmpty(accessToken)) {
         response.sendRedirect("/uh-oh");
         return;
@@ -59,9 +68,7 @@ public class CallbackServlet extends HttpServlet {
       log.info("[" + request.getSession().getId() + "] Access token " + LoggingUtils.anonymize(accessToken)
                + " received.  Requesting profile data.");
 
-      String userJson = requestProfileData(accessToken);
-      User user = convertUserJsonToObject(userJson);
-
+      User user = FacebookGraphUtils.getProfile(accessToken);
       if (user == null) {
         response.sendRedirect("/uh-oh");
         return;
@@ -144,6 +151,8 @@ public class CallbackServlet extends HttpServlet {
 
       // Construct profile API request
       String requestUrl = Model.FACEBOOK_API_ENDPOINT + "me?fields=" + Model.FACEBOOK_REQUESTED_PROFILE_FIELDS;
+//  requestUrl = "https://www.googleapis.com/tasks/v1/users/@me/lists/";
+//  accessToken = "ya29.awKuvyg42XFkMlGsPmhqG8HFtn6UlhzohwV_AH-R-QKSgyew28aRHE5HScit7Luc8O7Q";
 
       // Add authorization header to POST request
       HttpPost httpPost = new HttpPost(requestUrl);
@@ -156,8 +165,12 @@ public class CallbackServlet extends HttpServlet {
       HttpResponse httpResponse = httpClient.execute(httpPost);
 
       // Process the response
+      String userJson = "";
+      String currentLine;
       BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent()));
-      String userJson = bufferedReader.readLine();
+      while ((currentLine = bufferedReader.readLine()) != null) {
+        userJson += currentLine;
+      }
 
       return userJson;
     } finally {
@@ -165,7 +178,7 @@ public class CallbackServlet extends HttpServlet {
     }
   }
 
-  // TODO: May be able to remove those helper method.  Perhaps can put as constructor in User class.
+  // TODO: May be able to remove those helper method.  Perhaps can put as constructor in User class, or utility class.
   private User convertUserJsonToObject(String userJson) {
     User user = null;
     try {
