@@ -1,12 +1,18 @@
-package com.worldsmostinterestinginfographic.util;
+package com.worldsmostinterestinginfographic.facebook;
 
 import com.worldsmostinterestinginfographic.model.Model;
 import com.worldsmostinterestinginfographic.model.object.User;
+import com.worldsmostinterestinginfographic.util.OAuth2Utils;
 
-public enum FacebookGraphUtils {
-  INSTANCE;
+public class FacebookService {
 
-  public static User getProfile(String accessToken) {
+  private final FacebookObjectConverter facebookObjectConverter;
+
+  public FacebookService() {
+    facebookObjectConverter = new FacebookObjectConverter();
+  }
+
+  public User getProfile(String accessToken) {
 
     // Construct profile API request
     String requestUrl = Model.FACEBOOK_API_ENDPOINT + "me?fields=" + Model.FACEBOOK_REQUESTED_PROFILE_FIELDS;
@@ -15,7 +21,7 @@ public enum FacebookGraphUtils {
     String profileJson = OAuth2Utils.makeProtectedResourceRequest(requestUrl, accessToken);
 
     // Convert profile JSON to profile object
-    User user = new User(profileJson);
+    User user = facebookObjectConverter.convertJsonToUser(profileJson);
 
     return user;
   }

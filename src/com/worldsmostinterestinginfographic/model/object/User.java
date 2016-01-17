@@ -1,8 +1,5 @@
 package com.worldsmostinterestinginfographic.model.object;
 
-import com.google.appengine.labs.repackaged.org.json.JSONException;
-import com.google.appengine.labs.repackaged.org.json.JSONObject;
-
 import java.io.Serializable;
 
 public final class User implements Serializable {
@@ -13,16 +10,6 @@ public final class User implements Serializable {
   public User(long id, String name) {
     this.id = id;
     this.name = name;
-  }
-
-  public User(String userJson) {
-    try {
-      JSONObject userObject = new JSONObject(userJson);
-      this.id = Long.valueOf(userObject.getString("id"));
-      this.name = userObject.getString("name");
-    } catch (JSONException e) {
-      e.printStackTrace();
-    }
   }
 
   public long getId() {

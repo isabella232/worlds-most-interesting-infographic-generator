@@ -4,27 +4,18 @@
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
          version="3.1">
 
-    <!--
-	  - Our entry point.
-	  -->
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
 
-    <filter>
-        <filter-name>guiceFilter</filter-name>
-        <filter-class>com.google.inject.servlet.GuiceFilter</filter-class>
-    </filter>
-
-    <filter-mapping>
-        <filter-name>guiceFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
-
-    <listener>
-        <listener-class>com.worldsmostinterestinginfographic.MyGuiceServletConfig</listener-class>
-    </listener>
-
+    <servlet>
+        <servlet-name>CallbackServlet</servlet-name>
+        <servlet-class>com.worldsmostinterestinginfographic.servlet.CallbackServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>StatisticsServlet</servlet-name>
+        <servlet-class>com.worldsmostinterestinginfographic.servlet.StatisticsServlet</servlet-class>
+    </servlet>
     <servlet>
         <servlet-name>YouRockServlet</servlet-name>
         <jsp-file>/WEB-INF/jsp/you-rock.jsp</jsp-file>
@@ -34,6 +25,14 @@
         <jsp-file>/WEB-INF/jsp/uh-oh.jsp</jsp-file>
     </servlet>
 
+    <servlet-mapping>
+        <servlet-name>CallbackServlet</servlet-name>
+        <url-pattern>/callback</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>StatisticsServlet</servlet-name>
+        <url-pattern>/stats</url-pattern>
+    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>YouRockServlet</servlet-name>
         <url-pattern>/you-rock</url-pattern>
