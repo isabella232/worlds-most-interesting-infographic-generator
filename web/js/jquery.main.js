@@ -1,7 +1,6 @@
 // page init
 jQuery(function() {
 	initSameHeight();
-	//initFriendsChart();
 	initPostTypesChart();
 	initBarChart();
 	initLineBar();
@@ -12,6 +11,200 @@ jQuery(function() {
 	$('#error').hide();
 	$('#spinner').spin({color: '#676767', top: '150px'});
 });
+
+// bar chart post likes
+function initFriendsChart(topFriends) {
+    var holder = d3.select('#friend-chart');
+    if (!holder.node()) return;
+
+    var dataUrl = holder.attr('data-json');
+    var dataJSON;
+    var width = 670;
+    var height = 400;
+    var barHeight = 66;
+    var barsOffset = 4;
+    var circleOffsetLeft = 19;
+    var circleOffsetTop = 3;
+    var textOffsetLeft = 12;
+    var circleRadius = barHeight / 2 - circleOffsetTop;
+    var fontSideName = 20;
+    var fontSideLikes = 22;
+    var likesOffsetRight = 19;
+    var offserBetweenText = 5;
+
+    //if (error) return console.warn(error);
+    //dataJSON = json[0];
+    dataJSON = topFriends;
+
+    $('#content').show();
+    $('#waitscreen').hide();
+    $(this).spin(false);
+
+    // show error
+    //$('#error').show();
+    //$('#waitscreen').hide();
+    //$(this).spin(false);
+    //return;
+
+    // set friends amount
+    var friendsAmount = d3.select('#friends-amount');
+    if(friendsAmount.length) {
+        friendsAmount.text(dataJSON.friends.length);
+    }
+
+    // set friends likes
+    var friendsLikes = d3.select('#friends-likes');
+    if(friendsLikes.length) {
+        friendsLikes.text(d3.sum(dataJSON.friends, function(d) {return d.likes;}));
+    }
+
+    // set height from data
+    height = (barHeight + barsOffset) * dataJSON.friends.length;
+
+    // add main svg
+    var svg = holder.append('svg')
+        .attr('width', width)
+        .attr('height', height)
+        .attr('preserveAspectRatio', 'xMidYMid meet')
+        .attr('viewBox', '0 0 ' + width + ' ' + height);
+
+    // set photo attr
+    var defs = svg.append('defs');
+
+    defs.selectAll('pattern')
+        .data(dataJSON.friends)
+        .enter()
+        .append('pattern')
+        .attr('id', function(d, i) {
+            return 'chart-image-' + i;
+        })
+        .attr('patternUnits', 'userSpaceOnUse')
+        .attr('x', circleOffsetLeft)
+        .attr('y',  function(d, i) {
+            return i * (barHeight + barsOffset) + circleOffsetTop;
+        })
+        .attr('height', 60)
+        .attr('width', 60)
+        .append('svg:image')
+        .attr('xlink:href', function(d) {
+            return d.imgSrc;
+        })
+        .attr('x', 0)
+        .attr('y', 0)
+        .attr('height', 60)
+        .attr('width', 60);
+
+    // add groups
+    var barsArea = svg.append('g')
+        .attr('class', 'bars')
+        .attr('x', 0)
+        .attr('y', 0);
+
+    var bars = barsArea.selectAll('g')
+        .data(dataJSON.friends)
+        .enter()
+        .append('g');
+
+    // add bars
+    bars
+        .append('rect')
+        .attr('height', barHeight)
+        .attr('width', 300)
+        .attr('y', function(d, i) {
+            return i * (barHeight + barsOffset);
+        })
+        .attr('x', 0)
+        .attr('fill', function(d) {
+            return d.color;
+        });
+
+    // add circles with photos
+    bars
+        .append('circle')
+        .attr('cx', circleOffsetLeft + circleRadius)
+        .attr('cy', function(d, i) {
+            return i * (barHeight + barsOffset) + circleRadius + circleOffsetTop;
+        })
+        .attr('r', circleRadius)
+        .attr('fill', function(d, i) {
+            return 'url(#chart-image-' + i +')';
+        });
+
+    // add name
+    bars
+        .append('text')
+        .attr('class', 'name')
+        .attr('fill', '#fff')
+        .attr('x', function() {
+            return circleRadius * 2 + circleOffsetLeft + textOffsetLeft;
+        })
+        .attr('y',  function(d, i) {
+            return i * (barHeight + barsOffset) + circleRadius + circleOffsetTop + fontSideName / 3;
+        })
+        .style('fontSize', fontSideName)
+        .text(function(d) {
+            return d.name;
+        });
+
+    // add amount
+    bars
+        .append('text')
+        .attr('class', 'likes')
+        .attr('fill', '#fff')
+        .text('asdasdas')
+        .attr('x', function() {
+            return circleRadius * 2 + circleOffsetLeft + textOffsetLeft + 200;
+        })
+
+        .attr('y',  function(d, i) {
+            return i * (barHeight + barsOffset) + circleRadius + circleOffsetTop + fontSideLikes / 3;
+        })
+        .text(function(d) {
+            if(d.likes === 1) {
+                return d.likes + ' like';
+            } else {
+                return d.likes + ' likes';
+            }
+        });
+
+    // calculate scale
+    var maxNameWidth = d3.max(bars.selectAll('text.name'), function(d) {return Math.ceil(d[0].getComputedTextLength());});
+    var maxTextLikesWidth = d3.max(bars.selectAll('text.likes'), function(d) {return Math.ceil(d[0].getComputedTextLength());});
+    var minConstantWidth = maxNameWidth + maxTextLikesWidth + circleOffsetLeft + textOffsetLeft + circleRadius * 2 + likesOffsetRight + offserBetweenText;
+
+    // create scale chart
+    var likesScale = d3.scale.linear()
+        .domain([0, d3.max(dataJSON.friends, function(d) {return d.likes;})])
+        .range([minConstantWidth, width]);
+
+    // set finish size bars
+    bars
+        .selectAll('rect')
+        .attr('width', function(d) {return likesScale(d.likes);});
+
+    // set finish position text likes
+    bars
+        .selectAll('text.likes')
+        .attr('x', function(d) {
+            return minConstantWidth - likesOffsetRight + (width - minConstantWidth) - (width - likesScale(d.likes));
+        });
+
+    // resize handler
+    var chartHolder = svg.select('.bars');
+    var ratio = chartHolder.node().getBoundingClientRect().width / chartHolder.node().getBoundingClientRect().height;
+    d3.select(window)
+        .on('resize.likes', function() {
+            svg
+                .attr('height', function() {
+                    return svg.node().getBoundingClientRect().width / ratio;
+                });
+        });
+
+    svg
+        .attr('height', function() {
+            return svg.node().getBoundingClientRect().width / ratio;
+        });
+}
 
 // post privacy line chart
 function initLineBar() {
@@ -537,202 +730,6 @@ function initPostTypesChart() {
 		var ratio = chartHolder.node().getBoundingClientRect().width / chartHolder.node().getBoundingClientRect().height;
 		d3.select(window)
 			.on('resize.donut', function() {
-				svg
-					.attr('height', function() {
-						return svg.node().getBoundingClientRect().width / ratio;
-					});
-			});
-
-		svg
-			.attr('height', function() {
-				return svg.node().getBoundingClientRect().width / ratio;
-			});
-	});
-}
-
-// bar chart post likes
-function initFriendsChart(topFriends) {
-	var holder = d3.select('#friend-chart');
-	if (!holder.node()) return;
-
-	var dataUrl = holder.attr('data-json');
-	var dataJSON;
-	var width = 670;
-	var height = 400;
-	var barHeight = 66;
-	var barsOffset = 4;
-	var circleOffsetLeft = 19;
-	var circleOffsetTop = 3;
-	var textOffsetLeft = 12;
-	var circleRadius = barHeight / 2 - circleOffsetTop;
-	var fontSideName = 20;
-	var fontSideLikes = 22;
-	var likesOffsetRight = 19;
-	var offserBetweenText = 5;
-
-	d3.json(dataUrl, function (error, json) {
-		//if (error) return console.warn(error);
-		//dataJSON = json[0];
-		dataJSON = topFriends;
-
-        $('#content').show();
-        $('#waitscreen').hide();
-        $(this).spin(false);
-
-        // show error
-        //$('#error').show();
-        //$('#waitscreen').hide();
-        //$(this).spin(false);
-        //return;
-
-		// set friends amount
-		var friendsAmount = d3.select('#friends-amount');
-		if(friendsAmount.length) {
-			friendsAmount.text(dataJSON.friends.length);
-		}
-
-		// set friends likes
-		var friendsLikes = d3.select('#friends-likes');
-		if(friendsLikes.length) {
-			friendsLikes.text(d3.sum(dataJSON.friends, function(d) {return d.likes;}));
-		}
-
-		// set height from data
-		height = (barHeight + barsOffset) * dataJSON.friends.length;
-
-		// add main svg
-		var svg = holder.append('svg')
-			.attr('width', width)
-			.attr('height', height)
-			.attr('preserveAspectRatio', 'xMidYMid meet')
-			.attr('viewBox', '0 0 ' + width + ' ' + height);
-
-		// set photo attr
-		var defs = svg.append('defs');
-
-		defs.selectAll('pattern')
-			.data(dataJSON.friends)
-			.enter()
-			.append('pattern')
-			.attr('id', function(d, i) {
-				return 'chart-image-' + i;
-			})
-			.attr('patternUnits', 'userSpaceOnUse')
-			.attr('x', circleOffsetLeft)
-			.attr('y',  function(d, i) {
-				return i * (barHeight + barsOffset) + circleOffsetTop;
-			})
-			.attr('height', 60)
-			.attr('width', 60)
-			.append('svg:image')
-			.attr('xlink:href', function(d) {
-				return d.imgSrc;
-			})
-			.attr('x', 0)
-			.attr('y', 0)
-			.attr('height', 60)
-			.attr('width', 60);
-
-		// add groups
-		var barsArea = svg.append('g')
-			.attr('class', 'bars')
-			.attr('x', 0)
-			.attr('y', 0);
-
-		var bars = barsArea.selectAll('g')
-			.data(dataJSON.friends)
-			.enter()
-			.append('g');
-
-		// add bars
-		bars
-			.append('rect')
-			.attr('height', barHeight)
-			.attr('width', 300)
-			.attr('y', function(d, i) {
-				return i * (barHeight + barsOffset);
-			})
-			.attr('x', 0)
-			.attr('fill', function(d) {
-				return d.color;
-			});
-
-		// add circles with photos
-		bars
-			.append('circle')
-			.attr('cx', circleOffsetLeft + circleRadius)
-			.attr('cy', function(d, i) {
-				return i * (barHeight + barsOffset) + circleRadius + circleOffsetTop;
-			})
-			.attr('r', circleRadius)
-			.attr('fill', function(d, i) {
-				return 'url(#chart-image-' + i +')';
-			});
-
-		// add name
-		bars
-			.append('text')
-			.attr('class', 'name')
-			.attr('fill', '#fff')
-			.attr('x', function() {
-				return circleRadius * 2 + circleOffsetLeft + textOffsetLeft;
-			})
-			.attr('y',  function(d, i) {
-				return i * (barHeight + barsOffset) + circleRadius + circleOffsetTop + fontSideName / 3;
-			})
-			.style('fontSize', fontSideName)
-			.text(function(d) {
-				return d.name;
-			});
-
-		// add amount
-		bars
-			.append('text')
-			.attr('class', 'likes')
-			.attr('fill', '#fff')
-			.text('asdasdas')
-			.attr('x', function() {
-				return circleRadius * 2 + circleOffsetLeft + textOffsetLeft + 200;
-			})
-			
-			.attr('y',  function(d, i) {
-				return i * (barHeight + barsOffset) + circleRadius + circleOffsetTop + fontSideLikes / 3;
-			})
-			.text(function(d) {
-				if(d.likes === 1) {
-					return d.likes + ' like';
-				} else {
-					return d.likes + ' likes';
-				}
-			});
-
-		// calculate scale
-		var maxNameWidth = d3.max(bars.selectAll('text.name'), function(d) {return Math.ceil(d[0].getComputedTextLength());});
-		var maxTextLikesWidth = d3.max(bars.selectAll('text.likes'), function(d) {return Math.ceil(d[0].getComputedTextLength());});
-		var minConstantWidth = maxNameWidth + maxTextLikesWidth + circleOffsetLeft + textOffsetLeft + circleRadius * 2 + likesOffsetRight + offserBetweenText;
-
-		// create scale chart 
-		var likesScale = d3.scale.linear()
-			.domain([0, d3.max(dataJSON.friends, function(d) {return d.likes;})])
-			.range([minConstantWidth, width]);
-
-		// set finish size bars
-		bars
-			.selectAll('rect')
-			.attr('width', function(d) {return likesScale(d.likes);});
-
-		// set finish position text likes
-		bars
-			.selectAll('text.likes')
-			.attr('x', function(d) {
-				return minConstantWidth - likesOffsetRight + (width - minConstantWidth) - (width - likesScale(d.likes));
-			});
-
-		// resize handler
-		var chartHolder = svg.select('.bars');
-		var ratio = chartHolder.node().getBoundingClientRect().width / chartHolder.node().getBoundingClientRect().height;
-		d3.select(window)
-			.on('resize.likes', function() {
 				svg
 					.attr('height', function() {
 						return svg.node().getBoundingClientRect().width / ratio;

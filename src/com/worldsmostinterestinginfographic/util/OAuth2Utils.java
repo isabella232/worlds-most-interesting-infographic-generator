@@ -1,5 +1,6 @@
 package com.worldsmostinterestinginfographic.util;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -19,6 +20,44 @@ public enum OAuth2Utils {
   INSTANCE;
 
   private static final Logger log = Logger.getLogger(OAuth2Utils.class.getName());
+
+  public static String requestAccessToken(String tokenEndpoint) {
+    CloseableHttpClient httpClient = HttpClients.createDefault();
+    try {
+      // Exchange authorization code for access token
+      HttpPost httpPost = new HttpPost(tokenEndpoint);
+      HttpResponse httpResponse = httpClient.execute(httpPost);
+      BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent()));
+      String line = bufferedReader.readLine();
+
+      // Detect error message
+      if (line.toLowerCase().contains("\"error\"")) {
+        log.severe("Fatal exception occurred while making the access token request: " + line);
+        return null;
+      }
+
+      // Extract access token
+      String accessToken = line.split("&")[0].split("=")[1];
+      if (StringUtils.isEmpty(accessToken)) {
+        log.severe("Fatal exception occurred while making the access token request: Access token value in response is empty");
+        return null;
+      }
+
+      return accessToken;
+    } catch(Exception e) {
+      log.severe("Fatal exception occurred while making the access token request: " + e.getMessage());
+      e.printStackTrace();
+    } finally {
+      try {
+        httpClient.close();
+      } catch (IOException e) {
+        log.severe("Fatal exception occurred while closing HTTP client connection: " + e.getMessage());
+        e.printStackTrace();
+      }
+    }
+
+    return null;
+  }
 
   public static String makeProtectedResourceRequest(String resourceEndpoint, String accessToken) {
     CloseableHttpClient httpClient = HttpClients.createDefault();
@@ -50,7 +89,7 @@ public enum OAuth2Utils {
 
       return response;
     } catch (IOException e) {
-      log.severe("Fatal exception occurred while making protected resource request: " + e.getMessage());
+      log.severe("Fatal exception occurred while making the protected resource request: " + e.getMessage());
       e.printStackTrace();
     } finally {
       try {

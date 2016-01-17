@@ -1,19 +1,14 @@
 package com.worldsmostinterestinginfographic.servlet;
 
+import com.worldsmostinterestinginfographic.facebook.FacebookService;
 import com.worldsmostinterestinginfographic.model.Model;
 import com.worldsmostinterestinginfographic.model.object.User;
-import com.worldsmostinterestinginfographic.facebook.FacebookService;
 import com.worldsmostinterestinginfographic.util.LoggingUtils;
+import com.worldsmostinterestinginfographic.util.OAuth2Utils;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
@@ -36,9 +31,9 @@ public class CallbackServlet extends HttpServlet {
 
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
     // Check for the presence of an authorization code
     String authorizationCode = request.getParameter("code");
-
     if (!StringUtils.isEmpty(authorizationCode)) {
 
       // Get access token
@@ -46,7 +41,11 @@ public class CallbackServlet extends HttpServlet {
           "[" + request.getSession().getId() + "] Starting session.  Requesting access token with authorization code "
           + LoggingUtils.anonymize(authorizationCode));
 
-      String accessToken = requestAccessToken(authorizationCode, request);
+      String tokenEndpoint = Model.TOKEN_ENDPOINT + "?grant_type=authorization_code&code=" + authorizationCode + "&redirect_uri="
+                             + URLEncoder.encode((request.getScheme() + "://" + request.getServerName() + Model.REDIRECTION_ENDPOINT),
+                                                 StandardCharsets.UTF_8.name()) + "&client_id=" + Model.CLIENT_ID + "&client_secret="
+                             + Model.CLIENT_SECRET;
+      String accessToken = OAuth2Utils.requestAccessToken(tokenEndpoint);
       if (StringUtils.isEmpty(accessToken)) {
         response.sendRedirect("/uh-oh");
         return;
@@ -62,7 +61,6 @@ public class CallbackServlet extends HttpServlet {
         return;
       }
 
-      // Here we go
       log.info("[" + request.getSession().getId() + "] Hello, " + LoggingUtils.anonymize(Objects.toString(user.getId()))
                + "!");
 
@@ -80,38 +78,13 @@ public class CallbackServlet extends HttpServlet {
       request.getSession().setAttribute("error", error);
       request.getSession().setAttribute("errorDescription", errorDescription);
 
-      log.severe("Error encountered during authorization code request: " + error + " - " + errorDescription);
+      log.severe("[" + request.getSession().getId() + "] Error encountered during authorization code request: " +
+                 error + " - " + errorDescription);
       response.sendRedirect("/uh-oh");
 
     } else {
-      log.severe("An unknown error encountered at redirection endpoint");
+      log.severe("[" + request.getSession().getId() + "] An unknown error encountered at redirection endpoint");
       response.sendRedirect("/uh-oh");
-    }
-  }
-
-  private String requestAccessToken(String authorizationCode, HttpServletRequest request) throws IOException {
-    CloseableHttpClient httpClient = HttpClients.createDefault();
-    try {
-      // Exchange authorization code for access token
-      HttpPost httpPost = new HttpPost(
-          Model.TOKEN_ENDPOINT + "?grant_type=authorization_code&code=" + authorizationCode + "&redirect_uri="
-          + URLEncoder.encode((request.getScheme() + "://" + request.getServerName() + Model.REDIRECTION_ENDPOINT),
-                              StandardCharsets.UTF_8.name()) + "&client_id=" + Model.CLIENT_ID + "&client_secret="
-          + Model.CLIENT_SECRET);
-      HttpResponse httpResponse = httpClient.execute(httpPost);
-      BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent()));
-      String line = bufferedReader.readLine();
-      String accessToken = line.split("&")[0].split("=")[1];
-
-      // TODO: Put real error detection here.  Should look for actual error codes and descriptions from the response.
-      if (StringUtils.isEmpty(accessToken)) {
-        log.severe("[" + request.getSession().getId() + "] An error occurred during access token request");
-        return null;
-      }
-
-      return accessToken;
-    } finally {
-      httpClient.close();
     }
   }
 }
