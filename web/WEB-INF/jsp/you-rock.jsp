@@ -47,7 +47,7 @@
                         <li><span class="sign">A</span> - <span class="description">Status messages</span></li>
                         <li><span class="sign">A</span> - <span class="description">Status messages</span></li>
                     </ul>
-                    <p><span id="max-value" class="number"><span>0</span>%</span> of your post types are <span id="key-word-max" class="green">images</span></p>
+                    <p><span id="most-frequent-post-percentage" class="number"></span> of your posts are <span id="most-frequent-post-type"></span></p>
                 </div>
                 <div id="donut-chart-post-types" data-json="inc/post-types.json">
                     <!-- Here insert chart -->
@@ -140,6 +140,8 @@
 <script>
     $.getJSON( "/stats", function( data ) {
         initFriendsChart(data.TOP_FRIENDS);
+        initPostTypesChart(data.POST_TYPES);
+        initBarChart(data.DAILY_POST_FREQUENCY);
     });
 </script>
 </body>

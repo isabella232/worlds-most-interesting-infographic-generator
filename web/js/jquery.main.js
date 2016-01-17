@@ -1,8 +1,6 @@
 // page init
 jQuery(function() {
 	initSameHeight();
-	initPostTypesChart();
-	initBarChart();
 	initLineBar();
 	initSetBackground();
 	initFadeBlock();
@@ -206,541 +204,534 @@ function initFriendsChart(topFriends) {
         });
 }
 
-// post privacy line chart
-function initLineBar() {
-	var holder = d3.select('#post-privacy-line-chart');
-	if (!holder.node()) return;
+// donut chart post types
+function initPostTypesChart(postTypes) {
+    var holder = d3.select('#donut-chart-post-types');
+    if (!holder.node()) return;
+    var dataUrl = holder.attr('data-json');
+    var dataJSON;
+    var width = 700;
+    var height = 700;
+    var radius = 558 / 2;
+    var offetLabels = 120;
+    var angleMainCircle = 25;
+    var bigCircleColor = '#ccc';
+    var bigCircleStrokeWidth = 2;
+    var middleCircleColor = '#3a5897';
+    var middleCircleStrokeWidth = 3;
+    var middleCircleOffset = 18;
+    var rightAngle = 90;
 
-	var width = 580;
-	var height = 380;
-	var bottomOffsetAxis = 60;
-	var leftOffsetAxis = 70;
-	var topOffset = 15;
-	var offsetLeft = 0;
-	var lineWidth = 3;
-	var offsetLeftXAxis = 1;
-	var ticksLenght = 25;
-	var textTicksOffsetLeft = 30;
-	var rotateValue = 7;
+    // create layout
+    var pie = d3.layout.pie()
+        .value(function(d) { return d.value; })
+        .sort(null);
 
-	var dataUrlPublic = holder.attr('data-public');
-	var dataJSONPublic;
+    var arc = d3.svg.arc()
+        .innerRadius(radius - 130)
+        .outerRadius(radius - 33);
 
-	var dataUrlPrivate = holder.attr('data-private');
-	var dataJSONPrivate;
+    // add main svg
+    var svg = holder.append('svg')
+        .attr('width', width)
+        .attr('height', height)
+        .attr('preserveAspectRatio', 'xMidYMid meet')
+        .attr('viewBox', '0 0 ' + width + ' ' + height);
 
-	d3.json(dataUrlPublic, function (error, json) {
-		if (error) return console.warn(error);
-		dataJSONPublic = json[0];
+    var mainGroup = svg
+        .append('g')
+        .attr('class', 'chart')
+        .attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ') rotate(' + angleMainCircle + ' 0 0)');
 
-		d3.json(dataUrlPrivate, function (errorState, jsonPublic) {
-			if (error) return console.warn(error);
-			dataJSONPrivate = jsonPublic[0];
+    //if (error) return console.warn(error);
+    //dataJSON = json[0];
+    dataJSON = postTypes;
 
-			// add main svg
-			var svg = holder.append('svg')
-				.attr('width', width + leftOffsetAxis)
-				.attr('height', height + bottomOffsetAxis + topOffset)
-				.attr('preserveAspectRatio', 'xMidYMid meet')
-				.attr('viewBox', '0 0 ' + (width + leftOffsetAxis) + ' ' + (height + bottomOffsetAxis + topOffset));
+    // set chart legend
+    var listItems = d3.selectAll('#post-types-list');
 
-			// add main group
-			var mainGroup = svg.append('g')
-				.attr('class', 'line-chart')
-				.attr("transform", "translate(" + leftOffsetAxis + "," + topOffset + ")");
+    //var totalValue = d3.sum(dataJSON.types, function(d){return d.value });
 
-			//add scales
-			var x = d3.scale.linear()
-				.range([0, width]);
+    var items = listItems.selectAll('li')
+        .data(dataJSON.types)
+        .enter()
+        .append('li');
 
-			var y = d3.scale.linear()
-				.range([height, 0]);
+    items = listItems.selectAll('li')
+        .style('color', function(d) {
+            if (d) {return d.color;}
+        })
+        .text('');
 
-			// comma numbers axis Y
-			var axisYFormatters = d3.locale({
-				  "decimal": ",",
-				  "thousands": ".",
-				  "grouping": [3],
-				  "currency": ["$", ""],
-				  "dateTime": "%a %b %e %X %Y",
-				  "date": "%m/%d/%Y",
-				  "time": "%H:%M:%S",
-				  "periods": ["AM", "PM"],
-				  "days": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-				  "shortDays": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
-				  "months": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-				  "shortMonths": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
-			});
-			var numberFormat = axisYFormatters.numberFormat(",.1f");
+    //items
+    //    .append('span')
+    //    .attr('class', 'sing')
+    //    .text(function(d) {
+    //        if(d) {return d.type + ' - ';}
+    //    });
 
-			// add axes
-			var xAxis = d3.svg.axis()
-				.scale(x)
-				.orient("top");
+    items
+        .append('span')
+        .attr('class', 'description')
+        .text(function(d) {
+            if (d) {return d.description;}
 
-			var yAxis = d3.svg.axis()
-				.scale(y)
-				.orient("left")
-				.tickFormat(numberFormat);
+        });
 
-			// set line layout
-			var line = d3.svg.line()
-				.x(function(d) { return x(d.percent); })
-				.y(function(d) { return y(d.value); });
+    items.data(dataJSON.types).exit().remove();
 
-			// set domain scales
-			var maxXPrivate = d3.max(dataJSONPrivate.private, function (d) {return d.percent;});
-			var maxXPubluc = d3.max(dataJSONPublic.public, function (d) {return d.percent;});
+    // add group arc
+    var g = mainGroup.selectAll(".arc")
+        .data(pie(dataJSON.types))
+        .enter().append('g')
+        .attr('class', 'arc');
 
-			var maxYPrivate = d3.max(dataJSONPrivate.private, function (d) {return d.value;});
-			var maxYPubluc = d3.max(dataJSONPublic.public, function (d) {return d.value;});
+    // add arc
+    g.append('path')
+        .attr('d', arc)
+        .attr('fill', function(d, i) {
+            return dataJSON.types[i].color;
+        });
 
-			x.domain([0, d3.max([maxXPrivate, maxXPubluc])]);
-			y.domain([0, 1.15 * d3.max([maxYPrivate, maxYPubluc])]);
+    // add group label
+    var label = g.append('g')
+        .attr('class', 'label')
+        .attr('transform', function(d) {
+            var arcRadius = 100;
+            d.outerRadius = arcRadius + 10;
+            d.innerRadius = arcRadius + 15;
+            var rotateAngle = (d.startAngle + d.endAngle) / 2 * (180 / Math.PI);
+            if ((d.startAngle + d.endAngle) / 2 < Math.PI) {
+                rotateAngle -= rightAngle;
+            } else {
+                rotateAngle += rightAngle;
+            }
+            return 'translate(' + arc.centroid(d) + ') rotate(' + rotateAngle + ')';
+        });
 
-			// add axes
-			mainGroup.append("g")
-				.attr("class", "y axis")
-				.call(yAxis)
-				.attr("transform", "translate(" + offsetLeft + "," + 0 + ")");;
+    // add label
+    label.append('text')
+        .attr('class', 'type-label')
+        .attr('dx', function(d) {
+            if ((d.startAngle + d.endAngle)/2 < Math.PI) {
+                return offetLabels - 10;
+            } else {
+                return -offetLabels + 10;
+            }
+        })
+        .attr('transform', function(d) {
+            var arcRadius = 100;
+            d.outerRadius = arcRadius + 10;
+            d.innerRadius = arcRadius + 15;
+            var rotateAngle = (d.startAngle + d.endAngle) / 2 * (180 / Math.PI);
+            var rotateValue = offetLabels;
+            if ((d.startAngle+d.endAngle)/2 < Math.PI) {
+                rotateAngle -= rightAngle;
+                rotateValue = -rotateValue;
+            } else {
+                rotateAngle += rightAngle;
+            }
+            return 'rotate(' + -(rotateAngle + angleMainCircle) + ' ' + -rotateValue + ' ' + 0 + ')';
+        })
+        .attr('dy', '.35em')
+        .attr('fill', function(d, i) {
+            return dataJSON.types[i].color;
+        })
+        .style('text-anchor', function(d) {return (d.startAngle + d.endAngle) / 2 < Math.PI ? 'start' : 'end';})
+        .text(function(d, i) {
+            return dataJSON.types[i].type;
+        });
 
-			mainGroup.append("g")
-				.attr("class", "x axis")
-				.attr("transform", "translate(" + -offsetLeftXAxis + "," + (height + bottomOffsetAxis) + ")")
-				.call(xAxis);
+    // add decor circles
+    var decorGroup = svg.append('g')
+        .attr('class', 'decor');
 
-			// format axis X
-			mainGroup
-				.selectAll("g.x.axis text")
-				.attr('transform', function(d) {
-					return 'rotate(' + -90 + ' ' + -rotateValue + ' ' + 7 + ')';
-				})
-				.style('text-anchor', 'start')
-				.text(function(d, i) {
-					if (i === 0) {
-						return '';
-					} else {
-						return d + '%';
-					}
-				});
+    // big circle
+    var bigCircle = decorGroup
+        .append('circle')
+        .attr('cx', width / 2)
+        .attr('cy', height / 2)
+        .attr('r', radius)
+        .style('fill', 'none')
+        .style('stroke', bigCircleColor)
+        .style('stroke-width', bigCircleStrokeWidth);
 
-			mainGroup
-				.selectAll("g.x.axis line")
-				.attr('y2', -ticksLenght);
+    var middleCircle = decorGroup
+        .append('circle')
+        .attr('cx', width / 2)
+        .attr('cy', height / 2)
+        .attr('r', radius - middleCircleOffset)
+        .attr('stroke-dasharray', '7, 7')
+        .style('fill', 'none')
+        .style('stroke', middleCircleColor)
+        .style('stroke-width', middleCircleStrokeWidth);
 
-			// format axis Y + lines
-			mainGroup.selectAll("g.y.axis g.tick")
-				.append("line")
-				.classed("grid-line", true)
-				.attr("x1", offsetLeft)
-				.attr("y1", 0)
-				.attr("x2", width)
-				.attr("y2", 0)
-				.style("stroke", '#aeadae');
+    // resize handler
+    var chartHolder = svg.select('.decor');
+    var ratio = chartHolder.node().getBoundingClientRect().width / chartHolder.node().getBoundingClientRect().height;
+    /*
+     d3.select(window)
+     .on('resize.donut', function() {
+     svg
+     .attr('height', function() {
+     return svg.node().getBoundingClientRect().width / ratio;
+     });
+     });
 
-			// format axis Y
-			mainGroup
-				.selectAll("g.y.axis text")
-				.attr('dx', -textTicksOffsetLeft);
+     svg
+     .attr('height', function() {
+     return svg.node().getBoundingClientRect().width / ratio;
+     });
+     */
+    d3.select(window)
+        .on('resize.donut', function() {
+            svg
+                .attr('height', 600);
+        });
 
-			// main chart lines
-			mainGroup.append("path")
-				.datum(dataJSONPrivate.private)
-				.attr("class", "line-private")
-				.attr("d", line)
-				.attr("fill", 'none')
-				.attr("stroke", function() {
-					return dataJSONPrivate.color;
-				})
-				.attr("stroke-width", lineWidth);
-
-			mainGroup.append("path")
-				.datum(dataJSONPublic.public)
-				.attr("class", "line-public")
-				.attr("d", line)
-				.attr("fill", 'none')
-				.attr("stroke", function(d) {
-					return dataJSONPublic.color;
-				})
-				.attr("stroke-width", lineWidth);
-
-			// set external values
-			var highestAveragePublic = d3.select('#highest-average-public');
-			if(highestAveragePublic.length) {
-				highestAveragePublic.text(d3.max(dataJSONPublic.public, function(d) {return d.value;}));
-			}
-
-			var highestAveragePrivate = d3.select('#highest-average-private');
-			if(highestAveragePrivate.length) {
-				highestAveragePrivate.text(d3.max(dataJSONPrivate.private, function(d) {return d.value;}));
-			}
-
-			// resize handler
-			var chartHolder = svg.select('.line-chart');
-			var ratio = chartHolder.node().getBoundingClientRect().width / chartHolder.node().getBoundingClientRect().height;
-			d3.select(window)
-				.on('resize.line-chart', function() {
-					svg
-						.attr('height', function() {
-							return svg.node().getBoundingClientRect().width / ratio;
-						});
-				});
-
-			svg
-				.attr('height', function() {
-					return svg.node().getBoundingClientRect().width / ratio;
-				});
-		});
-	});
+    svg
+        .attr('height', 600);
 }
 
 // post frequency bar chart
-function initBarChart() {
-	var holder = d3.select('#post-frequency-bar-chart');
-	if (!holder.node()) return;
+function initBarChart(dailyPostFrequency) {
+    var holder = d3.select('#post-frequency-bar-chart');
+    if (!holder.node()) return;
 
-	var dataUrl = holder.attr('data-json');
-	var dataJSON;
-	var width = 600;
-	var height = 380;
-	var colorHighest = '#3a5897';
-	var colorLowest = '#ef894a';
-	var bottomOffsetAxis = 35;
-	var leftOffsetAxis = 39;
-	var topOffset = 15;
-	var offsetLeft = 12;
+    var dataUrl = holder.attr('data-json');
+    var dataJSON;
+    var width = 600;
+    var height = 380;
+    var colorHighest = '#3a5897';
+    var colorLowest = '#ef894a';
+    var bottomOffsetAxis = 35;
+    var leftOffsetAxis = 39;
+    var topOffset = 15;
+    var offsetLeft = 12;
 
-	// set color output diapason
-	var color = d3.scale.ordinal()
-		.range([colorHighest, colorLowest]);
+    // set color output diapason
+    var color = d3.scale.ordinal()
+        .range([colorHighest, colorLowest]);
 
-	d3.json(dataUrl, function (error, json) {
-		if (error) return console.warn(error);
-		dataJSON = json[0];
+    //d3.json(dataUrl, function (error, json) {
+    //    if (error) return console.warn(error);
+    //    dataJSON = json[0];
+    dataJSON = dailyPostFrequency;
 
-		// add main svg
-		var svg = holder.append('svg')
-			.attr('width', width + leftOffsetAxis)
-			.attr('height', height + bottomOffsetAxis + topOffset)
-			.attr('preserveAspectRatio', 'xMidYMid meet')
-			.attr('viewBox', '0 0 ' + (width + leftOffsetAxis) + ' ' + (height + bottomOffsetAxis + topOffset));
+        // add main svg
+        var svg = holder.append('svg')
+            .attr('width', width + leftOffsetAxis)
+            .attr('height', height + bottomOffsetAxis + topOffset)
+            .attr('preserveAspectRatio', 'xMidYMid meet')
+            .attr('viewBox', '0 0 ' + (width + leftOffsetAxis) + ' ' + (height + bottomOffsetAxis + topOffset));
 
-		// crate scales
-		var xScale = d3.scale.ordinal()
-			.rangeRoundBands([0, width], 0.5)
-			.domain(dataJSON.frequency.map(function(d) { return d.month;}));
+        // crate scales
+        var xScale = d3.scale.ordinal()
+            .rangeRoundBands([0, width], 0.5)
+            .domain(dataJSON.frequency.map(function(d) { return d.month;}));
 
-		var yScale = d3.scale.linear()
-			.rangeRound([height, 0]);
+        var yScale = d3.scale.linear()
+            .rangeRound([height, 0]);
 
-		// comma numbers axis Y
-		var axisYFormatters = d3.locale({
-			  "decimal": ",",
-			  "thousands": ".",
-			  "grouping": [3],
-			  "currency": ["$", ""],
-			  "dateTime": "%a %b %e %X %Y",
-			  "date": "%m/%d/%Y",
-			  "time": "%H:%M:%S",
-			  "periods": ["AM", "PM"],
-			  "days": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-			  "shortDays": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
-			  "months": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-			  "shortMonths": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
-		});
-		var numberFormat = axisYFormatters.numberFormat(",.1f"); 
+        // comma numbers axis Y
+        var axisYFormatters = d3.locale({
+                                            "decimal": ",",
+                                            "thousands": ".",
+                                            "grouping": [3],
+                                            "currency": ["$", ""],
+                                            "dateTime": "%a %b %e %X %Y",
+                                            "date": "%m/%d/%Y",
+                                            "time": "%H:%M:%S",
+                                            "periods": ["AM", "PM"],
+                                            "days": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+                                            "shortDays": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+                                            "months": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+                                            "shortMonths": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+                                        });
+        var numberFormat = axisYFormatters.numberFormat(",.1f");
 
-		// crate axes
-		var xAxis = d3.svg.axis()
-			.scale(xScale)
-			.orient("bottom");
+        // crate axes
+        var xAxis = d3.svg.axis()
+            .scale(xScale)
+            .orient("bottom");
 
-		var yAxis = d3.svg.axis()
-			.scale(yScale)
-			.orient("left")
-			.tickFormat(numberFormat);
+        var yAxis = d3.svg.axis()
+            .scale(yScale)
+            .orient("left")
+            .tickFormat(numberFormat);
 
-		// set color entries data
-		 color.domain(d3.keys(dataJSON.frequency[0]).filter(function(key) { return key !== "month"; }));
+        // set color entries data
+        color.domain(d3.keys(dataJSON.frequency[0]).filter(function(key) { return key !== "month"; }));
 
-		// data transormation
-		dataJSON.frequency.forEach(function(d) {
-			var y0 = 0;
-			d.values = color.domain().map(function(name) { return {name: name, y0: y0, y1: Number(d3.format('.2f')(y0 = d[name]))}; });
-			d.total =  Number(d3.format('.2f')(d.values[d.values.length - 1].y1));
-		});
+        // data transormation
+        dataJSON.frequency.forEach(function(d) {
+            var y0 = 0;
+            d.values = color.domain().map(function(name) { return {name: name, y0: y0, y1: Number(d3.format('.2f')(y0 = d[name]))}; });
+            d.total =  Number(d3.format('.2f')(d.values[d.values.length - 1].y1));
+        });
 
-		yScale
-			.domain([0, 1.15 * d3.max(dataJSON.frequency, function(d) {return d.highest;})]);
+        yScale
+            .domain([0, 1.15 * d3.max(dataJSON.frequency, function(d) {return d.highest;})]);
 
-		// add main group
-		var mainGroup = svg.append('g')
-			.attr('class', 'bar-chart')
-			.attr("transform", "translate(" + leftOffsetAxis + "," + topOffset + ")");
+        // add main group
+        var mainGroup = svg.append('g')
+            .attr('class', 'bar-chart')
+            .attr("transform", "translate(" + leftOffsetAxis + "," + topOffset + ")");
 
-		// add axis
-		mainGroup.append("g")
-			.attr("class", "x axis")
-			.attr("transform", "translate(0," + (height + bottomOffsetAxis/4) + ")")
-			.call(xAxis);
+        // add axis
+        mainGroup.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + (height + bottomOffsetAxis/4) + ")")
+            .call(xAxis);
 
-		mainGroup.append("g")
-			.attr("class", "y axis")
-			.call(yAxis);
+        mainGroup.append("g")
+            .attr("class", "y axis")
+            .call(yAxis);
 
-		// lines
-		mainGroup.selectAll("g.y.axis g.tick")
-			.append("line")
-			.classed("grid-line", true)
-			.attr("x1", offsetLeft)
-			.attr("y1", 0)
-			.attr("x2", width)
-			.attr("y2", 0)
-			.style("stroke", '#aeadae');
+        // lines
+        mainGroup.selectAll("g.y.axis g.tick")
+            .append("line")
+            .classed("grid-line", true)
+            .attr("x1", offsetLeft)
+            .attr("y1", 0)
+            .attr("x2", width)
+            .attr("y2", 0)
+            .style("stroke", '#aeadae');
 
-		// add bars group
-		var barGroups = mainGroup
-			.selectAll('g.bar')
-			.data(dataJSON.frequency)
-			.enter()
-			.append('g')
-			.attr('class', 'bar')
-			.attr("transform", function(d) { return "translate(" + xScale(d.month) + ",0)"; });
+        // add bars group
+        var barGroups = mainGroup
+            .selectAll('g.bar')
+            .data(dataJSON.frequency)
+            .enter()
+            .append('g')
+            .attr('class', 'bar')
+            .attr("transform", function(d) { return "translate(" + xScale(d.month) + ",0)"; });
 
-		// add bars
-		barGroups.selectAll('rect')
-			.data(function(d) { return d.values; })
-			.enter().append("rect")
-			.attr("width", xScale.rangeBand())
-			.attr("y", function(d) {return yScale(d.y1); })
-			.attr("height", function(d) { return yScale(d.y0) - yScale(d.y1); })
-			.attr("fill", function(d) { return color(d.name); });
+        // add bars
+        barGroups.selectAll('rect')
+            .data(function(d) { return d.values; })
+            .enter().append("rect")
+            .attr("width", xScale.rangeBand())
+            .attr("y", function(d) {return yScale(d.y1); })
+            .attr("height", function(d) { return yScale(d.y0) - yScale(d.y1); })
+            .attr("fill", function(d) { return color(d.name); });
 
-		// set external values
-		var lowestValue = d3.select('#lowest-value');
-		if(lowestValue.length) {
-			lowestValue.text(d3.min(dataJSON.frequency, function(d) {return d.lowest;}));
-		}
+        // set external values
+        var lowestValue = d3.select('#lowest-value');
+        if(lowestValue.length) {
+            lowestValue.text(d3.min(dataJSON.frequency, function(d) {return d.lowest;}));
+        }
 
-		var highestValue = d3.select('#highest-value');
-		if(highestValue.length) {
-			highestValue.text(d3.max(dataJSON.frequency, function(d) {return d.highest;}));
-		}
+        var highestValue = d3.select('#highest-value');
+        if(highestValue.length) {
+            highestValue.text(d3.max(dataJSON.frequency, function(d) {return d.highest;}));
+        }
 
-		// resize handler
-		var chartHolder = svg.select('.bar-chart');
-		var ratio = chartHolder.node().getBoundingClientRect().width / chartHolder.node().getBoundingClientRect().height;
-		d3.select(window)
-			.on('resize.bar-chart', function() {
-				svg
-					.attr('height', function() {
-						return svg.node().getBoundingClientRect().width / ratio;
-					});
-			});
+        // resize handler
+        var chartHolder = svg.select('.bar-chart');
+        var ratio = chartHolder.node().getBoundingClientRect().width / chartHolder.node().getBoundingClientRect().height;
+        d3.select(window)
+            .on('resize.bar-chart', function() {
+                svg
+                    .attr('height', function() {
+                        return svg.node().getBoundingClientRect().width / ratio;
+                    });
+            });
 
-		svg
-			.attr('height', function() {
-				return svg.node().getBoundingClientRect().width / ratio;
-			});
-	});
+        svg
+            .attr('height', function() {
+                return svg.node().getBoundingClientRect().width / ratio;
+            });
+    //});
 
 }
 
-// donut chart post types
-function initPostTypesChart() {
-	var holder = d3.select('#donut-chart-post-types');
-	if (!holder.node()) return;
+// post privacy line chart
+function initLineBar() {
+    var holder = d3.select('#post-privacy-line-chart');
+    if (!holder.node()) return;
 
-	var dataUrl = holder.attr('data-json');
-	var dataJSON;
-	var width = 700;
-	var height = 700;
-	var radius = 558 / 2;
-	var offetLabels = 120;
-	var angleMainCircle = 25;
-	var bigCircleColor = '#ccc';
-	var bigCircleStrokeWidth = 2;
-	var middleCircleColor = '#3a5897';
-	var middleCircleStrokeWidth = 3;
-	var middleCircleOffset = 18;
-	var rightAngle = 90;
+    var width = 580;
+    var height = 380;
+    var bottomOffsetAxis = 60;
+    var leftOffsetAxis = 70;
+    var topOffset = 15;
+    var offsetLeft = 0;
+    var lineWidth = 3;
+    var offsetLeftXAxis = 1;
+    var ticksLenght = 25;
+    var textTicksOffsetLeft = 30;
+    var rotateValue = 7;
 
-	// create layout
-	var pie = d3.layout.pie()
-		.value(function(d) { return d.value; })
-		.sort(null);
+    var dataUrlPublic = holder.attr('data-public');
+    var dataJSONPublic;
 
-	var arc = d3.svg.arc()
-		.innerRadius(radius - 130)
-		.outerRadius(radius - 33);
+    var dataUrlPrivate = holder.attr('data-private');
+    var dataJSONPrivate;
 
-	// add main svg
-	var svg = holder.append('svg')
-		.attr('width', width)
-		.attr('height', height)
-		.attr('preserveAspectRatio', 'xMidYMid meet')
-		.attr('viewBox', '0 0 ' + width + ' ' + height);
+    d3.json(dataUrlPublic, function (error, json) {
+        if (error) return console.warn(error);
+        dataJSONPublic = json[0];
 
-	var mainGroup = svg
-		.append('g')
-		.attr('class', 'chart')
-		.attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ') rotate(' + angleMainCircle + ' 0 0)');
+        d3.json(dataUrlPrivate, function (errorState, jsonPublic) {
+            if (error) return console.warn(error);
+            dataJSONPrivate = jsonPublic[0];
 
-	d3.json(dataUrl, function (error, json) {
-		if (error) return console.warn(error);
-		dataJSON = json[0];
+            // add main svg
+            var svg = holder.append('svg')
+                .attr('width', width + leftOffsetAxis)
+                .attr('height', height + bottomOffsetAxis + topOffset)
+                .attr('preserveAspectRatio', 'xMidYMid meet')
+                .attr('viewBox', '0 0 ' + (width + leftOffsetAxis) + ' ' + (height + bottomOffsetAxis + topOffset));
 
-		// set chart legend
-		var listItems = d3.selectAll('#post-types-list');
+            // add main group
+            var mainGroup = svg.append('g')
+                .attr('class', 'line-chart')
+                .attr("transform", "translate(" + leftOffsetAxis + "," + topOffset + ")");
 
-		var totalValue = d3.sum(dataJSON.types, function(d){return d.value });
+            //add scales
+            var x = d3.scale.linear()
+                .range([0, width]);
 
-		var items = listItems.selectAll('li')
-			.data(dataJSON.types)
-			.enter()
-			.append('li');
+            var y = d3.scale.linear()
+                .range([height, 0]);
 
-		items = listItems.selectAll('li')
-			.style('color', function(d) {
-				if (d) {return d.color;}
-			})
-			.text('');
+            // comma numbers axis Y
+            var axisYFormatters = d3.locale({
+                                                "decimal": ",",
+                                                "thousands": ".",
+                                                "grouping": [3],
+                                                "currency": ["$", ""],
+                                                "dateTime": "%a %b %e %X %Y",
+                                                "date": "%m/%d/%Y",
+                                                "time": "%H:%M:%S",
+                                                "periods": ["AM", "PM"],
+                                                "days": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+                                                "shortDays": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+                                                "months": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+                                                "shortMonths": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+                                            });
+            var numberFormat = axisYFormatters.numberFormat(",.1f");
 
-		items
-			.append('span')
-			.attr('class', 'sing')
-			.text(function(d) {
-				if(d) {return d.type + ' - ';}
-			});
+            // add axes
+            var xAxis = d3.svg.axis()
+                .scale(x)
+                .orient("top");
 
-		items
-			.append('span')
-			.attr('class', 'description')
-			.text(function(d) {
-				if (d) {return d.description;}
-			});
+            var yAxis = d3.svg.axis()
+                .scale(y)
+                .orient("left")
+                .tickFormat(numberFormat);
 
-		items.data(dataJSON.types).exit().remove();
+            // set line layout
+            var line = d3.svg.line()
+                .x(function(d) { return x(d.percent); })
+                .y(function(d) { return y(d.value); });
 
-		// set max value content
-		var maxValueItem = d3.select('#max-value');
-		var maxValueItemSpan = maxValueItem.select('span');
-		var maxVal = d3.max(dataJSON.types, function(d){return d.value;});
-		var maxindex;
-		var keyWord = d3.select('#key-word-max');
-		maxValueItemSpan.text(Math.round(maxVal/totalValue * 100));
+            // set domain scales
+            var maxXPrivate = d3.max(dataJSONPrivate.private, function (d) {return d.percent;});
+            var maxXPubluc = d3.max(dataJSONPublic.public, function (d) {return d.percent;});
 
-		dataJSON.types.forEach(function(d, i) {
-			if(d.value === maxVal) {
-				maxindex = i;
-			}
-		});
-		maxValueItem.style('color', dataJSON.types[maxindex].color);
-		keyWord.style('color', dataJSON.types[maxindex].color);
+            var maxYPrivate = d3.max(dataJSONPrivate.private, function (d) {return d.value;});
+            var maxYPubluc = d3.max(dataJSONPublic.public, function (d) {return d.value;});
 
+            x.domain([0, d3.max([maxXPrivate, maxXPubluc])]);
+            y.domain([0, 1.15 * d3.max([maxYPrivate, maxYPubluc])]);
 
-		// add group arc
-		var g = mainGroup.selectAll(".arc")
-			.data(pie(dataJSON.types))
-			.enter().append('g')
-			.attr('class', 'arc');
+            // add axes
+            mainGroup.append("g")
+                .attr("class", "y axis")
+                .call(yAxis)
+                .attr("transform", "translate(" + offsetLeft + "," + 0 + ")");;
 
-		// add arc
-		g.append('path')
-			.attr('d', arc)
-			.attr('fill', function(d, i) {
-				return dataJSON.types[i].color;
-			});
+            mainGroup.append("g")
+                .attr("class", "x axis")
+                .attr("transform", "translate(" + -offsetLeftXAxis + "," + (height + bottomOffsetAxis) + ")")
+                .call(xAxis);
 
-		// add group label
-		var label = g.append('g')
-			.attr('class', 'label')
-			.attr('transform', function(d) {
-				var arcRadius = 100;
-				d.outerRadius = arcRadius + 10;
-				d.innerRadius = arcRadius + 15;
-				var rotateAngle = (d.startAngle + d.endAngle) / 2 * (180 / Math.PI);
-				if ((d.startAngle + d.endAngle) / 2 < Math.PI) {
-					rotateAngle -= rightAngle;
-				} else {
-					rotateAngle += rightAngle;
-				}
-				return 'translate(' + arc.centroid(d) + ') rotate(' + rotateAngle + ')';
-			});
+            // format axis X
+            mainGroup
+                .selectAll("g.x.axis text")
+                .attr('transform', function(d) {
+                    return 'rotate(' + -90 + ' ' + -rotateValue + ' ' + 7 + ')';
+                })
+                .style('text-anchor', 'start')
+                .text(function(d, i) {
+                    if (i === 0) {
+                        return '';
+                    } else {
+                        return d + '%';
+                    }
+                });
 
-		// add label
-		label.append('text')
-			.attr('class', 'type-label')
-			.attr('dx', function(d) {
-				if ((d.startAngle + d.endAngle)/2 < Math.PI) {
-					return offetLabels - 10;
-				} else {
-					return -offetLabels + 10;
-				}
-			})
-			.attr('transform', function(d) {
-				var arcRadius = 100;
-				d.outerRadius = arcRadius + 10;
-				d.innerRadius = arcRadius + 15;
-				var rotateAngle = (d.startAngle + d.endAngle) / 2 * (180 / Math.PI);
-				var rotateValue = offetLabels;
-				if ((d.startAngle+d.endAngle)/2 < Math.PI) {
-					rotateAngle -= rightAngle;
-					rotateValue = -rotateValue;
-				} else {
-					rotateAngle += rightAngle;
-				}
-				return 'rotate(' + -(rotateAngle + angleMainCircle) + ' ' + -rotateValue + ' ' + 0 + ')';
-			})
-			.attr('dy', '.35em')
-			.attr('fill', function(d, i) {
-				return dataJSON.types[i].color;
-			})
-			.style('text-anchor', function(d) {return (d.startAngle + d.endAngle) / 2 < Math.PI ? 'start' : 'end';})
-			.text(function(d, i) {
-				return dataJSON.types[i].type;
-			});
+            mainGroup
+                .selectAll("g.x.axis line")
+                .attr('y2', -ticksLenght);
 
-		// add decor circles
-		var decorGroup = svg.append('g')
-			.attr('class', 'decor');
+            // format axis Y + lines
+            mainGroup.selectAll("g.y.axis g.tick")
+                .append("line")
+                .classed("grid-line", true)
+                .attr("x1", offsetLeft)
+                .attr("y1", 0)
+                .attr("x2", width)
+                .attr("y2", 0)
+                .style("stroke", '#aeadae');
 
-		// big circle
-		var bigCircle = decorGroup
-			.append('circle')
-			.attr('cx', width / 2)
-			.attr('cy', height / 2)
-			.attr('r', radius)
-			.style('fill', 'none')
-			.style('stroke', bigCircleColor)
-			.style('stroke-width', bigCircleStrokeWidth);
+            // format axis Y
+            mainGroup
+                .selectAll("g.y.axis text")
+                .attr('dx', -textTicksOffsetLeft);
 
-		var middleCircle = decorGroup
-			.append('circle')
-			.attr('cx', width / 2)
-			.attr('cy', height / 2)
-			.attr('r', radius - middleCircleOffset)
-			.attr('stroke-dasharray', '7, 7')
-			.style('fill', 'none')
-			.style('stroke', middleCircleColor)
-			.style('stroke-width', middleCircleStrokeWidth);
+            // main chart lines
+            mainGroup.append("path")
+                .datum(dataJSONPrivate.private)
+                .attr("class", "line-private")
+                .attr("d", line)
+                .attr("fill", 'none')
+                .attr("stroke", function() {
+                    return dataJSONPrivate.color;
+                })
+                .attr("stroke-width", lineWidth);
 
-		// resize handler
-		var chartHolder = svg.select('.decor');
-		var ratio = chartHolder.node().getBoundingClientRect().width / chartHolder.node().getBoundingClientRect().height;
-		d3.select(window)
-			.on('resize.donut', function() {
-				svg
-					.attr('height', function() {
-						return svg.node().getBoundingClientRect().width / ratio;
-					});
-			});
+            mainGroup.append("path")
+                .datum(dataJSONPublic.public)
+                .attr("class", "line-public")
+                .attr("d", line)
+                .attr("fill", 'none')
+                .attr("stroke", function(d) {
+                    return dataJSONPublic.color;
+                })
+                .attr("stroke-width", lineWidth);
 
-		svg
-			.attr('height', function() {
-				return svg.node().getBoundingClientRect().width / ratio;
-			});
-	});
+            // set external values
+            var highestAveragePublic = d3.select('#highest-average-public');
+            if(highestAveragePublic.length) {
+                highestAveragePublic.text(d3.max(dataJSONPublic.public, function(d) {return d.value;}));
+            }
+
+            var highestAveragePrivate = d3.select('#highest-average-private');
+            if(highestAveragePrivate.length) {
+                highestAveragePrivate.text(d3.max(dataJSONPrivate.private, function(d) {return d.value;}));
+            }
+
+            // resize handler
+            var chartHolder = svg.select('.line-chart');
+            var ratio = chartHolder.node().getBoundingClientRect().width / chartHolder.node().getBoundingClientRect().height;
+            d3.select(window)
+                .on('resize.line-chart', function() {
+                    svg
+                        .attr('height', function() {
+                            return svg.node().getBoundingClientRect().width / ratio;
+                        });
+                });
+
+            svg
+                .attr('height', function() {
+                    return svg.node().getBoundingClientRect().width / ratio;
+                });
+        });
+    });
 }
 
 // align blocks height

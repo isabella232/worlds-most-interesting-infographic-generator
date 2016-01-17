@@ -7,6 +7,8 @@ import com.worldsmostinterestinginfographic.facebook.FacebookService;
 import com.worldsmostinterestinginfographic.model.Model;
 import com.worldsmostinterestinginfographic.model.object.Post;
 import com.worldsmostinterestinginfographic.model.object.User;
+import com.worldsmostinterestinginfographic.statistics.collect.DailyPostFrequencyCollector;
+import com.worldsmostinterestinginfographic.statistics.collect.PostTypesCollector;
 import com.worldsmostinterestinginfographic.statistics.collect.StatisticsCollector;
 import com.worldsmostinterestinginfographic.statistics.collect.TopFriendsCollector;
 import com.worldsmostinterestinginfographic.statistics.result.InfographicResult;
@@ -33,7 +35,7 @@ public class StatisticsServlet extends HttpServlet {
     facebookService = new FacebookService();
   }
 
-  protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+  protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
     User user = (User) Model.cache.get(request.getSession().getId() + ".profile");
     if (user == null) {
@@ -60,18 +62,28 @@ public class StatisticsServlet extends HttpServlet {
 
     // Collect statistics
     StatisticsCollector topFriendsCollector = new TopFriendsCollector();
+    StatisticsCollector postTypesCollector = new PostTypesCollector();
+    StatisticsCollector dailyPostFrequencyCollector = new DailyPostFrequencyCollector();
 
     StatisticsResult topFriendsResult = topFriendsCollector.collect(user, posts);
+    StatisticsResult postTypesResult = postTypesCollector.collect(user, posts);
+    StatisticsResult dailyPostFrequencyResult = dailyPostFrequencyCollector.collect(user, posts);
 
     // Convert statistics objects to JSON response strings
     String topFriendsJson = ((InfographicResult) topFriendsResult).getInfographicJson();
+    String postTypesJson = ((InfographicResult) postTypesResult).getInfographicJson();
+    String dailyPostFrequencyJson = ((InfographicResult) dailyPostFrequencyResult).getInfographicJson();
 
     String result = "";
     try {
       JSONObject topFriendsObject = new JSONObject(topFriendsJson);
+      JSONObject postTypesObject = new JSONObject(postTypesJson);
+      JSONObject dailyPostFrequencyObject = new JSONObject(dailyPostFrequencyJson);
 
       JSONObject resultObject = new JSONObject();
       resultObject.put("TOP_FRIENDS", topFriendsObject);
+      resultObject.put("POST_TYPES", postTypesObject);
+      resultObject.put("DAILY_POST_FREQUENCY", dailyPostFrequencyObject);
 
       result = resultObject.toString();
     } catch (JSONException e) {
