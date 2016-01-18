@@ -16,12 +16,12 @@ public class PostTypesCollector implements StatisticsCollector {
     // Populate post-types map
     Map<Post.Type, Integer> postTypesCount = new HashMap<>();
     for (Post post : posts) {
-      if (postTypesCount.containsKey(post.getType())) {
-        postTypesCount.put(post.getType(), postTypesCount.get(post.getType()) + 1);
+      if (!postTypesCount.containsKey(post.getType())) {
+        postTypesCount.put(post.getType(), 1);
         continue;
       }
 
-      postTypesCount.put(post.getType(), 1);
+      postTypesCount.put(post.getType(), postTypesCount.get(post.getType()) + 1);
     }
 
     return new PostTypesResult(postTypesCount);

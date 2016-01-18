@@ -26,12 +26,12 @@ public class TopFriendsCollector implements StatisticsCollector {
           continue;
         }
 
-        if (friendsLikesMap.containsKey(liker)) {
-          friendsLikesMap.put(liker, friendsLikesMap.get(liker) + 1);
+        if (!friendsLikesMap.containsKey(liker)) {
+          friendsLikesMap.put(liker, 1);
           continue;
         }
 
-        friendsLikesMap.put(liker, 1);
+        friendsLikesMap.put(liker, friendsLikesMap.get(liker) + 1);
       }
     }
 

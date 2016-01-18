@@ -63,6 +63,7 @@
                     <p><span id="lowest-value" class="number blue">0.25</span>lowest average <span class="mark">posts/week</span></p>
                 </div>
             </section>
+            <!--
             <section class="block-popular">
                 <h2 class="fade-block">Your most popular posts</h2>
                 <div class="box fade-block">
@@ -99,6 +100,7 @@
                     </div>
                 </div>
             </section>
+            -->
             <section class="block-privacy fade-block">
                 <div class="text-holder">
                     <h2 class="blue-light">Your post privacy</h2>
@@ -111,24 +113,12 @@
             </section>
             <section class="block-words fade-block">
                 <div class="text-holder">
-                    <h2 class="black">Your most used words</h2>
-                    <p><span class="large">“Damn”</span>is your most used word</p>
+                    <h2 class="black">Most used words on your feed</h2>
+                    <p><span id="top-word" class="large">&quot;Damn&quot;</span>is the most used word on your feed</p>
                 </div>
                 <div class="htagcloud">
-                    <ul class="popularity">
-                        <li class="vv-popular"><a href="#">Excited</a></li>
-                        <li class="vvv-popular"><a href="#">Bucharest</a></li>
-                        <li class="popular"><a href="#">Honesty</a></li>
-                        <li class="vvvvv-popular"><a href="#">Design</a></li>
-                        <li class="v-popular"><a href="#">FIFA</a></li>
-                        <li class="vvvvvv-popular"><a href="#">Damn</a></li>
-                        <li class="v-popular"><a href="#">Deftones</a></li>
-                        <li class="vv-popular"><a href="#">Girlfriend</a></li>
-                        <li class="v-popular"><a href="#">Creative</a></li>
-                        <li class="popular"><a href="#">Games</a></li>
-                        <li class="vvvv-popular"><a href="#">F*ck</a></li>
-                        <li class="vvvv-popular"><a href="#">Tennis</a></li>
-                        <li class="vvv-popular"><a href="#">Tech</a></li>
+                    <ul id="top-words" class="popularity">
+                        <!-- Insert word cloud here -->
                     </ul>
                 </div>
             </section>
@@ -142,6 +132,8 @@
         initFriendsChart(data.TOP_FRIENDS);
         initPostTypesChart(data.POST_TYPES);
         initBarChart(data.DAILY_POST_FREQUENCY);
+        initLineBar(data.MONTHLY_POST_FREQUENCY);
+        initWordChart(data.TOP_WORDS);
     });
 </script>
 </body>

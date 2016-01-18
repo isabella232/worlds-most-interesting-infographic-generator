@@ -1,7 +1,6 @@
 // page init
 jQuery(function() {
 	initSameHeight();
-	initLineBar();
 	initSetBackground();
 	initFadeBlock();
 
@@ -547,7 +546,7 @@ function initBarChart(dailyPostFrequency) {
 }
 
 // post privacy line chart
-function initLineBar() {
+function initLineBar(monthlyPostFrequency) {
     var holder = d3.select('#post-privacy-line-chart');
     if (!holder.node()) return;
 
@@ -569,169 +568,177 @@ function initLineBar() {
     var dataUrlPrivate = holder.attr('data-private');
     var dataJSONPrivate;
 
-    d3.json(dataUrlPublic, function (error, json) {
-        if (error) return console.warn(error);
-        dataJSONPublic = json[0];
+    dataJSONPublic = monthlyPostFrequency;
+    dataJSONPrivate = monthlyPostFrequency;
 
-        d3.json(dataUrlPrivate, function (errorState, jsonPublic) {
-            if (error) return console.warn(error);
-            dataJSONPrivate = jsonPublic[0];
+    //d3.json(dataUrlPublic, function (error, json) {
+    //    if (error) return console.warn(error);
+    //    dataJSONPublic = json[0];
+    //
+    //    d3.json(dataUrlPrivate, function (errorState, jsonPublic) {
+    //        if (error) return console.warn(error);
+    //        dataJSONPrivate = jsonPublic[0];
 
-            // add main svg
-            var svg = holder.append('svg')
-                .attr('width', width + leftOffsetAxis)
-                .attr('height', height + bottomOffsetAxis + topOffset)
-                .attr('preserveAspectRatio', 'xMidYMid meet')
-                .attr('viewBox', '0 0 ' + (width + leftOffsetAxis) + ' ' + (height + bottomOffsetAxis + topOffset));
+    // add main svg
+    var svg = holder.append('svg')
+        .attr('width', width + leftOffsetAxis)
+        .attr('height', height + bottomOffsetAxis + topOffset)
+        .attr('preserveAspectRatio', 'xMidYMid meet')
+        .attr('viewBox', '0 0 ' + (width + leftOffsetAxis) + ' ' + (height + bottomOffsetAxis + topOffset));
 
-            // add main group
-            var mainGroup = svg.append('g')
-                .attr('class', 'line-chart')
-                .attr("transform", "translate(" + leftOffsetAxis + "," + topOffset + ")");
+    // add main group
+    var mainGroup = svg.append('g')
+        .attr('class', 'line-chart')
+        .attr("transform", "translate(" + leftOffsetAxis + "," + topOffset + ")");
 
-            //add scales
-            var x = d3.scale.linear()
-                .range([0, width]);
+    //add scales
+    var x = d3.scale.linear()
+        .range([0, width]);
 
-            var y = d3.scale.linear()
-                .range([height, 0]);
+    var y = d3.scale.linear()
+        .range([height, 0]);
 
-            // comma numbers axis Y
-            var axisYFormatters = d3.locale({
-                                                "decimal": ",",
-                                                "thousands": ".",
-                                                "grouping": [3],
-                                                "currency": ["$", ""],
-                                                "dateTime": "%a %b %e %X %Y",
-                                                "date": "%m/%d/%Y",
-                                                "time": "%H:%M:%S",
-                                                "periods": ["AM", "PM"],
-                                                "days": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-                                                "shortDays": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
-                                                "months": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-                                                "shortMonths": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
-                                            });
-            var numberFormat = axisYFormatters.numberFormat(",.1f");
+    // comma numbers axis Y
+    var axisYFormatters = d3.locale({
+                                        "decimal": ",",
+                                        "thousands": ".",
+                                        "grouping": [3],
+                                        "currency": ["$", ""],
+                                        "dateTime": "%a %b %e %X %Y",
+                                        "date": "%m/%d/%Y",
+                                        "time": "%H:%M:%S",
+                                        "periods": ["AM", "PM"],
+                                        "days": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+                                        "shortDays": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+                                        "months": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+                                        "shortMonths": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+                                    });
+    var numberFormat = axisYFormatters.numberFormat(",.1f");
 
-            // add axes
-            var xAxis = d3.svg.axis()
-                .scale(x)
-                .orient("top");
+    // add axes
+    var xAxis = d3.svg.axis()
+        .scale(x)
+        .orient("top");
 
-            var yAxis = d3.svg.axis()
-                .scale(y)
-                .orient("left")
-                .tickFormat(numberFormat);
+    var yAxis = d3.svg.axis()
+        .scale(y)
+        .orient("left")
+        .tickFormat(numberFormat);
 
-            // set line layout
-            var line = d3.svg.line()
-                .x(function(d) { return x(d.percent); })
-                .y(function(d) { return y(d.value); });
+    // set line layout
+    var line = d3.svg.line()
+        .x(function(d) { return x(d.percent); })
+        .y(function(d) { return y(d.value); });
 
-            // set domain scales
-            var maxXPrivate = d3.max(dataJSONPrivate.private, function (d) {return d.percent;});
-            var maxXPubluc = d3.max(dataJSONPublic.public, function (d) {return d.percent;});
+    // set domain scales
+    var maxXPrivate = d3.max(dataJSONPrivate.private, function (d) {return d.percent;});
+    var maxXPubluc = d3.max(dataJSONPublic.private, function (d) {return d.percent;});
 
-            var maxYPrivate = d3.max(dataJSONPrivate.private, function (d) {return d.value;});
-            var maxYPubluc = d3.max(dataJSONPublic.public, function (d) {return d.value;});
+    var maxYPrivate = d3.max(dataJSONPrivate.private, function (d) {return d.value;});
+    var maxYPubluc = d3.max(dataJSONPublic.private, function (d) {return d.value;});
 
-            x.domain([0, d3.max([maxXPrivate, maxXPubluc])]);
-            y.domain([0, 1.15 * d3.max([maxYPrivate, maxYPubluc])]);
+    x.domain([0, d3.max([maxXPrivate, maxXPubluc])]);
+    y.domain([0, 1.15 * d3.max([maxYPrivate, maxYPubluc])]);
 
-            // add axes
-            mainGroup.append("g")
-                .attr("class", "y axis")
-                .call(yAxis)
-                .attr("transform", "translate(" + offsetLeft + "," + 0 + ")");;
+    // add axes
+    mainGroup.append("g")
+        .attr("class", "y axis")
+        .call(yAxis)
+        .attr("transform", "translate(" + offsetLeft + "," + 0 + ")");;
 
-            mainGroup.append("g")
-                .attr("class", "x axis")
-                .attr("transform", "translate(" + -offsetLeftXAxis + "," + (height + bottomOffsetAxis) + ")")
-                .call(xAxis);
+    mainGroup.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(" + -offsetLeftXAxis + "," + (height + bottomOffsetAxis) + ")")
+        .call(xAxis);
 
-            // format axis X
-            mainGroup
-                .selectAll("g.x.axis text")
-                .attr('transform', function(d) {
-                    return 'rotate(' + -90 + ' ' + -rotateValue + ' ' + 7 + ')';
-                })
-                .style('text-anchor', 'start')
-                .text(function(d, i) {
-                    if (i === 0) {
-                        return '';
-                    } else {
-                        return d + '%';
-                    }
-                });
-
-            mainGroup
-                .selectAll("g.x.axis line")
-                .attr('y2', -ticksLenght);
-
-            // format axis Y + lines
-            mainGroup.selectAll("g.y.axis g.tick")
-                .append("line")
-                .classed("grid-line", true)
-                .attr("x1", offsetLeft)
-                .attr("y1", 0)
-                .attr("x2", width)
-                .attr("y2", 0)
-                .style("stroke", '#aeadae');
-
-            // format axis Y
-            mainGroup
-                .selectAll("g.y.axis text")
-                .attr('dx', -textTicksOffsetLeft);
-
-            // main chart lines
-            mainGroup.append("path")
-                .datum(dataJSONPrivate.private)
-                .attr("class", "line-private")
-                .attr("d", line)
-                .attr("fill", 'none')
-                .attr("stroke", function() {
-                    return dataJSONPrivate.color;
-                })
-                .attr("stroke-width", lineWidth);
-
-            mainGroup.append("path")
-                .datum(dataJSONPublic.public)
-                .attr("class", "line-public")
-                .attr("d", line)
-                .attr("fill", 'none')
-                .attr("stroke", function(d) {
-                    return dataJSONPublic.color;
-                })
-                .attr("stroke-width", lineWidth);
-
-            // set external values
-            var highestAveragePublic = d3.select('#highest-average-public');
-            if(highestAveragePublic.length) {
-                highestAveragePublic.text(d3.max(dataJSONPublic.public, function(d) {return d.value;}));
+    // format axis X
+    mainGroup
+        .selectAll("g.x.axis text")
+        .attr('transform', function(d) {
+            return 'rotate(' + -90 + ' ' + -rotateValue + ' ' + 7 + ')';
+        })
+        .style('text-anchor', 'start')
+        .text(function(d, i) {
+            if (i === 0) {
+                return '';
+            } else {
+                var months = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                return months[i];
             }
-
-            var highestAveragePrivate = d3.select('#highest-average-private');
-            if(highestAveragePrivate.length) {
-                highestAveragePrivate.text(d3.max(dataJSONPrivate.private, function(d) {return d.value;}));
-            }
-
-            // resize handler
-            var chartHolder = svg.select('.line-chart');
-            var ratio = chartHolder.node().getBoundingClientRect().width / chartHolder.node().getBoundingClientRect().height;
-            d3.select(window)
-                .on('resize.line-chart', function() {
-                    svg
-                        .attr('height', function() {
-                            return svg.node().getBoundingClientRect().width / ratio;
-                        });
-                });
-
-            svg
-                .attr('height', function() {
-                    return svg.node().getBoundingClientRect().width / ratio;
-                });
         });
-    });
+
+    mainGroup
+        .selectAll("g.x.axis line")
+        .attr('y2', -ticksLenght);
+
+    // format axis Y + lines
+    mainGroup.selectAll("g.y.axis g.tick")
+        .append("line")
+        .classed("grid-line", true)
+        .attr("x1", offsetLeft)
+        .attr("y1", 0)
+        .attr("x2", width)
+        .attr("y2", 0)
+        .style("stroke", '#aeadae');
+
+    // format axis Y
+    mainGroup
+        .selectAll("g.y.axis text")
+        .attr('dx', -textTicksOffsetLeft);
+
+    // main chart lines
+    mainGroup.append("path")
+        .datum(dataJSONPrivate.private)
+        .attr("class", "line-private")
+        .attr("d", line)
+        .attr("fill", 'none')
+        .attr("stroke", function() {
+            return dataJSONPrivate.color;
+        })
+        .attr("stroke-width", lineWidth);
+
+    mainGroup.append("path")
+        .datum(dataJSONPublic.private)
+        .attr("class", "line-public")
+        .attr("d", line)
+        .attr("fill", 'none')
+        .attr("stroke", function(d) {
+            return dataJSONPublic.color;
+        })
+        .attr("stroke-width", lineWidth);
+
+    // resize handler
+    var chartHolder = svg.select('.line-chart');
+    var ratio = chartHolder.node().getBoundingClientRect().width / chartHolder.node().getBoundingClientRect().height;
+    /*
+     d3.select(window)
+     .on('resize.line-chart', function() {
+     svg
+     .attr('height', function() {
+     return svg.node().getBoundingClientRect().width / ratio;
+     });
+     });
+
+     svg
+     .attr('height', function() {
+     return svg.node().getBoundingClientRect().width / ratio;
+     });
+     */
+    d3.select(window)
+        .on('resize.line-chart', function() {
+            svg
+                .attr('height', 600);
+        });
+
+    svg
+        .attr('height', 600);
+    //    });
+    //});
+}
+
+function initWordChart(topWords) {
+    $('#top-words').html(topWords.html);
+    $('#top-word').html("&quot;" + topWords.topword + "&quot;");
 }
 
 // align blocks height

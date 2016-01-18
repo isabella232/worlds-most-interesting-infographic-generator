@@ -8,9 +8,11 @@ import com.worldsmostinterestinginfographic.model.Model;
 import com.worldsmostinterestinginfographic.model.object.Post;
 import com.worldsmostinterestinginfographic.model.object.User;
 import com.worldsmostinterestinginfographic.statistics.collect.DailyPostFrequencyCollector;
+import com.worldsmostinterestinginfographic.statistics.collect.MonthlyPostFrequencyCollector;
 import com.worldsmostinterestinginfographic.statistics.collect.PostTypesCollector;
 import com.worldsmostinterestinginfographic.statistics.collect.StatisticsCollector;
 import com.worldsmostinterestinginfographic.statistics.collect.TopFriendsCollector;
+import com.worldsmostinterestinginfographic.statistics.collect.TopWordsCollector;
 import com.worldsmostinterestinginfographic.statistics.result.InfographicResult;
 import com.worldsmostinterestinginfographic.statistics.result.StatisticsResult;
 import com.worldsmostinterestinginfographic.util.LoggingUtils;
@@ -64,26 +66,36 @@ public class StatisticsServlet extends HttpServlet {
     StatisticsCollector topFriendsCollector = new TopFriendsCollector();
     StatisticsCollector postTypesCollector = new PostTypesCollector();
     StatisticsCollector dailyPostFrequencyCollector = new DailyPostFrequencyCollector();
+    StatisticsCollector monthlyPostFrequencyCollector = new MonthlyPostFrequencyCollector();
+    StatisticsCollector topWordsCollector = new TopWordsCollector();
 
     StatisticsResult topFriendsResult = topFriendsCollector.collect(user, posts);
     StatisticsResult postTypesResult = postTypesCollector.collect(user, posts);
     StatisticsResult dailyPostFrequencyResult = dailyPostFrequencyCollector.collect(user, posts);
+    StatisticsResult monthlyPostFrequencyResult = monthlyPostFrequencyCollector.collect(user, posts);
+    StatisticsResult topWordsResult = topWordsCollector.collect(user, posts);
 
     // Convert statistics objects to JSON response strings
     String topFriendsJson = ((InfographicResult) topFriendsResult).getInfographicJson();
     String postTypesJson = ((InfographicResult) postTypesResult).getInfographicJson();
     String dailyPostFrequencyJson = ((InfographicResult) dailyPostFrequencyResult).getInfographicJson();
+    String monthlyPostFrequencyJson = ((InfographicResult) monthlyPostFrequencyResult).getInfographicJson();
+    String topWordsJson = ((InfographicResult) topWordsResult).getInfographicJson();
 
     String result = "";
     try {
       JSONObject topFriendsObject = new JSONObject(topFriendsJson);
       JSONObject postTypesObject = new JSONObject(postTypesJson);
       JSONObject dailyPostFrequencyObject = new JSONObject(dailyPostFrequencyJson);
+      JSONObject monthlyPostFrequencyObject = new JSONObject(monthlyPostFrequencyJson);
+      JSONObject topWordsObject = new JSONObject(topWordsJson);
 
       JSONObject resultObject = new JSONObject();
       resultObject.put("TOP_FRIENDS", topFriendsObject);
       resultObject.put("POST_TYPES", postTypesObject);
       resultObject.put("DAILY_POST_FREQUENCY", dailyPostFrequencyObject);
+      resultObject.put("MONTHLY_POST_FREQUENCY", monthlyPostFrequencyObject);
+      resultObject.put("TOP_WORDS", topWordsObject);
 
       result = resultObject.toString();
     } catch (JSONException e) {
