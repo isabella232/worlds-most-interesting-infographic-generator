@@ -32,6 +32,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * Servlet to handle callback after an authorization request.
+ */
 public class CallbackServlet extends HttpServlet {
 
   private static final Logger log = Logger.getLogger(CallbackServlet.class.getName());
@@ -111,7 +114,7 @@ public class CallbackServlet extends HttpServlet {
 
     } else {
       log.warning("[" + request.getSession().getId()
-                 + "] No authorization code or error message detected at redirection endpoint");
+                  + "] No authorization code or error message detected at redirection endpoint");
       response.sendRedirect("/uh-oh");
     }
   }
