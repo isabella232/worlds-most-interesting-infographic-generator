@@ -1,16 +1,97 @@
-// page init
+/**
+ * Initialize page.
+ */
 jQuery(function() {
+
+    // Initialize page properties
 	initSameHeight();
 	initSetBackground();
 	initFadeBlock();
 
+    // Show loading spinner
 	$('#content').hide();
 	$('#error').hide();
 	$('#spinner').spin({color: '#676767', top: '150px'});
+
 });
 
-// bar chart post likes
-function initFriendsChart(topFriends) {
+/**
+ * Align block height.
+ */
+function initSameHeight() {
+    jQuery('section.block-popular').sameHeight({
+        elements: 'div.box-holder',
+        flexible: true,
+        multiLine: true
+    });
+}
+
+/**
+ * Set background images for certain components.
+ */
+function initSetBackground() {
+    jQuery('.bg-frame').each(function() {
+        var holder = jQuery(this);
+        holder.parent().css({
+            'background-image': 'url(' + holder.find('img').attr('src') + ')'
+        });
+    });
+}
+
+
+/**
+ * Initialize fade-in for certain components.
+ */
+function initFadeBlock() {
+    jQuery('.fade-block').each(function() {
+        var box = jQuery(this);
+        box.fadeBlock({
+            fixedClass: 'fade-active',
+            compareBlock: box,
+            customCompare: true,
+            noMobile: true
+        });
+    });
+}
+
+/**
+ * Initialize "Top Friends" chart.
+ *
+ * Takes a top-friends-result JSON object and populates and renders the "Top Friends" chart.  An example of top-friends
+ * data to expect as a parameter looks like:
+ *
+ * {
+ *   "friends":[
+ *     {
+ *       "imgSrc":"https://graph.facebook.com/55555101217077671/picture?width=85&height=85",
+ *       "likes":14,
+ *       "name":"Richard Stewart",
+ *       "color":"#3b5998"
+ *     },
+ *     {
+ *       "imgSrc":"https://graph.facebook.com/5555514772458858/picture?width=85&height=85",
+ *       "likes":12,
+ *       "name":"Rachel Gibson",
+ *       "color":"#5bc0bd"
+ *     },
+ *     {
+ *       "imgSrc":"https://graph.facebook.com/55555101535405879/picture?width=85&height=85",
+ *       "likes":12,
+ *       "name":"Horace Greenfield",
+ *       "color":"#f08a4b"
+ *     },
+ *     {
+ *       "imgSrc":"https://graph.facebook.com/55555101552585413/picture?width=85&height=85",
+ *       "likes":11,
+ *       "name":"Leslie Peters",
+ *       "color":"#1c2541"
+ *     }
+ *   ]
+ * }
+ *
+ * @param topFriends Top friends data in expected format.
+ */
+function initTopFriendsChart(topFriends) {
     var holder = d3.select('#friend-chart');
     if (!holder.node()) return;
 
@@ -29,34 +110,20 @@ function initFriendsChart(topFriends) {
     var likesOffsetRight = 19;
     var offserBetweenText = 5;
 
-    //if (error) return console.warn(error);
-    //dataJSON = json[0];
-    dataJSON = topFriends;
-
-    $('#content').show();
-    $('#waitscreen').hide();
-    $(this).spin(false);
-
-    // show error
-    //$('#error').show();
-    //$('#waitscreen').hide();
-    //$(this).spin(false);
-    //return;
-
     // set friends amount
     var friendsAmount = d3.select('#friends-amount');
     if(friendsAmount.length) {
-        friendsAmount.text(dataJSON.friends.length);
+        friendsAmount.text(topFriends.friends.length);
     }
 
     // set friends likes
     var friendsLikes = d3.select('#friends-likes');
     if(friendsLikes.length) {
-        friendsLikes.text(d3.sum(dataJSON.friends, function(d) {return d.likes;}));
+        friendsLikes.text(d3.sum(topFriends.friends, function(d) {return d.likes;}));
     }
 
     // set height from data
-    height = (barHeight + barsOffset) * dataJSON.friends.length;
+    height = (barHeight + barsOffset) * topFriends.friends.length;
 
     // add main svg
     var svg = holder.append('svg')
@@ -69,7 +136,7 @@ function initFriendsChart(topFriends) {
     var defs = svg.append('defs');
 
     defs.selectAll('pattern')
-        .data(dataJSON.friends)
+        .data(topFriends.friends)
         .enter()
         .append('pattern')
         .attr('id', function(d, i) {
@@ -98,7 +165,7 @@ function initFriendsChart(topFriends) {
         .attr('y', 0);
 
     var bars = barsArea.selectAll('g')
-        .data(dataJSON.friends)
+        .data(topFriends.friends)
         .enter()
         .append('g');
 
@@ -171,7 +238,7 @@ function initFriendsChart(topFriends) {
 
     // create scale chart
     var likesScale = d3.scale.linear()
-        .domain([0, d3.max(dataJSON.friends, function(d) {return d.likes;})])
+        .domain([0, d3.max(topFriends.friends, function(d) {return d.likes;})])
         .range([minConstantWidth, width]);
 
     // set finish size bars
@@ -203,7 +270,39 @@ function initFriendsChart(topFriends) {
         });
 }
 
-// donut chart post types
+/**
+ * Initialize "Post Types" chart.
+ *
+ * Takes a post-types-result JSON object and populates and renders the "Post Types" chart.  An example of post-types
+ * data to expect as a parameter looks like:
+ *
+ * {
+ *   "types":[
+ *     {
+ *       "value":6,
+ *       "description":"Status Update",
+ *       "color":"#3b5998"
+ *     },
+ *     {
+ *       "value":14,
+ *       "description":"Image Post",
+ *       "color":"#5bc0bd"
+ *     },
+ *     {
+ *       "value":1,
+ *       "description":"Shared Link",
+ *       "color":"#2ebaeb"
+ *     },
+ *     {
+ *       "value":3,
+ *       "description":"Video Post",
+ *       "color":"#f08a4b"
+ *     }
+ *   ]
+ * }
+ *
+ * @param postTypes Post types data in expected format.
+ */
 function initPostTypesChart(postTypes) {
     var holder = d3.select('#donut-chart-post-types');
     if (!holder.node()) return;
@@ -242,17 +341,11 @@ function initPostTypesChart(postTypes) {
         .attr('class', 'chart')
         .attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ') rotate(' + angleMainCircle + ' 0 0)');
 
-    //if (error) return console.warn(error);
-    //dataJSON = json[0];
-    dataJSON = postTypes;
-
     // set chart legend
     var listItems = d3.selectAll('#post-types-list');
 
-    //var totalValue = d3.sum(dataJSON.types, function(d){return d.value });
-
     var items = listItems.selectAll('li')
-        .data(dataJSON.types)
+        .data(postTypes.types)
         .enter()
         .append('li');
 
@@ -262,13 +355,6 @@ function initPostTypesChart(postTypes) {
         })
         .text('');
 
-    //items
-    //    .append('span')
-    //    .attr('class', 'sing')
-    //    .text(function(d) {
-    //        if(d) {return d.type + ' - ';}
-    //    });
-
     items
         .append('span')
         .attr('class', 'description')
@@ -277,11 +363,11 @@ function initPostTypesChart(postTypes) {
 
         });
 
-    items.data(dataJSON.types).exit().remove();
+    items.data(postTypes.types).exit().remove();
 
     // add group arc
     var g = mainGroup.selectAll(".arc")
-        .data(pie(dataJSON.types))
+        .data(pie(postTypes.types))
         .enter().append('g')
         .attr('class', 'arc');
 
@@ -289,7 +375,7 @@ function initPostTypesChart(postTypes) {
     g.append('path')
         .attr('d', arc)
         .attr('fill', function(d, i) {
-            return dataJSON.types[i].color;
+            return postTypes.types[i].color;
         });
 
     // add group label
@@ -334,11 +420,11 @@ function initPostTypesChart(postTypes) {
         })
         .attr('dy', '.35em')
         .attr('fill', function(d, i) {
-            return dataJSON.types[i].color;
+            return postTypes.types[i].color;
         })
         .style('text-anchor', function(d) {return (d.startAngle + d.endAngle) / 2 < Math.PI ? 'start' : 'end';})
         .text(function(d, i) {
-            return dataJSON.types[i].type;
+            return postTypes.types[i].value;
         });
 
     // add decor circles
@@ -368,20 +454,7 @@ function initPostTypesChart(postTypes) {
     // resize handler
     var chartHolder = svg.select('.decor');
     var ratio = chartHolder.node().getBoundingClientRect().width / chartHolder.node().getBoundingClientRect().height;
-    /*
-     d3.select(window)
-     .on('resize.donut', function() {
-     svg
-     .attr('height', function() {
-     return svg.node().getBoundingClientRect().width / ratio;
-     });
-     });
 
-     svg
-     .attr('height', function() {
-     return svg.node().getBoundingClientRect().width / ratio;
-     });
-     */
     d3.select(window)
         .on('resize.donut', function() {
             svg
@@ -741,39 +814,6 @@ function initWordChart(topWords) {
     $('#top-word').html("&quot;" + topWords.topword + "&quot;");
 }
 
-// align blocks height
-function initSameHeight() {
-	jQuery('section.block-popular').sameHeight({
-		elements: 'div.box-holder',
-		flexible: true,
-		multiLine: true
-	});
-}
-
-function initSetBackground() {
-	jQuery('.bg-frame').each(function() {
-		var holder = jQuery(this);
-		holder.parent().css({
-			'background-image': 'url(' + holder.find('img').attr('src') + ')'
-		});
-	});
-}
-
-
-// fade blocks init
-function initFadeBlock() {
-	jQuery('.fade-block').each(function() {
-		var box = jQuery(this);
-		box.fadeBlock({
-			fixedClass: 'fade-active',
-			compareBlock: box,
-			customCompare: true,
-			noMobile: true
-		});
-	});
-}
-
-
 /*
  * Image Stretch module
  */
@@ -895,7 +935,7 @@ PlatformDetect = (function(){
 					document.write(cssText);
 				}
 			}
-			
+
 			if(rule.meta) {
 				if(head) {
 					fragment = document.createElement('div');
@@ -1205,7 +1245,7 @@ PlatformDetect = (function(){
 					document.write(cssText);
 				}
 			}
-			
+
 			if(rule.meta) {
 				if(head) {
 					fragment = document.createElement('div');

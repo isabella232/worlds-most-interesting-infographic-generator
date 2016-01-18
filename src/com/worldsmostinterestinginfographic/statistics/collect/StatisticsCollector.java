@@ -24,6 +24,17 @@ import com.worldsmostinterestinginfographic.statistics.result.StatisticsResult;
 
 import java.util.List;
 
+/**
+ * Denotes a class as a collector of statistics and, as such, implements a <code>collect()</code> method.
+ */
 public interface StatisticsCollector {
+
+  /**
+   * Collects statistics of the given user given their feed posts.
+   *
+   * @param user The user for whom to collect statistics for
+   * @param posts The posts to analyze to gather desired statistics
+   * @return A <code>StatisticsResult</code> object containing the result data
+   */
   public StatisticsResult collect(User user, List<Post> posts);
 }

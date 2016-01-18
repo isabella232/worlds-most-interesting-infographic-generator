@@ -23,6 +23,12 @@ import com.worldsmostinterestinginfographic.model.object.Post;
 
 import java.util.Map;
 
+/**
+ * This class encapsulates the response from the collection of a user's preferred post type (e.g. status update, shared
+ * link, photo, etc) via the <code>com.worldsmostinterestinginfographic.statistics.collectTopFriendsCollector</code>.
+ *
+ * The result contains a map of post-type to usage-count.
+ */
 public class PostTypesResult implements StatisticsResult, InfographicResult {
 
   private Map<Post.Type, Integer> postTypesCount;
@@ -50,30 +56,68 @@ public class PostTypesResult implements StatisticsResult, InfographicResult {
     return error;
   }
 
+  /**
+   * Returns the result data in JSON format for the client to use in the rendering of the infographic.
+   *
+   * Returns the user's usage count of the following post types:
+   *
+   *   STATUS
+   *   PHOTO
+   *   LINK
+   *   VIDEO
+   *
+   * This will be returned in a particular JSON response format expected by the "Post Types" infographic on the client.
+   * An example JSON response looks like:
+   *
+   * {
+   *   "types":[
+   *     {
+   *       "value":6,
+   *       "description":"Status Update",
+   *       "color":"#3b5998"
+   *     },
+   *     {
+   *       "value":14,
+   *       "description":"Image Post",
+   *       "color":"#5bc0bd"
+   *     },
+   *     {
+   *       "value":1,
+   *       "description":"Shared Link",
+   *       "color":"#2ebaeb"
+   *     },
+   *     {
+   *       "value":3,
+   *       "description":"Video Post",
+   *       "color":"#f08a4b"
+   *     }
+   *   ]
+   * }
+   *
+   * This data will be used by the "Post Types" infographic to populate and render.
+   *
+   * @return A JSON representation of the user's post-types data
+   */
   @Override
   public String getInfographicJson() {
     String json = "{" +
                   "  \"types\": [" +
                   "    {" +
-                  "      \"type\": \"" + (postTypesCount.containsKey(Post.Type.STATUS) ? postTypesCount.get(Post.Type.STATUS) : 0) + "\"," +
                   "      \"value\": " + (postTypesCount.containsKey(Post.Type.STATUS) ? postTypesCount.get(Post.Type.STATUS) : 0) + "," +
                   "      \"description\": \"Status Update\"," +
                   "      \"color\": \"#3b5998\"" +
                   "    }," +
                   "    {" +
-                  "      \"type\": \"" + (postTypesCount.containsKey(Post.Type.PHOTO) ? postTypesCount.get(Post.Type.PHOTO) : 0) + "\"," +
                   "      \"value\": " + (postTypesCount.containsKey(Post.Type.PHOTO) ? postTypesCount.get(Post.Type.PHOTO) : 0) + "," +
                   "      \"description\": \"Image Post\"," +
                   "      \"color\": \"#5bc0bd\"" +
                   "    }," +
                   "    {" +
-                  "      \"type\": \"" + (postTypesCount.containsKey(Post.Type.LINK) ? postTypesCount.get(Post.Type.LINK) : 0) + "\"," +
                   "      \"value\": " + (postTypesCount.containsKey(Post.Type.LINK) ? postTypesCount.get(Post.Type.LINK) : 0) + "," +
                   "      \"description\": \"Shared Link\"," +
                   "      \"color\": \"#2ebaeb\"" +
                   "    }," +
                   "    {" +
-                  "      \"type\": \"" + (postTypesCount.containsKey(Post.Type.VIDEO) ? postTypesCount.get(Post.Type.VIDEO) : 0) + "\"," +
                   "      \"value\": " + (postTypesCount.containsKey(Post.Type.VIDEO) ? postTypesCount.get(Post.Type.VIDEO) : 0) + "," +
                   "      \"description\": \"Video Post\"," +
                   "      \"color\": \"#f08a4b\"" +

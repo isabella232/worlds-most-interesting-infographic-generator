@@ -29,6 +29,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * A statistics collector, this class will collect data regarding a given user's top friends by analyzing their feed
+ * data.  Top friends are determined by the number of likes they contribute to the user's feed where, the interpretation
+ * is, the more likes they give, the better the friend.  The result of the collection will return an ordered list of
+ * the user's friends where the front of the list (i.e. index 0) is the user's top friend (i.e. the friend who has liked
+ * his posts the most).  The 2nd position in the list represents the user's 2nd best friend, the 3rd for the 3rd, and so
+ * on.
+ */
 public class TopFriendsCollector implements StatisticsCollector {
 
   /**
@@ -42,8 +50,8 @@ public class TopFriendsCollector implements StatisticsCollector {
    *
    * @param user  The profile of the user who owns the posts
    * @param posts The posts from the wall of the user
-   * @return An ordered list of friend-likes entries ordered by the number of likes descending (i.e. the first entry is
-   * the friend with the most likes)
+   * @return A <code>com.worldsmostinterestinginfographic.statistics.result.TopFriendsResult</code> which encapsulates
+   * the response to a request to collect statistics about a user's top friends
    */
   @Override
   public TopFriendsResult collect(User user, List<Post> posts) {

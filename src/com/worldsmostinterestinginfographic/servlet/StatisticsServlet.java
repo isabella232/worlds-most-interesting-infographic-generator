@@ -21,10 +21,10 @@ package com.worldsmostinterestinginfographic.servlet;
 import com.google.appengine.labs.repackaged.org.json.JSONException;
 import com.google.appengine.labs.repackaged.org.json.JSONObject;
 
-import com.worldsmostinterestinginfographic.service.FacebookService;
 import com.worldsmostinterestinginfographic.model.Model;
 import com.worldsmostinterestinginfographic.model.object.Post;
 import com.worldsmostinterestinginfographic.model.object.User;
+import com.worldsmostinterestinginfographic.service.FacebookService;
 import com.worldsmostinterestinginfographic.statistics.collect.DailyPostFrequencyCollector;
 import com.worldsmostinterestinginfographic.statistics.collect.MonthlyPostFrequencyCollector;
 import com.worldsmostinterestinginfographic.statistics.collect.PostTypesCollector;
@@ -45,6 +45,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * Servlet to handle requests to fetch statistics data for a user.
+ */
 public class StatisticsServlet extends HttpServlet {
 
   private static final Logger log = Logger.getLogger(StatisticsServlet.class.getName());
@@ -56,15 +59,14 @@ public class StatisticsServlet extends HttpServlet {
   }
 
   /**
-   * Servlet to handle request to fetch statistics data for the user.  Will check for valid session data from the cache,
-   * including a valid access token.  If present, will attempt to make a protected resource request for the user's feed
-   * data using the access token.  Once the feed data has been returned, statistics will be collected, and the responses
-   * returned.
+   * Servlet to handle request to fetch statistics data for a user.
    *
-   * @param request The HTTP request sent by the client
+   * Will check for valid session data from the cache, including a valid access token.  If present, will attempt to make
+   * a protected resource request for the user's feed data using the access token.  Once the feed data has been
+   * returned, statistics will be collected, and the responses returned.
+   *
+   * @param request  The HTTP request sent by the client
    * @param response The HTTP response that the server will send back to the client
-   * @throws ServletException
-   * @throws IOException
    */
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

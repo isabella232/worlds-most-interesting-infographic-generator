@@ -18,6 +18,16 @@
 
 package com.worldsmostinterestinginfographic.statistics.result;
 
+/**
+ * Denotes a response object to be a provider for an infographic and, as such, the ability to provide result data in
+ * JSON format for use in an appropriate infographic on the client.
+ */
 public interface InfographicResult {
-  String getInfographicJson();
+
+  /**
+   * Returns the result data in JSON format for the client to use in the rendering of the infographic.
+   *
+   * @return A JSON representation of the result data
+   */
+  public String getInfographicJson();
 }

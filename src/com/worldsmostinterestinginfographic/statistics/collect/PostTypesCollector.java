@@ -26,14 +26,33 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * A statistics collector, this class will collect data regarding a given user's preferred post type (e.g. status
+ * update, shared link, photo, etc) by analyzing their feed data.
+ */
 public class PostTypesCollector implements StatisticsCollector {
 
+  /**
+   * This method will iterate through the given posts generating statistics about the given user's most commonly
+   * used post type (e.g. status update, shared link, photo, etc).
+   *
+   * @param user The user for whom to collect statistics for
+   * @param posts The posts to analyze to gather desired statistics
+   * @return A <code>com.worldsmostinterestinginfographic.statistics.result.PostTypesResult</code> which encapsulates
+   * the response to a request to collect statistics about a user's preferred post types
+   */
   @Override
   public PostTypesResult collect(User user, List<Post> posts) {
 
     // Populate post-types map
     Map<Post.Type, Integer> postTypesCount = new HashMap<>();
     for (Post post : posts) {
+
+      // Only look at my posts
+      if (!post.getFrom().equals(user)) {
+        continue;
+      }
+
       if (!postTypesCount.containsKey(post.getType())) {
         postTypesCount.put(post.getType(), 1);
         continue;

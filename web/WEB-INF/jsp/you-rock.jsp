@@ -129,11 +129,19 @@
 <%@include file="/WEB-INF/jsp/inc/scripts.jsp" %>
 <script>
     $.getJSON( "/stats", function( data ) {
-        initFriendsChart(data.TOP_FRIENDS);
+
+        // Get rid of the spinner
+        $('#content').show();
+        $('#waitscreen').hide();
+        $(this).spin(false);
+
+        // Start rendering the graphs
+        initTopFriendsChart(data.TOP_FRIENDS);
         initPostTypesChart(data.POST_TYPES);
         initBarChart(data.DAILY_POST_FREQUENCY);
         initLineBar(data.MONTHLY_POST_FREQUENCY);
         initWordChart(data.TOP_WORDS);
+
     });
 </script>
 </body>

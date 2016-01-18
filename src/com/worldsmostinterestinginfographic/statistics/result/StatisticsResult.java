@@ -18,7 +18,26 @@
 
 package com.worldsmostinterestinginfographic.statistics.result;
 
+/**
+ * Denotes a particular object as a response to a request to collect statistics via an implementation of the
+ * <code>com.worldsmostinterestinginfographic.statistics.collect.StatisticsCollector</code>.
+ *
+ * @param <T>  Returns a generic result depending on the statistics collected
+ */
 public interface StatisticsResult<T> {
-  T getResult();
-  String getError();
+
+  /**
+   * Get result data in response to a request to collect statistics data via an implementation of the
+   * <code>com.worldsmostinterestinginfographic.statistics.collect.StatisticsCollector</code>.
+   *
+   * @return The result data
+   */
+  public T getResult();
+
+  /**
+   * Get the error message returned when a collect-statistics operation has failed.
+   *
+   * @return The error message
+   */
+  public String getError();
 }
