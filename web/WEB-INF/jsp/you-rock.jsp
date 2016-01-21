@@ -54,56 +54,18 @@
                 </div>
             </section>
             <section class="block-frequency fade-block">
-                <h2 class="orange fade-block">Your post frequency</h2>
-                <div class="fade-block" id="post-frequency-bar-chart" data-json="inc/post-frequency.json">
+                <h2 class="orange fade-block">Posts by day of the week</h2>
+                <div class="fade-block" id="daily-post-frequency-bar-chart">
                     <!-- Here insert chart -->
                 </div>
                 <div class="text-holder fade-block">
-                    <p><span id="highest-value" class="number orange">3.1</span>highest average <span class="mark">posts/week</span></p>
-                    <p><span id="lowest-value" class="number blue">0.25</span>lowest average <span class="mark">posts/week</span></p>
+                    <p><span id="weekly-average" class="number blue-light">0.25</span>average posts <span class="mark">per week</span></p>
+                    <p><span id="highest-value" class="number orange">3.1</span>most active on <span id="highest-day" class="mark">Monday</span></p>
                 </div>
             </section>
-            <!--
-            <section class="block-popular">
-                <h2 class="fade-block">Your most popular posts</h2>
-                <div class="box fade-block">
-                    <div class="box-holder">
-                        <img src="images/image-4.jpg" alt="image description">
-                        <div class="text-holder">
-                            <p>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable.</p>
-                        </div>
-                        <ul class="link-holder">
-                            <li><a href="#"><i class="icon-thumbs-o-up"></i>185 likes</a></li>
-                            <li><a class="orange" href="#"><i class="icon-comment-o"></i>85 comments</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="box fade-block">
-                    <div class="box-holder full">
-                        <img src="images/image-5.jpg" alt="image description">
-                        <ul class="link-holder">
-                            <li><a href="#"><i class="icon-thumbs-o-up"></i>185 likes</a></li>
-                            <li><a class="orange" href="#"><i class="icon-comment-o"></i>85 comments</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="box fade-block">
-                    <div class="box-holder">
-                        <img src="images/image-4.jpg" alt="image description">
-                        <div class="text-holder">
-                            <p>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable.</p>
-                        </div>
-                        <ul class="link-holder">
-                            <li><a href="#"><i class="icon-thumbs-o-up"></i>185 likes</a></li>
-                            <li><a class="orange" href="#"><i class="icon-comment-o"></i>85 comments</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </section>
-            -->
             <section class="block-privacy fade-block">
                 <div class="text-holder">
-                    <h2 class="blue-light">Your post privacy</h2>
+                    <h2 class="blue-light">Your post frequency</h2>
                     <p><span id="highest-average-public" class="number blue-light">3.1</span>highest average <span class="mark">public posts/week</span></p>
                     <p><span id="highest-average-private" class="number blue">2.75</span>highest average <br><span class="mark">private posts/week</span></p>
                 </div>
@@ -138,7 +100,7 @@
         // Start rendering the graphs
         initTopFriendsChart(data.TOP_FRIENDS);
         initPostTypesChart(data.POST_TYPES);
-        initBarChart(data.DAILY_POST_FREQUENCY);
+        initDailyPostFrequencyChart(data.DAILY_POST_FREQUENCY);
         initLineBar(data.MONTHLY_POST_FREQUENCY);
         initWordChart(data.TOP_WORDS);
 

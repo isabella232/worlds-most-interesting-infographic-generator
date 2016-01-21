@@ -1153,7 +1153,7 @@ input[type="submit"] {
 }
 
 #post-privacy-line-chart,
-#post-frequency-bar-chart {
+#daily-post-frequency-bar-chart {
 	font-family: "Lato", "Baskerville", "Georgia", sans-serif;
 	font-weight: bold;
 	text-align: center;
@@ -1164,28 +1164,28 @@ input[type="submit"] {
 
 #post-privacy-line-chart .axis path,
 #post-privacy-line-chart .axis line,
-#post-frequency-bar-chart .axis path,
-#post-frequency-bar-chart .axis line {
+#daily-post-frequency-bar-chart .axis path,
+#daily-post-frequency-bar-chart .axis line {
 	display: none;
 }
 
 #post-privacy-line-chart .axis line.grid-line,
-#post-frequency-bar-chart .axis line.grid-line {
+#daily-post-frequency-bar-chart .axis line.grid-line {
 	display: block;
 }
 
 #post-privacy-line-chart text,
-#post-frequency-bar-chart text {
+#daily-post-frequency-bar-chart text {
 	fill: #9b9c9c;
 }
 
 #post-privacy-line-chart .x.axis,
-#post-frequency-bar-chart .x.axis {
+#daily-post-frequency-bar-chart .x.axis {
 	font-size: 18px;
 }
 
 #post-privacy-line-chart .y.axis,
-#post-frequency-bar-chart .y.axis {
+#daily-post-frequency-bar-chart .y.axis {
 	font-size: 20px;
 }
 
@@ -1915,13 +1915,13 @@ input[type="submit"] {
 	}
 
 	#post-privacy-line-chart,
-	#post-frequency-bar-chart {
+	#daily-post-frequency-bar-chart {
 		width: auto;
 		display: block;
 	}
 
 	#post-privacy-line-chart svg,
-	#post-frequency-bar-chart svg {
+	#daily-post-frequency-bar-chart svg {
 		width: 100%;
 		max-width: 100%;
 	}

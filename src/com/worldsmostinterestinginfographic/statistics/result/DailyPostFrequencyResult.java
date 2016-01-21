@@ -20,6 +20,14 @@ package com.worldsmostinterestinginfographic.statistics.result;
 
 import com.whoischarles.util.json.Minify;
 
+/**
+ * This class encapsulates the response from the collection of a user's daily post frequency via the
+ * <code>com.worldsmostinterestinginfographic.statistics.collect.DailyPostFrequencyCollector</code>.
+ *
+ * The result contains an array containing the count of posts per that day of the week as an array index where 0
+ * represents Sunday (i.e. index 0 represents the number of posts made on a Sunday, index 1 for Monday, 2 for Tuesday,
+ * and so on).
+ */
 public class DailyPostFrequencyResult implements StatisticsResult, InfographicResult {
 
   private int[] postsByDayOfWeek;
@@ -43,44 +51,82 @@ public class DailyPostFrequencyResult implements StatisticsResult, InfographicRe
     return error;
   }
 
+  /**
+   * Returns the result data in JSON format for the client to use in the rendering of the infographic.
+   *
+   * Returns the daily post frequency of the user.  This is represented as an array of 7 integers, where the value is
+   * the number of posts made for that day of the week, with index 0 being Sunday, index 1 being Monday, etc.  This will
+   * be returned in a particular JSON response format expected by the "Daily Post Frequency" infographic on the client.
+   * An example JSON response looks like:
+   *
+   * {
+   *   "frequency":[
+   *     {
+   *       "dayofweek":"Mon",
+   *       "count":6
+   *     },
+   *     {
+   *       "dayofweek":"Tue",
+   *       "count":1
+   *     },
+   *     {
+   *       "dayofweek":"Wed",
+   *       "count":3
+   *     },
+   *     {
+   *       "dayofweek":"Thu",
+   *       "count":2
+   *     },
+   *     {
+   *       "dayofweek":"Fri",
+   *       "count":7
+   *     },
+   *     {
+   *       "dayofweek":"Sat",
+   *       "count":4
+   *     },
+   *     {
+   *       "dayofweek":"Sun",
+   *       "count":6
+   *     }
+   *   ]
+   * }
+   *
+   * This data will be used by the "Daily Post Frequency" infographic to populate and render.
+   *
+   * @return A JSON representation of the user's daily post frequency data
+   */
   @Override
   public String getInfographicJson() {
     String json = "{" +
                   "  \"frequency\": [" +
                   "    {" +
-                  "      \"lowest\": " + postsByDayOfWeek[1] + "," +
-                  "      \"highest\": " + postsByDayOfWeek[1] + "," +
-                  "      \"month\": \"Mon\"" +
+                  "      \"dayofweek\": \"Mon\"" + "," +
+                  "      \"count\": " + postsByDayOfWeek[1] +
                   "    }," +
                   "    {" +
-                  "      \"lowest\": " + postsByDayOfWeek[2] + "," +
-                  "      \"highest\": " + postsByDayOfWeek[2] + "," +
-                  "      \"month\": \"Tue\"" +
+                  "      \"dayofweek\": \"Tue\"" + "," +
+                  "      \"count\": " + postsByDayOfWeek[2] +
                   "    }," +
                   "    {" +
-                  "      \"lowest\": " + postsByDayOfWeek[3] + "," +
-                  "      \"highest\": " + postsByDayOfWeek[3] + "," +
-                  "      \"month\": \"Wed\"" +
+                  "      \"dayofweek\": \"Wed\"" + "," +
+                  "      \"count\": " + postsByDayOfWeek[3] +
                   "    }," +
                   "    {" +
-                  "      \"lowest\": " + postsByDayOfWeek[4] + "," +
-                  "      \"highest\": " + postsByDayOfWeek[4] + "," +
-                  "      \"month\": \"Thu\"" +
+                  "      \"dayofweek\": \"Thu\"" + "," +
+                  "      \"count\": " + postsByDayOfWeek[4] +
                   "    }," +
                   "    {" +
-                  "      \"lowest\": " + postsByDayOfWeek[5] + "," +
-                  "      \"highest\": " + postsByDayOfWeek[5] + "," +
-                  "      \"month\": \"Fri\"" +
+                  "      \"dayofweek\": \"Fri\"" + "," +
+                  "      \"count\": " + postsByDayOfWeek[5] +
                   "    }," +
                   "    {" +
-                  "      \"lowest\": " + postsByDayOfWeek[6] + "," +
-                  "      \"highest\": " + postsByDayOfWeek[6] + "," +
-                  "      \"month\": \"Sat\"" +
+                  "      \"dayofweek\": \"Sat\"" + "," +
+                  "      \"count\": " + postsByDayOfWeek[6] +
                   "    }," +
                   "    {" +
-                  "      \"lowest\": " + postsByDayOfWeek[0] + "," +
-                  "      \"highest\": " + postsByDayOfWeek[0] + "," +
-                  "      \"month\": \"Sun\"" +
+                  "      \"dayofweek\": \"Sun\"" + "," +
+                  "      \"count\": " + postsByDayOfWeek[0] +
                   "    }" +
                   "  ]" +
                   "}";

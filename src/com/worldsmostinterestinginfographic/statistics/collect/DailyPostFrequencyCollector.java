@@ -25,12 +25,33 @@ import com.worldsmostinterestinginfographic.statistics.result.DailyPostFrequency
 import java.util.Calendar;
 import java.util.List;
 
+/**
+ * A statistics collector, this class will collect data regarding a given user's daily post frequency by analyzing their
+ * feed data.  Their post frequency is represented as the number of posts posted per day of the week.
+ */
 public class DailyPostFrequencyCollector implements StatisticsCollector {
 
+  /**
+   * This method will iterate through the given posts generating statistics about the given user's post frequency
+   * represented as the number of posts posted per day of the week.
+   *
+   * @param user The user for whom to collect statistics for
+   * @param posts The posts to analyze to gather desired statistics
+   * @return A <code>com.worldsmostinterestinginfographic.statistics.result.DailyPostFrequencyResult</code> which
+   * encapsulates the response to a request to collect statistics about a user's daily post frequency
+   */
   @Override
   public DailyPostFrequencyResult collect(User user, List<Post> posts) {
+
+    // Populate post-frequency array
     int[] postsByDayOfWeek = new int[7];
     for (Post post : posts) {
+
+      // Only look at my posts
+      if (!post.getFrom().equals(user)) {
+        continue;
+      }
+
       if (post.getCreatedDate() != null) {
         postsByDayOfWeek[post.getCreatedDate().get(Calendar.DAY_OF_WEEK) - 1] += 1;
       }

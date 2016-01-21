@@ -95,8 +95,6 @@ function initTopFriendsChart(topFriends) {
     var holder = d3.select('#friend-chart');
     if (!holder.node()) return;
 
-    var dataUrl = holder.attr('data-json');
-    var dataJSON;
     var width = 670;
     var height = 400;
     var barHeight = 66;
@@ -306,8 +304,7 @@ function initTopFriendsChart(topFriends) {
 function initPostTypesChart(postTypes) {
     var holder = d3.select('#donut-chart-post-types');
     if (!holder.node()) return;
-    var dataUrl = holder.attr('data-json');
-    var dataJSON;
+
     var width = 700;
     var height = 700;
     var radius = 558 / 2;
@@ -465,13 +462,51 @@ function initPostTypesChart(postTypes) {
         .attr('height', 600);
 }
 
-// post frequency bar chart
-function initBarChart(dailyPostFrequency) {
-    var holder = d3.select('#post-frequency-bar-chart');
+/**
+ * Initialize "Daily Post Frequency" chart.
+ *
+ * Takes a daily-post-frequency-result JSON object and populates and renders the "Daily Post Frequency" chart.  An
+ * example of daily-post-frequency data to expect as a parameter looks like:
+ *
+ * {
+ *   "frequency":[
+ *     {
+ *       "dayofweek":"Mon",
+ *       "count":6
+ *     },
+ *     {
+ *       "dayofweek":"Tue",
+ *       "count":1
+ *     },
+ *     {
+ *       "dayofweek":"Wed",
+ *       "count":3
+ *     },
+ *     {
+ *       "dayofweek":"Thu",
+ *       "count":2
+ *     },
+ *     {
+ *       "dayofweek":"Fri",
+ *       "count":7
+ *     },
+ *     {
+ *       "dayofweek":"Sat",
+ *       "count":4
+ *     },
+ *     {
+ *       "dayofweek":"Sun",
+ *       "count":6
+ *     }
+ *   ]
+ * }
+ *
+ * @param dailyPostFrequency Daily post frequency data in expected format.
+ */
+function initDailyPostFrequencyChart(dailyPostFrequency) {
+    var holder = d3.select('#daily-post-frequency-bar-chart');
     if (!holder.node()) return;
 
-    var dataUrl = holder.attr('data-json');
-    var dataJSON;
     var width = 600;
     var height = 380;
     var colorHighest = '#3a5897';
@@ -485,137 +520,141 @@ function initBarChart(dailyPostFrequency) {
     var color = d3.scale.ordinal()
         .range([colorHighest, colorLowest]);
 
-    //d3.json(dataUrl, function (error, json) {
-    //    if (error) return console.warn(error);
-    //    dataJSON = json[0];
-    dataJSON = dailyPostFrequency;
+    // add main svg
+    var svg = holder.append('svg')
+        .attr('width', width + leftOffsetAxis)
+        .attr('height', height + bottomOffsetAxis + topOffset)
+        .attr('preserveAspectRatio', 'xMidYMid meet')
+        .attr('viewBox', '0 0 ' + (width + leftOffsetAxis) + ' ' + (height + bottomOffsetAxis + topOffset));
 
-        // add main svg
-        var svg = holder.append('svg')
-            .attr('width', width + leftOffsetAxis)
-            .attr('height', height + bottomOffsetAxis + topOffset)
-            .attr('preserveAspectRatio', 'xMidYMid meet')
-            .attr('viewBox', '0 0 ' + (width + leftOffsetAxis) + ' ' + (height + bottomOffsetAxis + topOffset));
+    // crate scales
+    var xScale = d3.scale.ordinal()
+        .rangeRoundBands([0, width], 0.5)
+        .domain(dailyPostFrequency.frequency.map(function(d) { return d.dayofweek;}));
 
-        // crate scales
-        var xScale = d3.scale.ordinal()
-            .rangeRoundBands([0, width], 0.5)
-            .domain(dataJSON.frequency.map(function(d) { return d.month;}));
+    var yScale = d3.scale.linear()
+        .rangeRound([height, 0]);
 
-        var yScale = d3.scale.linear()
-            .rangeRound([height, 0]);
+    // comma numbers axis Y
+    var axisYFormatters = d3.locale({
+                                        "decimal": ",",
+                                        "thousands": ".",
+                                        "grouping": [3],
+                                        "currency": ["$", ""],
+                                        "dateTime": "%a %b %e %X %Y",
+                                        "date": "%m/%d/%Y",
+                                        "time": "%H:%M:%S",
+                                        "periods": ["AM", "PM"],
+                                        "days": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+                                        "shortDays": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+                                        "months": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+                                        "shortMonths": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+                                    });
+    var numberFormat = axisYFormatters.numberFormat(",.1f");
 
-        // comma numbers axis Y
-        var axisYFormatters = d3.locale({
-                                            "decimal": ",",
-                                            "thousands": ".",
-                                            "grouping": [3],
-                                            "currency": ["$", ""],
-                                            "dateTime": "%a %b %e %X %Y",
-                                            "date": "%m/%d/%Y",
-                                            "time": "%H:%M:%S",
-                                            "periods": ["AM", "PM"],
-                                            "days": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-                                            "shortDays": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
-                                            "months": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-                                            "shortMonths": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
-                                        });
-        var numberFormat = axisYFormatters.numberFormat(",.1f");
+    // crate axes
+    var xAxis = d3.svg.axis()
+        .scale(xScale)
+        .orient("bottom");
 
-        // crate axes
-        var xAxis = d3.svg.axis()
-            .scale(xScale)
-            .orient("bottom");
+    var yAxis = d3.svg.axis()
+        .scale(yScale)
+        .orient("left")
+        .tickFormat(numberFormat);
 
-        var yAxis = d3.svg.axis()
-            .scale(yScale)
-            .orient("left")
-            .tickFormat(numberFormat);
+    // set color entries data
+    color.domain(d3.keys(dailyPostFrequency.frequency[0]).filter(function(key) { return key !== "dayofweek"; }));
 
-        // set color entries data
-        color.domain(d3.keys(dataJSON.frequency[0]).filter(function(key) { return key !== "month"; }));
+    // data transformation
+    dailyPostFrequency.frequency.forEach(function(d) {
+        var y0 = 0;
+        d.values = color.domain().map(function(name) { return {name: name, y0: y0, y1: Number(d3.format('.2f')(y0 = d[name]))}; });
+        d.total =  Number(d3.format('.2f')(d.values[d.values.length - 1].y1));
+    });
 
-        // data transormation
-        dataJSON.frequency.forEach(function(d) {
-            var y0 = 0;
-            d.values = color.domain().map(function(name) { return {name: name, y0: y0, y1: Number(d3.format('.2f')(y0 = d[name]))}; });
-            d.total =  Number(d3.format('.2f')(d.values[d.values.length - 1].y1));
+    yScale
+        .domain([0, 1.15 * d3.max(dailyPostFrequency.frequency, function(d) {return d.count;})]);
+
+    // add main group
+    var mainGroup = svg.append('g')
+        .attr('class', 'bar-chart')
+        .attr("transform", "translate(" + leftOffsetAxis + "," + topOffset + ")");
+
+    // add axis
+    mainGroup.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + (height + bottomOffsetAxis/4) + ")")
+        .call(xAxis);
+
+    mainGroup.append("g")
+        .attr("class", "y axis")
+        .call(yAxis);
+
+    // lines
+    mainGroup.selectAll("g.y.axis g.tick")
+        .append("line")
+        .classed("grid-line", true)
+        .attr("x1", offsetLeft)
+        .attr("y1", 0)
+        .attr("x2", width)
+        .attr("y2", 0)
+        .style("stroke", '#aeadae');
+
+    // add bars group
+    var barGroups = mainGroup
+        .selectAll('g.bar')
+        .data(dailyPostFrequency.frequency)
+        .enter()
+        .append('g')
+        .attr('class', 'bar')
+        .attr("transform", function(d) { return "translate(" + xScale(d.dayofweek) + ",0)"; });
+
+    // add bars
+    barGroups.selectAll('rect')
+        .data(function(d) { return d.values; })
+        .enter().append("rect")
+        .attr("width", xScale.rangeBand())
+        .attr("y", function(d) {return yScale(d.y1); })
+        .attr("height", function(d) { return yScale(d.y0) - yScale(d.y1); })
+        .attr("fill", function(d) { return color(d.name); });
+
+    var weeklyAverageSpan = d3.select('#weekly-average');
+    if (weeklyAverageSpan.length) {
+        var weeklyAverage = d3.sum(dailyPostFrequency.frequency, function(d) {return d.count;}) / 7;
+        weeklyAverageSpan.text(weeklyAverage.toFixed(1));
+    }
+
+    var highestValueSpan = d3.select('#highest-value');
+    if (highestValueSpan.length) {
+        highestValueSpan.text(d3.max(dailyPostFrequency.frequency, function(d) {return d.count;}));
+    }
+
+    var highestDaySpan = d3.select('#highest-day');
+    if (highestDaySpan.length) {
+        var maxIndex = 0;
+        for (var i = 1; i < dailyPostFrequency.frequency.length; i++) {
+            if (dailyPostFrequency.frequency[i].count > dailyPostFrequency.frequency[maxIndex].count) {
+                maxIndex = i;
+            }
+        }
+        highestDaySpan.text(dailyPostFrequency.frequency[maxIndex].dayofweek + "days");
+    }
+
+    // resize handler
+    var chartHolder = svg.select('.bar-chart');
+    var ratio = chartHolder.node().getBoundingClientRect().width / chartHolder.node().getBoundingClientRect().height;
+    d3.select(window)
+        .on('resize.bar-chart', function() {
+            svg
+                .attr('height', function() {
+                    return svg.node().getBoundingClientRect().width / ratio;
+                });
         });
 
-        yScale
-            .domain([0, 1.15 * d3.max(dataJSON.frequency, function(d) {return d.highest;})]);
-
-        // add main group
-        var mainGroup = svg.append('g')
-            .attr('class', 'bar-chart')
-            .attr("transform", "translate(" + leftOffsetAxis + "," + topOffset + ")");
-
-        // add axis
-        mainGroup.append("g")
-            .attr("class", "x axis")
-            .attr("transform", "translate(0," + (height + bottomOffsetAxis/4) + ")")
-            .call(xAxis);
-
-        mainGroup.append("g")
-            .attr("class", "y axis")
-            .call(yAxis);
-
-        // lines
-        mainGroup.selectAll("g.y.axis g.tick")
-            .append("line")
-            .classed("grid-line", true)
-            .attr("x1", offsetLeft)
-            .attr("y1", 0)
-            .attr("x2", width)
-            .attr("y2", 0)
-            .style("stroke", '#aeadae');
-
-        // add bars group
-        var barGroups = mainGroup
-            .selectAll('g.bar')
-            .data(dataJSON.frequency)
-            .enter()
-            .append('g')
-            .attr('class', 'bar')
-            .attr("transform", function(d) { return "translate(" + xScale(d.month) + ",0)"; });
-
-        // add bars
-        barGroups.selectAll('rect')
-            .data(function(d) { return d.values; })
-            .enter().append("rect")
-            .attr("width", xScale.rangeBand())
-            .attr("y", function(d) {return yScale(d.y1); })
-            .attr("height", function(d) { return yScale(d.y0) - yScale(d.y1); })
-            .attr("fill", function(d) { return color(d.name); });
-
-        // set external values
-        var lowestValue = d3.select('#lowest-value');
-        if(lowestValue.length) {
-            lowestValue.text(d3.min(dataJSON.frequency, function(d) {return d.lowest;}));
-        }
-
-        var highestValue = d3.select('#highest-value');
-        if(highestValue.length) {
-            highestValue.text(d3.max(dataJSON.frequency, function(d) {return d.highest;}));
-        }
-
-        // resize handler
-        var chartHolder = svg.select('.bar-chart');
-        var ratio = chartHolder.node().getBoundingClientRect().width / chartHolder.node().getBoundingClientRect().height;
-        d3.select(window)
-            .on('resize.bar-chart', function() {
-                svg
-                    .attr('height', function() {
-                        return svg.node().getBoundingClientRect().width / ratio;
-                    });
-            });
-
-        svg
-            .attr('height', function() {
-                return svg.node().getBoundingClientRect().width / ratio;
-            });
-    //});
-
+    svg
+        .attr('height', function() {
+            return svg.node().getBoundingClientRect().width / ratio;
+        });
 }
 
 // post privacy line chart
