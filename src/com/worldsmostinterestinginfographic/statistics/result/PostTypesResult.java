@@ -66,6 +66,8 @@ public class PostTypesResult implements StatisticsResult, InfographicResult {
    *   LINK
    *   VIDEO
    *
+   *   Note: We are intentionally omitting OFFER and EVENT due to their infrequency
+   *
    * This will be returned in a particular JSON response format expected by the "Post Types" infographic on the client.
    * An example JSON response looks like:
    *
@@ -74,22 +76,30 @@ public class PostTypesResult implements StatisticsResult, InfographicResult {
    *     {
    *       "value":6,
    *       "description":"Status Update",
-   *       "color":"#3b5998"
+   *       "shortname":"status updates",
+   *       "color":"#3b5998",
+   *       "colorclass":"blue"
    *     },
    *     {
    *       "value":14,
    *       "description":"Image Post",
-   *       "color":"#5bc0bd"
+   *       "shortname":"photos",
+   *       "color":"#5bc0bd",
+   *       "colorclass":"green"
    *     },
    *     {
    *       "value":1,
    *       "description":"Shared Link",
-   *       "color":"#2ebaeb"
+   *       "shortname":"shared links",
+   *       "color":"#2ebaeb",
+   *       "colorclass":"blue-light"
    *     },
    *     {
    *       "value":3,
    *       "description":"Video Post",
-   *       "color":"#f08a4b"
+   *       "shortname":"videos",
+   *       "color":"#f08a4b",
+   *       "colorclass":"orange"
    *     }
    *   ]
    * }
@@ -105,22 +115,30 @@ public class PostTypesResult implements StatisticsResult, InfographicResult {
                   "    {" +
                   "      \"value\": " + (postTypesCount.containsKey(Post.Type.STATUS) ? postTypesCount.get(Post.Type.STATUS) : 0) + "," +
                   "      \"description\": \"Status Update\"," +
-                  "      \"color\": \"#3b5998\"" +
+                  "      \"shortname\": \"status updates\"," +
+                  "      \"color\": \"#3b5998\"," +
+                  "      \"colorclass\": \"blue\"" +
                   "    }," +
                   "    {" +
                   "      \"value\": " + (postTypesCount.containsKey(Post.Type.PHOTO) ? postTypesCount.get(Post.Type.PHOTO) : 0) + "," +
                   "      \"description\": \"Image Post\"," +
-                  "      \"color\": \"#5bc0bd\"" +
+                  "      \"shortname\": \"photos\"," +
+                  "      \"color\": \"#5bc0bd\"," +
+                  "      \"colorclass\": \"green\"" +
                   "    }," +
                   "    {" +
                   "      \"value\": " + (postTypesCount.containsKey(Post.Type.LINK) ? postTypesCount.get(Post.Type.LINK) : 0) + "," +
                   "      \"description\": \"Shared Link\"," +
-                  "      \"color\": \"#2ebaeb\"" +
+                  "      \"shortname\": \"shared links\"," +
+                  "      \"color\": \"#2ebaeb\"," +
+                  "      \"colorclass\": \"blue-light\"" +
                   "    }," +
                   "    {" +
                   "      \"value\": " + (postTypesCount.containsKey(Post.Type.VIDEO) ? postTypesCount.get(Post.Type.VIDEO) : 0) + "," +
                   "      \"description\": \"Video Post\"," +
-                  "      \"color\": \"#f08a4b\"" +
+                  "      \"shortname\": \"videos\"," +
+                  "      \"color\": \"#f08a4b\"," +
+                  "      \"colorclass\": \"orange\"" +
                   "    }" +
                   "  ]" +
                   "}";

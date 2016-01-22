@@ -64,7 +64,7 @@ public class MonthlyPostFrequencyResult implements StatisticsResult, Infographic
    * client.  An example JSON response looks like:
    *
    * {
-   *   "private":[
+   *   "frequency":[
    *     {
    *       "value":1,
    *       "x":0

@@ -112,7 +112,7 @@
         initTopFriendsChart(data.TOP_FRIENDS);
         initPostTypesChart(data.POST_TYPES);
         initDailyPostFrequencyChart(data.DAILY_POST_FREQUENCY);
-        initLineBar(data.MONTHLY_POST_FREQUENCY);
+        initMonthlyPostFrequencyChart(data.MONTHLY_POST_FREQUENCY);
         initWordChart(data.TOP_WORDS);
 
     });

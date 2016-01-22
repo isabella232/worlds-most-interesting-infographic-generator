@@ -460,6 +460,29 @@ function initPostTypesChart(postTypes) {
 
     svg
         .attr('height', 600);
+
+    var maxIndex = 0;
+    for (var i = 1; i < postTypes.types.length; i++) {
+
+        if (postTypes.types[i].value > postTypes.types[maxIndex].value) {
+            maxIndex = i;
+        }
+    }
+
+    var mostFrequentPostPercentageSpan = d3.select('#most-frequent-post-percentage');
+    if (mostFrequentPostPercentageSpan.length) {
+        var postCount = d3.sum(postTypes.types, function(d) {return d.value;});
+        mostFrequentPostPercentageSpan.text(d3.format(",.1f")(postTypes.types[maxIndex].value * 100 / postCount) + "%");
+    }
+
+    var mostFrequentPostTypeSpan = d3.select('#most-frequent-post-type');
+    if (mostFrequentPostTypeSpan.length) {
+        mostFrequentPostTypeSpan.text(postTypes.types[maxIndex].description + "s");
+    }
+
+    $('#most-frequent-post-percentage').addClass(postTypes.types[maxIndex].colorclass);
+    $('#most-frequent-post-type').addClass(postTypes.types[maxIndex].colorclass);
+    $('#most-frequent-post-type').html(postTypes.types[maxIndex].shortname);
 }
 
 /**
@@ -469,34 +492,34 @@ function initPostTypesChart(postTypes) {
  * example of daily-post-frequency data to expect as a parameter looks like:
  *
  * {
- *   "frequency":[
+ *   "types":[
  *     {
- *       "dayofweek":"Mon",
- *       "count":6
+ *       "value":6,
+ *       "description":"Status Update",
+ *       "shortname":"status updates",
+ *       "color":"#3b5998",
+ *       "colorclass":"blue"
  *     },
  *     {
- *       "dayofweek":"Tue",
- *       "count":1
+ *       "value":14,
+ *       "description":"Image Post",
+ *       "shortname":"photos",
+ *       "color":"#5bc0bd",
+ *       "colorclass":"green"
  *     },
  *     {
- *       "dayofweek":"Wed",
- *       "count":3
+ *       "value":1,
+ *       "description":"Shared Link",
+ *       "shortname":"shared links",
+ *       "color":"#2ebaeb",
+ *       "colorclass":"blue-light"
  *     },
  *     {
- *       "dayofweek":"Thu",
- *       "count":2
- *     },
- *     {
- *       "dayofweek":"Fri",
- *       "count":7
- *     },
- *     {
- *       "dayofweek":"Sat",
- *       "count":4
- *     },
- *     {
- *       "dayofweek":"Sun",
- *       "count":6
+ *       "value":3,
+ *       "description":"Video Post",
+ *       "shortname":"videos",
+ *       "color":"#f08a4b",
+ *       "colorclass":"orange"
  *     }
  *   ]
  * }
@@ -676,7 +699,7 @@ function initDailyPostFrequencyChart(dailyPostFrequency) {
  * example of daily-post-frequency data to expect as a parameter looks like:
  *
  * {
- *   "private":[
+ *   "frequency":[
  *     {
  *       "value":1,
  *       "x":0
@@ -732,7 +755,7 @@ function initDailyPostFrequencyChart(dailyPostFrequency) {
  *
  * @param monthlyPostFrequency Monthly post frequency data in expected format.
  */
-function initLineBar(monthlyPostFrequency) {
+function initMonthlyPostFrequencyChart(monthlyPostFrequency) {
     var holder = d3.select('#monthly-post-frequency-line-chart');
     if (!holder.node()) return;
 
