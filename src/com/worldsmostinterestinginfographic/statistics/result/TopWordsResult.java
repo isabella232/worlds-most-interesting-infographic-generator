@@ -23,6 +23,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * This class encapsulates the response from the collection of a user's most frequently used words via the
+ * <code>com.worldsmostinterestinginfographic.statistics.collect.TopWordsCollector</code>.
+ *
+ * The result contains an ordered list of word-count entries.
+ */
 public class TopWordsResult implements StatisticsResult, InfographicResult {
 
   private List<Map.Entry<String, Integer>> topWords;
@@ -50,23 +56,45 @@ public class TopWordsResult implements StatisticsResult, InfographicResult {
     return error;
   }
 
+  /**
+   * Returns the result data in JSON format for the client to use in the rendering of the infographic.
+   *
+   * Returns the user's most frequently used words.  This data is represented in 2 parts: HTML data used for the display
+   * of the user's word cloud, and the single most used word.  These are represented as 2 properties of the result:
+   * 'html' and 'topword' respectively.  An example JSON response looks like:
+   *
+   * {
+   *   "html":"<li class=\"vvvv-popular\"><a href=\"#\"/>Annou...\"#\"/>Time</a></li>",
+   *   "topword":"Bombastic"
+   * }
+   *
+   * This data will be used by the "Top Words" infographic to populate and render.
+   *
+   * @return A JSON representation of the user's most frequently used words data
+   */
   @Override
   public String getInfographicJson() {
 
-    List<String> wordsHtml = new ArrayList<>(topWords.size());
-    int emphasis = 5;
-    int previousCount = topWords.get(0).getValue();
-    for (int i = 0; i < topWords.size(); i++) {
+    // We're only interested in the user's top used 15 words
+    List<Map.Entry<String, Integer>> top15Words = topWords.subList(0, 15);
 
-      if (emphasis > 0 && topWords.get(i).getValue() < previousCount) {
+    // Build word-cloud HTML
+    List<String> wordsHtml = new ArrayList<>(top15Words.size());
+    int emphasis = 5;
+    int previousCount = top15Words.get(0).getValue();
+    for (int i = 0; i < top15Words.size(); i++) {
+
+      if (emphasis > 0 && top15Words.get(i).getValue() < previousCount) {
         emphasis--;
       }
 
-      wordsHtml.add("<li class=\\\"" + giveMeVees(emphasis) + (emphasis > 0 ? "-" : "") + "popular\\\"><a href=\\\"#\\\"/>" + topWords.get(i).getKey() + "</a></li>");
+      wordsHtml.add("<li class=\\\"" + giveMeVees(emphasis) + (emphasis > 0 ? "-" : "") + "popular\\\"><a href=\\\"#\\\"/>" + top15Words.get(i).getKey() + "</a></li>");
     }
 
+    // Let's shuffle them for the word-cloud
     Collections.shuffle(wordsHtml);
 
+    // Merge
     String html = "";
     for (String wordHtml : wordsHtml) {
       html += wordHtml;
@@ -74,12 +102,20 @@ public class TopWordsResult implements StatisticsResult, InfographicResult {
 
     String json = "{" +
                   "	\"html\": \"" + html + "\"," +
-                  "	\"topword\": \"" + topWords.get(0).getKey() + "\"" +
+                  "	\"topword\": \"" + top15Words.get(0).getKey() + "\"" +
                   "}";
 
     return json;
   }
 
+  /**
+   * Utility function to return a string of a given number of v's.  For example, an input of 3 will return "vvv", and an
+   * input of 7 will return "vvvvvvv".  This is for the purpose of adding varying degrees of emphasis to words in the
+   * word cloud.
+   *
+   * @param numVees The number of v's to appear in the result string
+   * @return A string of v's who's count is equal to the input parameter
+   */
   private String giveMeVees(int numVees) {
     String vees = "";
     for (int i = 0; i < numVees; i++) {

@@ -25,7 +25,7 @@ import java.util.Map;
 
 /**
  * This class encapsulates the response from the collection of a user's preferred post type (e.g. status update, shared
- * link, photo, etc) via the <code>com.worldsmostinterestinginfographic.statistics.collectTopFriendsCollector</code>.
+ * link, photo, etc) via the <code>com.worldsmostinterestinginfographic.statistics.collect.PostTypesCollector</code>.
  *
  * The result contains a map of post-type to usage-count.
  */

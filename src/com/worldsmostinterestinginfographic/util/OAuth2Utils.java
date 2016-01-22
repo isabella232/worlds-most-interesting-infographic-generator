@@ -34,11 +34,33 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+/**
+ * OAuth 2 utilities.
+ *
+ * This enum contains static utility methods for invoking OAuth 2 workflows.
+ */
 public enum OAuth2Utils {
   INSTANCE;
 
   private static final Logger log = Logger.getLogger(OAuth2Utils.class.getName());
 
+  /**
+   * Request an access token from the given token endpoint.
+   *
+   * The token endpoint given must contain all of the required properties necessary for the request.  At a minimum,
+   * this will include:
+   *
+   *   grant_type
+   *   code
+   *   redirect_uri
+   *   client_id
+   *
+   * If the authorization code is valid and the request is successful, the access token value will be parsed from the
+   * response and returned.  If the request has failed for any reason, null will be returned.
+   *
+   * @param tokenEndpoint The full token endpoint, with required parameters for making the access token request
+   * @return A valid access token if the request was successful; null otherwise.
+   */
   public static String requestAccessToken(String tokenEndpoint) {
     CloseableHttpClient httpClient = HttpClients.createDefault();
     try {
@@ -77,6 +99,16 @@ public enum OAuth2Utils {
     return null;
   }
 
+  /**
+   * Make a protected resource request at the given endpoint with the given access token.
+   *
+   * This method will attempt to access the protected resource with the given access token using the authorization
+   * request header field method.  If successful, the full response string will be returned.
+   *
+   * @param resourceEndpoint The endpoint of the protected resource to access
+   * @param accessToken A valid access token with the necessary scopes required to access the protected resource
+   * @return The result string returned in response to the request to access the protected resource with the given token
+   */
   public static String makeProtectedResourceRequest(String resourceEndpoint, String accessToken) {
     CloseableHttpClient httpClient = HttpClients.createDefault();
     try {
@@ -107,13 +139,15 @@ public enum OAuth2Utils {
 
       return response;
     } catch (IOException e) {
-      log.severe("Fatal exception occurred while making the protected resource request: " + e.getMessage());
+      log.severe("Fatal exception occurred while making the protected resource request (access token " +
+                 LoggingUtils.anonymize(accessToken) + "): " + e.getMessage());
       e.printStackTrace();
     } finally {
       try {
         httpClient.close();
       } catch (IOException e) {
-        log.severe("Fatal exception occurred while closing HTTP client connection: " + e.getMessage());
+        log.severe("Fatal exception occurred while closing HTTP client connection (access token=" +
+                   LoggingUtils.anonymize(accessToken) + "): " + e.getMessage());
         e.printStackTrace();
       }
     }

@@ -29,6 +29,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+/**
+ * Represents a Facebook Post object.
+ *
+ * @see <a href="https://developers.facebook.com/docs/graph-api/reference/v2.5/post">https://developers.facebook.com/docs/graph-api/reference/v2.5/post</a>
+ */
 public final class Post implements Serializable {
 
   private String id;

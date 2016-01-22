@@ -60,6 +60,7 @@ public class CallbackServlet extends HttpServlet {
    *
    * @param request  The HTTP request sent by the client
    * @param response The HTTP response that the server will send back to the client
+   *
    * @see <a href="https://tools.ietf.org/html/rfc6749">RFC 6749 - The OAuth 2.0 Authorization Framework</a>
    */
   @Override

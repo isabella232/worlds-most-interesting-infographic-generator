@@ -30,8 +30,19 @@ import com.worldsmostinterestinginfographic.util.OAuth2Utils;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Service class used to make requests for data to Facebook via OAuth 2 workflows.
+ */
 public class FacebookService {
 
+  /**
+   * Fetches the user's profile.
+   *
+   * @param accessToken A valid access token with the 'public_profile' scope
+   * @return The user profile for the user
+   *
+   * @see <a href="https://developers.facebook.com/docs/facebook-login/permissions#reference-public_profile">https://developers.facebook.com/docs/facebook-login/permissions#reference-public_profile</a>
+   */
   public User getProfile(String accessToken) {
 
     // Construct profile API request
@@ -46,6 +57,14 @@ public class FacebookService {
     return user;
   }
 
+  /**
+   * Fetches the user's feed posts.
+   *
+   * @param accessToken A valid access token with the 'user_posts' scope
+   * @return A list of posts from the user's feed
+   *
+   * @see <a href="https://developers.facebook.com/docs/facebook-login/permissions#reference-user_posts">https://developers.facebook.com/docs/facebook-login/permissions#reference-user_posts</a>
+   */
   public List<Post> getFeedPosts(String accessToken) {
 
     // Construct feed API request

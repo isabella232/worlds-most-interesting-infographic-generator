@@ -23,6 +23,11 @@ import com.google.appengine.labs.repackaged.org.json.JSONObject;
 
 import java.io.Serializable;
 
+/**
+ * Represents a Facebook User object.
+ *
+ * @see <a href="https://developers.facebook.com/docs/graph-api/reference/v2.5/user">https://developers.facebook.com/docs/graph-api/reference/v2.5/user</a>
+ */
 public final class User implements Serializable {
 
   private long id;
@@ -47,14 +52,6 @@ public final class User implements Serializable {
     }
   }
 
-  public long getId() {
-    return id;
-  }
-
-  public String getName() {
-    return name;
-  }
-
   @Override
   public boolean equals(Object obj) {
     if (obj == null || !(obj instanceof User)) {
@@ -67,5 +64,13 @@ public final class User implements Serializable {
   @Override
   public int hashCode() {
     return (int)id;
+  }
+
+  public long getId() {
+    return id;
+  }
+
+  public String getName() {
+    return name;
   }
 }

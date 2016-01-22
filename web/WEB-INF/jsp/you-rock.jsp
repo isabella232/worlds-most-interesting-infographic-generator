@@ -85,8 +85,8 @@
             <!-- Top Words infographic -->
             <section class="block-words fade-block">
                 <div class="text-holder">
-                    <h2 class="black">Most used words on your feed</h2>
-                    <p><span id="top-word" class="large">&quot;Damn&quot;</span>is the most used word on your feed</p>
+                    <h2 class="black">Your most used words</h2>
+                    <p><span id="top-word" class="large">&quot;Damn&quot;</span>is your most used word</p>
                 </div>
                 <div class="htagcloud">
                     <ul id="top-words" class="popularity">

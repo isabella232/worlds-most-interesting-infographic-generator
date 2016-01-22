@@ -30,6 +30,9 @@ import javax.cache.CacheException;
 import javax.cache.CacheFactory;
 import javax.cache.CacheManager;
 
+/**
+ * Singleton model for statically encapsulating application properties.
+ */
 public enum Model {
   INSTANCE;
 
