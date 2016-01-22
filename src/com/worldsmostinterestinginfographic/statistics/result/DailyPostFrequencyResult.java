@@ -24,9 +24,9 @@ import com.whoischarles.util.json.Minify;
  * This class encapsulates the response from the collection of a user's daily post frequency via the
  * <code>com.worldsmostinterestinginfographic.statistics.collect.DailyPostFrequencyCollector</code>.
  *
- * The result contains an array containing the count of posts per that day of the week as an array index where 0
- * represents Sunday (i.e. index 0 represents the number of posts made on a Sunday, index 1 for Monday, 2 for Tuesday,
- * and so on).
+ * The result contains an array holding the count of posts per day of the week where array index 0 represents Sunday
+ * (i.e. the value at index 0 represents the number of posts made on a Sunday, value at index 1 for Monday, 2 for
+ * Tuesday, and so on).
  */
 public class DailyPostFrequencyResult implements StatisticsResult, InfographicResult {
 

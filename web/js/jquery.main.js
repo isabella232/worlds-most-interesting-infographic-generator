@@ -92,7 +92,7 @@ function initFadeBlock() {
  * @param topFriends Top friends data in expected format.
  */
 function initTopFriendsChart(topFriends) {
-    var holder = d3.select('#friend-chart');
+    var holder = d3.select('#top-friends-hbar-chart');
     if (!holder.node()) return;
 
     var width = 670;
@@ -302,7 +302,7 @@ function initTopFriendsChart(topFriends) {
  * @param postTypes Post types data in expected format.
  */
 function initPostTypesChart(postTypes) {
-    var holder = d3.select('#donut-chart-post-types');
+    var holder = d3.select('#post-types-donut-chart');
     if (!holder.node()) return;
 
     var width = 700;
@@ -537,8 +537,8 @@ function initDailyPostFrequencyChart(dailyPostFrequency) {
 
     // comma numbers axis Y
     var axisYFormatters = d3.locale({
-                                        "decimal": ",",
-                                        "thousands": ".",
+                                        "decimal": ".",
+                                        "thousands": ",",
                                         "grouping": [3],
                                         "currency": ["$", ""],
                                         "dateTime": "%a %b %e %X %Y",
@@ -550,7 +550,7 @@ function initDailyPostFrequencyChart(dailyPostFrequency) {
                                         "months": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
                                         "shortMonths": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
                                     });
-    var numberFormat = axisYFormatters.numberFormat(",.1f");
+    var numberFormat = axisYFormatters.numberFormat("d");
 
     // crate axes
     var xAxis = d3.svg.axis()
@@ -618,28 +618,6 @@ function initDailyPostFrequencyChart(dailyPostFrequency) {
         .attr("height", function(d) { return yScale(d.y0) - yScale(d.y1); })
         .attr("fill", function(d) { return color(d.name); });
 
-    var weeklyAverageSpan = d3.select('#weekly-average');
-    if (weeklyAverageSpan.length) {
-        var weeklyAverage = d3.sum(dailyPostFrequency.frequency, function(d) {return d.count;}) / 7;
-        weeklyAverageSpan.text(weeklyAverage.toFixed(1));
-    }
-
-    var highestValueSpan = d3.select('#highest-value');
-    if (highestValueSpan.length) {
-        highestValueSpan.text(d3.max(dailyPostFrequency.frequency, function(d) {return d.count;}));
-    }
-
-    var highestDaySpan = d3.select('#highest-day');
-    if (highestDaySpan.length) {
-        var maxIndex = 0;
-        for (var i = 1; i < dailyPostFrequency.frequency.length; i++) {
-            if (dailyPostFrequency.frequency[i].count > dailyPostFrequency.frequency[maxIndex].count) {
-                maxIndex = i;
-            }
-        }
-        highestDaySpan.text(dailyPostFrequency.frequency[maxIndex].dayofweek + "days");
-    }
-
     // resize handler
     var chartHolder = svg.select('.bar-chart');
     var ratio = chartHolder.node().getBoundingClientRect().width / chartHolder.node().getBoundingClientRect().height;
@@ -655,11 +633,107 @@ function initDailyPostFrequencyChart(dailyPostFrequency) {
         .attr('height', function() {
             return svg.node().getBoundingClientRect().width / ratio;
         });
+
+    // Set text properties
+
+    var highestDailyValueSpan = d3.select('#highest-daily-value');
+    if (highestDailyValueSpan.length) {
+        highestDailyValueSpan.text(d3.max(dailyPostFrequency.frequency, function(d) {return d.count;}));
+    }
+
+    var highestDaySpan = d3.select('#highest-daily-day');
+    if (highestDaySpan.length) {
+        var maxIndex = 0;
+        for (var i = 1; i < dailyPostFrequency.frequency.length; i++) {
+            if (dailyPostFrequency.frequency[i].count > dailyPostFrequency.frequency[maxIndex].count) {
+                maxIndex = i;
+            }
+        }
+        highestDaySpan.text(dailyPostFrequency.frequency[maxIndex].dayofweek + "days");
+    }
+
+    var lowestDailyValueSpan = d3.select('#lowest-daily-value');
+    if (lowestDailyValueSpan.length) {
+        lowestDailyValueSpan.text(d3.min(dailyPostFrequency.frequency, function(d) {return d.count;}));
+    }
+
+    var lowestDaySpan = d3.select('#lowest-daily-day');
+    if (lowestDaySpan.length) {
+        var minIndex = 0;
+        for (var i = 1; i < dailyPostFrequency.frequency.length; i++) {
+            if (dailyPostFrequency.frequency[i].count < dailyPostFrequency.frequency[minIndex].count) {
+                minIndex = i;
+            }
+        }
+        lowestDaySpan.text(dailyPostFrequency.frequency[minIndex].dayofweek + "days");
+    }
 }
 
-// post privacy line chart
+/**
+ * Initialize "Monthly Post Frequency" chart.
+ *
+ * Takes a monthly-post-frequency-result JSON object and populates and renders the "Monthly Post Frequency" chart.  An
+ * example of daily-post-frequency data to expect as a parameter looks like:
+ *
+ * {
+ *   "private":[
+ *     {
+ *       "value":1,
+ *       "x":0
+ *     },
+ *     {
+ *       "value":2,
+ *       "x":11
+ *     },
+ *     {
+ *       "value":1,
+ *       "x":22
+ *     },
+ *     {
+ *       "value":0,
+ *       "x":33
+ *     },
+ *     {
+ *       "value":1,
+ *       "x":44
+ *     },
+ *     {
+ *       "value":5,
+ *       "x":55
+ *     },
+ *     {
+ *       "value":1,
+ *       "x":66
+ *     },
+ *     {
+ *       "value":4,
+ *       "x":77
+ *     },
+ *     {
+ *       "value":2,
+ *       "x":88
+ *     },
+ *     {
+ *       "value":2,
+ *       "x":99
+ *     },
+ *     {
+ *       "value":2,
+ *       "x":110
+ *     },
+ *     {
+ *       "value":3,
+ *       "x":120
+ *     }
+ *   ],
+ *   "color":"#3a5897"
+ * }
+ * }
+ *
+ * @param monthlyPostFrequency Monthly post frequency data in expected format.
+ */
 function initLineBar(monthlyPostFrequency) {
-    var holder = d3.select('#post-privacy-line-chart');
+    var holder = d3.select('#monthly-post-frequency-line-chart');
     if (!holder.node()) return;
 
     var width = 580;
@@ -670,26 +744,9 @@ function initLineBar(monthlyPostFrequency) {
     var offsetLeft = 0;
     var lineWidth = 3;
     var offsetLeftXAxis = 1;
-    var ticksLenght = 25;
+    var ticksLength = 25;
     var textTicksOffsetLeft = 30;
     var rotateValue = 7;
-
-    var dataUrlPublic = holder.attr('data-public');
-    var dataJSONPublic;
-
-    var dataUrlPrivate = holder.attr('data-private');
-    var dataJSONPrivate;
-
-    dataJSONPublic = monthlyPostFrequency;
-    dataJSONPrivate = monthlyPostFrequency;
-
-    //d3.json(dataUrlPublic, function (error, json) {
-    //    if (error) return console.warn(error);
-    //    dataJSONPublic = json[0];
-    //
-    //    d3.json(dataUrlPrivate, function (errorState, jsonPublic) {
-    //        if (error) return console.warn(error);
-    //        dataJSONPrivate = jsonPublic[0];
 
     // add main svg
     var svg = holder.append('svg')
@@ -703,7 +760,7 @@ function initLineBar(monthlyPostFrequency) {
         .attr('class', 'line-chart')
         .attr("transform", "translate(" + leftOffsetAxis + "," + topOffset + ")");
 
-    //add scales
+    // add scales
     var x = d3.scale.linear()
         .range([0, width]);
 
@@ -712,8 +769,8 @@ function initLineBar(monthlyPostFrequency) {
 
     // comma numbers axis Y
     var axisYFormatters = d3.locale({
-                                        "decimal": ",",
-                                        "thousands": ".",
+                                        "decimal": ".",
+                                        "thousands": ",",
                                         "grouping": [3],
                                         "currency": ["$", ""],
                                         "dateTime": "%a %b %e %X %Y",
@@ -739,18 +796,15 @@ function initLineBar(monthlyPostFrequency) {
 
     // set line layout
     var line = d3.svg.line()
-        .x(function(d) { return x(d.percent); })
+        .x(function(d) { return x(d.x); })
         .y(function(d) { return y(d.value); });
 
     // set domain scales
-    var maxXPrivate = d3.max(dataJSONPrivate.private, function (d) {return d.percent;});
-    var maxXPubluc = d3.max(dataJSONPublic.private, function (d) {return d.percent;});
+    var maxX = d3.max(monthlyPostFrequency.frequency, function (d) {return d.x;});
+    var maxY = d3.max(monthlyPostFrequency.frequency, function (d) {return d.value;});
 
-    var maxYPrivate = d3.max(dataJSONPrivate.private, function (d) {return d.value;});
-    var maxYPubluc = d3.max(dataJSONPublic.private, function (d) {return d.value;});
-
-    x.domain([0, d3.max([maxXPrivate, maxXPubluc])]);
-    y.domain([0, 1.15 * d3.max([maxYPrivate, maxYPubluc])]);
+    x.domain([0, maxX]);
+    y.domain([0, 1.15 * maxY]);
 
     // add axes
     mainGroup.append("g")
@@ -781,7 +835,7 @@ function initLineBar(monthlyPostFrequency) {
 
     mainGroup
         .selectAll("g.x.axis line")
-        .attr('y2', -ticksLenght);
+        .attr('y2', -ticksLength);
 
     // format axis Y + lines
     mainGroup.selectAll("g.y.axis g.tick")
@@ -798,44 +852,20 @@ function initLineBar(monthlyPostFrequency) {
         .selectAll("g.y.axis text")
         .attr('dx', -textTicksOffsetLeft);
 
-    // main chart lines
     mainGroup.append("path")
-        .datum(dataJSONPrivate.private)
-        .attr("class", "line-private")
-        .attr("d", line)
-        .attr("fill", 'none')
-        .attr("stroke", function() {
-            return dataJSONPrivate.color;
-        })
-        .attr("stroke-width", lineWidth);
-
-    mainGroup.append("path")
-        .datum(dataJSONPublic.private)
+        .datum(monthlyPostFrequency.frequency)
         .attr("class", "line-public")
         .attr("d", line)
         .attr("fill", 'none')
         .attr("stroke", function(d) {
-            return dataJSONPublic.color;
+            return monthlyPostFrequency.color;
         })
         .attr("stroke-width", lineWidth);
 
     // resize handler
     var chartHolder = svg.select('.line-chart');
     var ratio = chartHolder.node().getBoundingClientRect().width / chartHolder.node().getBoundingClientRect().height;
-    /*
-     d3.select(window)
-     .on('resize.line-chart', function() {
-     svg
-     .attr('height', function() {
-     return svg.node().getBoundingClientRect().width / ratio;
-     });
-     });
 
-     svg
-     .attr('height', function() {
-     return svg.node().getBoundingClientRect().width / ratio;
-     });
-     */
     d3.select(window)
         .on('resize.line-chart', function() {
             svg
@@ -844,8 +874,26 @@ function initLineBar(monthlyPostFrequency) {
 
     svg
         .attr('height', 600);
-    //    });
-    //});
+
+    var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+    var highestMonthSpan = d3.select('#highest-monthly-month');
+    if (highestMonthSpan.length) {
+        var maxIndex = 0;
+        for (var i = 1; i < monthlyPostFrequency.frequency.length; i++) {
+
+            if (monthlyPostFrequency.frequency[i].value > monthlyPostFrequency.frequency[maxIndex].value) {
+                maxIndex = i;
+            }
+        }
+        highestMonthSpan.text(months[maxIndex]);
+    }
+
+    var monthlyAverageSpan = d3.select('#monthly-average');
+    if (monthlyAverageSpan.length) {
+        var monthlyAverage = d3.sum(monthlyPostFrequency.frequency, function(d) {return d.value;}) / 12;
+        monthlyAverageSpan.text(d3.format(",.1f")(monthlyAverage));
+    }
 }
 
 function initWordChart(topWords) {

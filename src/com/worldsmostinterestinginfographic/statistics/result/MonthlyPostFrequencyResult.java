@@ -20,6 +20,14 @@ package com.worldsmostinterestinginfographic.statistics.result;
 
 import com.whoischarles.util.json.Minify;
 
+/**
+ * This class encapsulates the response from the collection of a user's monthly post frequency via the
+ * <code>com.worldsmostinterestinginfographic.statistics.collect.MonthlyPostFrequencyCollector</code>.
+ *
+ * The result contains an array holding the count of posts per month of the year where index 0 represents January (i.e.
+ * the value at index 0 represents the number of posts made in the month of January, value at index 1 for February,
+ * 3 for March, and so on).
+ */
 public class MonthlyPostFrequencyResult implements StatisticsResult, InfographicResult {
 
   private int[] postsByMonthOfYear;
@@ -47,57 +55,123 @@ public class MonthlyPostFrequencyResult implements StatisticsResult, Infographic
     return error;
   }
 
+  /**
+   * Returns the result data in JSON format for the client to use in the rendering of the infographic.
+   *
+   * Returns the monthly post frequency of the user.  This is represented as an array of 12 integers, where the value is
+   * the number of posts made for that month of the year, with index 0 being January, index 1 being February, etc.  This
+   * will be returned in a particular JSON response format expected by the "Monthly Post Frequency" infographic on the
+   * client.  An example JSON response looks like:
+   *
+   * {
+   *   "private":[
+   *     {
+   *       "value":1,
+   *       "x":0
+   *     },
+   *     {
+   *       "value":2,
+   *       "x":11
+   *     },
+   *     {
+   *       "value":1,
+   *       "x":22
+   *     },
+   *     {
+   *       "value":0,
+   *       "x":33
+   *     },
+   *     {
+   *       "value":1,
+   *       "x":44
+   *     },
+   *     {
+   *       "value":5,
+   *       "x":55
+   *     },
+   *     {
+   *       "value":1,
+   *       "x":66
+   *     },
+   *     {
+   *       "value":4,
+   *       "x":77
+   *     },
+   *     {
+   *       "value":2,
+   *       "x":88
+   *     },
+   *     {
+   *       "value":2,
+   *       "x":99
+   *     },
+   *     {
+   *       "value":2,
+   *       "x":110
+   *     },
+   *     {
+   *       "value":3,
+   *       "x":120
+   *     }
+   *   ],
+   *   "color":"#3a5897"
+   * }
+   *
+   * This data will be used by the "Monthly Post Frequency" infographic to populate and render.
+   *
+   * @return A JSON representation of the user's monthly post frequency data
+   */
   @Override
   public String getInfographicJson() {
     String json = "{" +
-                  "  \"private\": [" +
+                  "  \"frequency\": [" +
                   "    {" +
                   "      \"value\": " + postsByMonthOfYear[0] + "," +
-                  "      \"percent\": 2" +
+                  "      \"x\": 0" +
                   "    }," +
                   "    {" +
                   "      \"value\": " + postsByMonthOfYear[1] + "," +
-                  "      \"percent\": 11" +
+                  "      \"x\": 11" +
                   "    }," +
                   "    {" +
                   "      \"value\": " + postsByMonthOfYear[2] + "," +
-                  "      \"percent\": 20" +
+                  "      \"x\": 22" +
                   "    }," +
                   "    {" +
                   "      \"value\": " + postsByMonthOfYear[3] + "," +
-                  "      \"percent\": 30" +
+                  "      \"x\": 33" +
                   "    }," +
                   "    {" +
                   "      \"value\": " + postsByMonthOfYear[4] + "," +
-                  "      \"percent\": 51" +
+                  "      \"x\": 44" +
                   "    }," +
                   "    {" +
                   "      \"value\": " + postsByMonthOfYear[5] + "," +
-                  "      \"percent\": 57" +
+                  "      \"x\": 55" +
                   "    }," +
                   "    {" +
                   "      \"value\": " + postsByMonthOfYear[6] + "," +
-                  "      \"percent\": 70" +
+                  "      \"x\": 66" +
                   "    }," +
                   "    {" +
                   "      \"value\": " + postsByMonthOfYear[7] + "," +
-                  "      \"percent\": 75" +
+                  "      \"x\": 77" +
                   "    }," +
                   "    {" +
                   "      \"value\": " + postsByMonthOfYear[8] + "," +
-                  "      \"percent\": 88" +
+                  "      \"x\": 88" +
                   "    }," +
                   "    {" +
                   "      \"value\": " + postsByMonthOfYear[9] + "," +
-                  "      \"percent\": 100" +
+                  "      \"x\": 99" +
                   "    }," +
                   "    {" +
                   "      \"value\": " + postsByMonthOfYear[10] + "," +
-                  "      \"percent\": 110" +
+                  "      \"x\": 110" +
                   "    }," +
                   "    {" +
                   "      \"value\": " + postsByMonthOfYear[11] + "," +
-                  "      \"percent\": 120" +
+                  "      \"x\": 120" +
                   "    }" +
                   "  ]," +
                   "  \"color\": \"#3a5897\"" +

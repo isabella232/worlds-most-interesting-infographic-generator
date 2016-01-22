@@ -27,52 +27,62 @@
             <p>Sorry, but we need access to your feed data to generate the world's most interesting infographic.  If you decide to allow us to see your feed data, go <a href="https://www.facebook.com/settings?tab=applications">here</a>, find &quot;Most Interesting Infographic&quot;, delete it, and try logging into our site again.</p>
         </div>
         <div id="content" class="container">
+
+            <!-- Top Friends infographic -->
             <section class="block-friends fade-block">
                 <h2 class="blue">Top friends who like your posts</h2>
                 <div class="holder">
                     <div class="total">
                         <p><span class="number blue" id="friends-likes">703</span>Total likes received from <span class="blue">“Top <span id="friends-amount">4</span> friends”</span></p>
                     </div>
-                    <div id="friend-chart" data-json="inc/friends-likes.json">
-                        <!-- Here insert chart -->
+                    <div id="top-friends-hbar-chart">
+                        <!-- Insert chart here -->
                     </div>
                 </div>
             </section>
+
+            <!-- Post Types infographic -->
             <section class="block-types fade-block">
                 <div class="text-holder">
                     <h2 class="green">Your post types</h2>
                     <ul id="post-types-list" class="post-types">
-                        <li><span class="sign">A</span> - <span class="description">Status messages</span></li>
-                        <li><span class="sign">A</span> - <span class="description">Status messages</span></li>
-                        <li><span class="sign">A</span> - <span class="description">Status messages</span></li>
-                        <li><span class="sign">A</span> - <span class="description">Status messages</span></li>
+                        <li><span class="description">Post type</span></li>
+                        <li><span class="description">Post type</span></li>
+                        <li><span class="description">Post type</span></li>
+                        <li><span class="description">Post type</span></li>
                     </ul>
                     <p><span id="most-frequent-post-percentage" class="number"></span> of your posts are <span id="most-frequent-post-type"></span></p>
                 </div>
-                <div id="donut-chart-post-types" data-json="inc/post-types.json">
-                    <!-- Here insert chart -->
+                <div id="post-types-donut-chart">
+                    <!-- Insert chart here -->
                 </div>
             </section>
+
+            <!-- Daily Post Frequency infographic -->
             <section class="block-frequency fade-block">
                 <h2 class="orange fade-block">Posts by day of the week</h2>
                 <div class="fade-block" id="daily-post-frequency-bar-chart">
-                    <!-- Here insert chart -->
+                    <!-- Insert chart here -->
                 </div>
                 <div class="text-holder fade-block">
-                    <p><span id="weekly-average" class="number blue-light">0.25</span>average posts <span class="mark">per week</span></p>
-                    <p><span id="highest-value" class="number orange">3.1</span>most active on <span id="highest-day" class="mark">Monday</span></p>
+                    <p><span id="highest-daily-value" class="number blue-light">3.1</span>most active on <span id="highest-daily-day" class="mark">Fridays</span></p>
+                    <p><span id="lowest-daily-value" class="number orange">0.5</span>quietest on <span id="lowest-daily-day" class="mark">Mondays</span></p>
                 </div>
             </section>
+
+            <!-- Monthly Post Frequency infographic -->
             <section class="block-privacy fade-block">
                 <div class="text-holder">
                     <h2 class="blue-light">Your post frequency</h2>
-                    <p><span id="highest-average-public" class="number blue-light">3.1</span>highest average <span class="mark">public posts/week</span></p>
-                    <p><span id="highest-average-private" class="number blue">2.75</span>highest average <br><span class="mark">private posts/week</span></p>
+                    <p><span id="highest-monthly-month" class="number blue-light">Dec</span>favorite <span class="mark">month</span></p>
+                    <p><span id="monthly-average" class="number blue">2.75</span>average posts <br><span class="mark">per month</span></p>
                 </div>
-                <div id="post-privacy-line-chart" data-public="inc/post-public.json"  data-private="inc/post-private.json">
-                    <!-- Here insert chart -->
+                <div id="monthly-post-frequency-line-chart">
+                    <!-- Insert chart here -->
                 </div>
             </section>
+
+            <!-- Top Words infographic -->
             <section class="block-words fade-block">
                 <div class="text-holder">
                     <h2 class="black">Most used words on your feed</h2>
@@ -80,10 +90,11 @@
                 </div>
                 <div class="htagcloud">
                     <ul id="top-words" class="popularity">
-                        <!-- Insert word cloud here -->
+                        <!-- Insert chart here -->
                     </ul>
                 </div>
             </section>
+
         </div>
     </main>
 <%@include file="/WEB-INF/jsp/inc/footer.jsp" %>

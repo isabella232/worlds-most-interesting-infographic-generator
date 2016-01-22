@@ -31,8 +31,10 @@ import java.util.List;
  */
 public class DailyPostFrequencyCollector implements StatisticsCollector {
 
+  private final int DAYS_PER_WEEK = 7;
+
   /**
-   * This method will iterate through the given posts generating statistics about the given user's post frequency
+   * This method will iterate through the given posts generating statistics about the given user's daily post frequency
    * represented as the number of posts posted per day of the week.
    *
    * @param user The user for whom to collect statistics for
@@ -43,8 +45,8 @@ public class DailyPostFrequencyCollector implements StatisticsCollector {
   @Override
   public DailyPostFrequencyResult collect(User user, List<Post> posts) {
 
-    // Populate post-frequency array
-    int[] postsByDayOfWeek = new int[7];
+    // Populate daily post-frequency array
+    int[] postsByDayOfWeek = new int[DAYS_PER_WEEK];
     for (Post post : posts) {
 
       // Only look at my posts

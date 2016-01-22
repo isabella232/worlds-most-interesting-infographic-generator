@@ -1124,7 +1124,7 @@ input[type="submit"] {
 	font-weight: 300;
 }
 
-#donut-chart-post-types {
+#post-types-donut-chart {
 	font-family: "Lato", "Baskerville", "Georgia", sans-serif;
 	font-weight: normal;
 	font-size: 55px;
@@ -1133,26 +1133,26 @@ input[type="submit"] {
 	width: 60%;
 }
 
-#donut-chart-post-types .type-label {
+#post-types-donut-chart .type-label {
 	font-size: 55px;
 }
 
-#donut-chart-post-types svg {
+#post-types-donut-chart svg {
 	width: 100%;
 }
 
-#friend-chart {
+#top-friends-hbar-chart {
 	font-family: "Lato", "Baskerville", "Georgia", sans-serif;
 	font-weight: normal;
 }
 
-#friend-chart .likes {
+#top-friends-hbar-chart .likes {
 	font-size: 22px;
 	font-weight: bold;
 	text-anchor: end;
 }
 
-#post-privacy-line-chart,
+#monthly-post-frequency-line-chart,
 #daily-post-frequency-bar-chart {
 	font-family: "Lato", "Baskerville", "Georgia", sans-serif;
 	font-weight: bold;
@@ -1162,40 +1162,40 @@ input[type="submit"] {
 	width: 60%;
 }
 
-#post-privacy-line-chart .axis path,
-#post-privacy-line-chart .axis line,
+#monthly-post-frequency-line-chart .axis path,
+#monthly-post-frequency-line-chart .axis line,
 #daily-post-frequency-bar-chart .axis path,
 #daily-post-frequency-bar-chart .axis line {
 	display: none;
 }
 
-#post-privacy-line-chart .axis line.grid-line,
+#monthly-post-frequency-line-chart .axis line.grid-line,
 #daily-post-frequency-bar-chart .axis line.grid-line {
 	display: block;
 }
 
-#post-privacy-line-chart text,
+#monthly-post-frequency-line-chart text,
 #daily-post-frequency-bar-chart text {
 	fill: #9b9c9c;
 }
 
-#post-privacy-line-chart .x.axis,
+#monthly-post-frequency-line-chart .x.axis,
 #daily-post-frequency-bar-chart .x.axis {
 	font-size: 18px;
 }
 
-#post-privacy-line-chart .y.axis,
+#monthly-post-frequency-line-chart .y.axis,
 #daily-post-frequency-bar-chart .y.axis {
 	font-size: 20px;
 }
 
-#post-privacy-line-chart .axis.x line {
+#monthly-post-frequency-line-chart .axis.x line {
 	display: block;
 	stroke: #9b9c9c;
 	stroke-width: 2px;
 }
 
-#post-privacy-line-chart .axis.x {
+#monthly-post-frequency-line-chart .axis.x {
 	font-weight: normal;
 }
 
@@ -1758,7 +1758,7 @@ input[type="submit"] {
 }
 
 @media (max-width: 1399px) {
-	.block-types #donut-chart-post-types {
+	.block-types #post-types-donut-chart {
 		padding: 0 70px;
 	}
 }
@@ -1910,17 +1910,17 @@ input[type="submit"] {
 		float: none;
 	}
 
-	#friend-chart svg {
+	#top-friends-hbar-chart svg {
 		width: 100%;
 	}
 
-	#post-privacy-line-chart,
+	#monthly-post-frequency-line-chart,
 	#daily-post-frequency-bar-chart {
 		width: auto;
 		display: block;
 	}
 
-	#post-privacy-line-chart svg,
+	#monthly-post-frequency-line-chart svg,
 	#daily-post-frequency-bar-chart svg {
 		width: 100%;
 		max-width: 100%;
@@ -2164,7 +2164,7 @@ input[type="submit"] {
 		margin-bottom: 20px;
 	}
 
-	#donut-chart-post-types {
+	#post-types-donut-chart {
 		width: auto;
 		display: block;
 	}
@@ -2204,7 +2204,7 @@ input[type="submit"] {
 		width: 100%;
 	}
 
-	.block-types #donut-chart-post-types {
+	.block-types #post-types-donut-chart {
 		padding: 0 80px;
 	}
 
@@ -2343,7 +2343,7 @@ input[type="submit"] {
 		width: 70%;
 	}
 
-	.block-types #donut-chart-post-types {
+	.block-types #post-types-donut-chart {
 		padding: 0 45px;
 	}
 }
