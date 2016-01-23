@@ -26,7 +26,7 @@
                 </div>
                 <div class="text-holder">
                     <h2>What is <span class="medium">this?</span></h2>
-                    <p>This entire website is a working example of an application built in a book called <a class="mark" href="#">“Mastering OAuth 2.0”</a></p>
+                    <p>This entire website is a working example of an application built in a book called <a class="mark" href="http://www.amazon.com/gp/product/B013T7MQNE/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=B013T7MQNE&linkCode=as2&tag=charleon-20&linkId=CBTUPI5NOKI7Y6VD">“Mastering OAuth 2.0”</a></p>
                     <p>This book discusses building client applications that integrate with service providers like Facebook, Google, and Instagram, using the OAuth 2.0 protocol.</p>
                 </div>
             </div>
@@ -61,6 +61,10 @@
                 <p>It’s aaaallll open source. Embrace and extend!</p>
                 <a href="https://github.com/mastering-oauth-2/worldsmostinterestinginfographic.com" class="btn"><i class="icon-github"></i>See <span class="thin">me on</span> Github</a>
                 <span class="decor">Buy the book, grok the code, and build the next big application!</span>
+                <br />
+                <div class="img-holder">
+                    <a href="http://www.amazon.com/gp/product/B013T7MQNE/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=B013T7MQNE&linkCode=as2&tag=charleon-20&linkId=CBTUPI5NOKI7Y6VD"><img src="images/mastering-oauth-2-cover.jpg" alt="Mastering OAuth 2.0" width="200"></a>
+                </div>
             </div>
         </section>
     </main>
