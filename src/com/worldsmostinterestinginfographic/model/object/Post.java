@@ -66,13 +66,13 @@ public final class Post implements Serializable {
     try {
       JSONObject postObject = new JSONObject(postJson);
 
-      // Get id
+      // Get post ID
       String id = postObject.getString("id");
 
-      // Get type
+      // Get post type
       Post.Type type = Post.Type.valueOf(postObject.getString("type").toUpperCase());
 
-      // Get message
+      // Get post message
       String message = postObject.has("message") ? postObject.getString("message") : "";
 
       // Get status type
@@ -91,7 +91,7 @@ public final class Post implements Serializable {
         }
       }
 
-      // Get from
+      // Get poster
       User from = null;
       boolean hasFrom = postObject.has("from");
       if (hasFrom) {
