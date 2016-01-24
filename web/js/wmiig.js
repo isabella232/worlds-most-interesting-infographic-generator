@@ -92,6 +92,11 @@ function initFadeBlock() {
  * @param topFriends Top friends data in expected format.
  */
 function initTopFriendsChart(topFriends) {
+
+    if (topFriends == null) {
+        return;
+    }
+
     var holder = d3.select('#top-friends-hbar-chart');
     if (!holder.node()) return;
 
@@ -302,6 +307,11 @@ function initTopFriendsChart(topFriends) {
  * @param postTypes Post types data in expected format.
  */
 function initPostTypesChart(postTypes) {
+
+    if (postTypes == null) {
+        return;
+    }
+
     var holder = d3.select('#post-types-donut-chart');
     if (!holder.node()) return;
 
@@ -527,6 +537,11 @@ function initPostTypesChart(postTypes) {
  * @param dailyPostFrequency Daily post frequency data in expected format.
  */
 function initDailyPostFrequencyChart(dailyPostFrequency) {
+
+    if (dailyPostFrequency == null) {
+        return;
+    }
+
     var holder = d3.select('#daily-post-frequency-bar-chart');
     if (!holder.node()) return;
 
@@ -756,6 +771,11 @@ function initDailyPostFrequencyChart(dailyPostFrequency) {
  * @param monthlyPostFrequency Monthly post frequency data in expected format.
  */
 function initMonthlyPostFrequencyChart(monthlyPostFrequency) {
+
+    if (monthlyPostFrequency == null) {
+        return;
+    }
+
     var holder = d3.select('#monthly-post-frequency-line-chart');
     if (!holder.node()) return;
 
@@ -920,6 +940,11 @@ function initMonthlyPostFrequencyChart(monthlyPostFrequency) {
 }
 
 function initWordChart(topWords) {
+
+    if (topWords == null) {
+        return;
+    }
+
     $('#top-words').html(topWords.html);
     $('#top-word').html("&quot;" + topWords.topword + "&quot;");
 }
