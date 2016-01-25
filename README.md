@@ -1,3 +1,5 @@
+## Overview
+
 This is a production version of the main sample application built in the book [*Mastering OAuth 2.0*](https://www.packtpub.com/application-development/mastering-oauth-2).
 
 [<img src="https://www.packtpub.com/sites/default/files/5407OS_3653_Mastering%20Oauth%202.0.jpg" width="200" />](https://www.packtpub.com/application-development/mastering-oauth-2)
@@ -5,8 +7,6 @@ This is a production version of the main sample application built in the book [*
 **Available at:**
 * [Amazon.com](http://www.amazon.com/gp/product/B013T7MQNE/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=B013T7MQNE&linkCode=as2&tag=charleon-20&linkId=CBTUPI5NOKI7Y6VD)
 * [PacktPub.com](https://www.packtpub.com/application-development/mastering-oauth-2)
-
-## Overview
 
 This application is an infographic generator that creates custom infographics based on the Facebook profile and feed data of the logged-in user, obtained by interacting with the Facebook Graph APIs using standard OAuth 2 workflows.  See a live working example of this application at www.worldsmostinterestinginfographic.com or www.wmiig.com for short.
 
