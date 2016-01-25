@@ -10,9 +10,6 @@ It is a production version of the main sample application built in the book [*Ma
 * [Amazon.com](http://www.amazon.com/gp/product/B013T7MQNE/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=B013T7MQNE&linkCode=as2&tag=charleon-20&linkId=CBTUPI5NOKI7Y6VD)
 * [PacktPub.com](https://www.packtpub.com/application-development/mastering-oauth-2)
 
-
-
-
 ## Dependencies
 
 * [Minify 1.0.0](https://github.com/charlesbihis/minify/releases/tag/1.0.0)
